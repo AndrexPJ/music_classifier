@@ -20,7 +20,7 @@ int main()
 
     vector<complex> result;
 
-    cout << WFFT::perform(ar.channelsData[0],result,hWindow,512,0) << endl;
+    cout << WFFT::perform(ar.channelsData[0],result,hWindow,512,128) << endl;
 
 
     ofstream out_stream;

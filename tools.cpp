@@ -1,6 +1,6 @@
 #include "tools.h"
 
-int nearestPowerOfTwoAbove(int number){
+int Tools::nearestPowerOfTwoAbove(int number){
     if(number <= 1) return 1;
     int power = 1;
 

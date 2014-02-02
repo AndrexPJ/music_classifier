@@ -7,7 +7,7 @@ AudioRecord sizingToPowerOfTwo::perform(const AudioRecord &record){
 
     if((old_size & (old_size - 1)) == 0) return record; // if old_size is power of two!
 
-    int new_size = nearestPowerOfTwoAbove(old_size);
+    int new_size = Tools::nearestPowerOfTwoAbove(old_size);
 
 
     int prefix_size = (new_size - old_size)/2;
