@@ -3,7 +3,7 @@
 
 namespace Tools {
 
-int nearestPowerOfTwoAbove(int number);
+unsigned int nearestPowerOfTwoAbove(unsigned int number);
 
 }
 
