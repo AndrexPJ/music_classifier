@@ -3,6 +3,7 @@
 bool WFFT::perform(const std::vector<double> &Input, std::vector<complex> &Output,WindowFunction *window,int window_size, int offset){
  int N  = Input.size();
 
+ if(window_size == 0) return false;
  if(N & (N-1)) return false;
 
 
