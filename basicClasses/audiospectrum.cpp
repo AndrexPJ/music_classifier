@@ -1,12 +1,12 @@
 #include "audiospectrum.h"
 
-AudioSpectrum::AudioSpectrum() : AudioData()
+AudioSpectrum::AudioSpectrum()
 {
     this->channelDataSize = 0;
     this->channelsCount = 0;
 }
 
 
-double AudioSpectrum::getFrequency(int n){
+complex AudioSpectrum::getFrequency(int n){
     return this->frequencyStep * n;
 }

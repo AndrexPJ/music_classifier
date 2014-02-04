@@ -2,15 +2,16 @@
 #define AUDIOSPECTRUM_H
 
 #include "basicClasses/audiodata.h"
+#include "fastFourierTransform/complex.h"
 
-class AudioSpectrum : AudioData
+class AudioSpectrum : AudioData<complex>
 {
 public:
     int channelsCount, channelDataSize;
     double frequencyStep;
     AudioSpectrum();
 
-    double getFrequency(int n);
+    complex getFrequency(int n);
 };
 
 #endif // AUDIOSPECTRUM_H

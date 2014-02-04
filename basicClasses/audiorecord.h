@@ -2,7 +2,9 @@
 #define AUDIORECORD_H
 #include "basicClasses/audiodata.h"
 
-class AudioRecord : public AudioData
+
+
+class AudioRecord : public AudioData<double>
 {
     public:
     int sampleRate, channelsCount, bitsPerSample, channelDataSize;

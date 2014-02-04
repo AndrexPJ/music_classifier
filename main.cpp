@@ -12,7 +12,7 @@ using namespace std;
 
 int main()
 {
-    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("country.wav");
+   /* AudioRecord ar =  WaveAudioLoader::loadAudioRecord("country.wav");
 
 
     int prefix_size,suffix_size;
@@ -33,7 +33,7 @@ int main()
     for(int i = 0; i < result.size(); i++)
         //out_stream << sqrt(pow(result[i].re(),2) + pow(result[i].im(),2)) << endl;
         //out_stream << atan(result[i].re()/result[i].im()) << endl;
-        out_stream << result[i].re() << " " << result[i].im() << endl;
+        out_stream << result[i].re() << " " << result[i].im() << endl;*/
     return 0;
 }
 
