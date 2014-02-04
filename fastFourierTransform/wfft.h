@@ -8,7 +8,7 @@
 class WFFT
 {
 public:
-    static bool perform(const std::vector<double> &Input, std::vector<complex> &Output,WindowFunction *window,int Window_Size, int Offset = 0);
+    static bool perform(const std::vector<double> &Input, std::vector<complex> &Output,WindowFunction &window,int Window_Size, int Offset = 0);
 };
 
 #endif // WFFT_H

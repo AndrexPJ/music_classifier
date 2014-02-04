@@ -1,6 +1,10 @@
 #include "audiorecord.h"
 
-AudioRecord::AudioRecord(){
+AudioRecord::AudioRecord() : AudioData(){
+    this->bitsPerSample = 0;
+    this->channelDataSize = 0;
+    this->channelsCount = 0;
+    this->sampleRate = 0;
 }
 
 AudioRecord::AudioRecord(const AudioRecord &record){
@@ -8,6 +12,5 @@ AudioRecord::AudioRecord(const AudioRecord &record){
     this->channelDataSize = record.channelDataSize;
     this->channelsCount = record.channelsCount;
     this->sampleRate = record.sampleRate;
-
-    this->channelsData = std::vector< std::vector <double> >(record.channelsData);
+    this->setData(record.getData());
 }

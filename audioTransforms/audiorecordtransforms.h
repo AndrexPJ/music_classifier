@@ -5,13 +5,15 @@
 #include "tools.h"
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 namespace AudioRecordTransforms {
 
-class sizingToPowerOfTwo{
+class SizingToPowerOfTwo{
 public:
-    static AudioRecord perform(const AudioRecord &record);
+    static AudioRecord perform(const AudioRecord &record, int &out_prefix_size, int &out_suffix_size);
 };
+
 
 }
 #endif // AUDIORECORDTRANSFORMS_H

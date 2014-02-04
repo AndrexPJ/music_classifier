@@ -1,14 +1,15 @@
 #ifndef AUDIORECORD_H
 #define AUDIORECORD_H
-#include <vector>
+#include "basicClasses/audiodata.h"
 
-class AudioRecord
+class AudioRecord : public AudioData
 {
     public:
     int sampleRate, channelsCount, bitsPerSample, channelDataSize;
-    std::vector< std::vector<double> > channelsData;
+    double frequencyStep;
     AudioRecord();
     AudioRecord(const AudioRecord &record);
+
 };
 
 #endif // AUDIORECORD_H

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "audioLoaders/waveaudioloader.h"
 #include "fastFourierTransform/windowfunctions.h"
-#include "audiorecordtransforms.h"
+#include "audioTransforms/audiorecordtransforms.h"
 #include "fastFourierTransform/wfft.h"
 #include "tools.h"
 
@@ -14,13 +14,17 @@ int main()
 {
     AudioRecord ar =  WaveAudioLoader::loadAudioRecord("country.wav");
 
-    ar = AudioRecordTransforms::sizingToPowerOfTwo::perform(ar);
 
-    HannWindowFunction *hWindow = new HannWindowFunction();
+    int prefix_size,suffix_size;
+    ar = AudioRecordTransforms::SizingToPowerOfTwo::perform(ar,prefix_size,suffix_size);
 
+    cout << prefix_size << endl;
+    cout << suffix_size << endl;
+
+    HannWindowFunction hWindow;
     vector<complex> result;
 
-    cout << WFFT::perform(ar.channelsData[0],result,hWindow,1024) << endl;
+    cout << WFFT::perform(ar.getData()[0],result,hWindow,1024) << endl;
 
     cout << ar.channelDataSize << endl;
 

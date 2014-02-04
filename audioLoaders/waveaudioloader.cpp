@@ -27,19 +27,21 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
                                 * header.bitsPerSample);
     resultRecord.channelsCount = header.numChannels;
 
-    resultRecord.channelsData.resize(resultRecord.channelsCount);
+    resultRecord.setDataSize(resultRecord.channelsCount,resultRecord.channelDataSize);
 
-    for(int i = 0; i< resultRecord.channelsCount; i++){
-        resultRecord.channelsData[i].resize(resultRecord.channelDataSize);
-    }
+    resultRecord.bitsPerSample = header.bitsPerSample;
+
+    resultRecord.sampleRate = header.sampleRate;
+
+    resultRecord.frequencyStep = resultRecord.sampleRate/(2*resultRecord.channelDataSize*M_PI);
+
+
 
     // ---------- wave data reading ----------
 
     short int tInt;
     unsigned char tChar;
 
-    resultRecord.bitsPerSample = header.bitsPerSample;
-    resultRecord.sampleRate = header.sampleRate;
 
     int maxIntValue;
 
@@ -61,13 +63,13 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
             case 8:
                 {
                     inFileStream.read((char*)&tChar,sizeof(unsigned char));
-                    resultRecord.channelsData[ch][step] = (double(tChar)/maxIntValue);
+                    resultRecord.setSpecificData((double(tChar)/maxIntValue),ch,step);
                     break;
                 }
             case 16:
                 {
                     inFileStream.read((char*)&tInt,sizeof(short int));
-                    resultRecord.channelsData[ch][step] = ((double(tInt)/maxIntValue) + 1)/2;
+                    resultRecord.setSpecificData(((double(tInt)/maxIntValue) + 1)/2,ch,step);
                     break;
                 }
             default:

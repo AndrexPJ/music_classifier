@@ -2,19 +2,24 @@
 
 using namespace AudioRecordTransforms;
 
-AudioRecord sizingToPowerOfTwo::perform(const AudioRecord &record){
+AudioRecord SizingToPowerOfTwo::perform(const AudioRecord &record, int &out_prefix_size, int &out_suffix_size){
     int old_size = record.channelDataSize;
 
-    if((old_size & (old_size - 1)) == 0) return record; // if old_size is power of two!
-
+    if((old_size & (old_size - 1)) == 0){ // if old_size is power of two!
+        out_prefix_size = 0;
+        out_suffix_size = 0;
+        return record;
+    }
     int new_size = Tools::nearestPowerOfTwoAbove(old_size);
 
 
     int prefix_size = (new_size - old_size)/2;
     int suffix_size = (new_size - old_size) - prefix_size;
 
-
     std::vector< std::vector<double> > temp;
+
+    std::vector< std::vector<double> > record_data = record.getData();
+
     temp.resize(record.channelsCount);
 
     for(int i= 0; i < record.channelsCount; i++)
@@ -25,7 +30,7 @@ AudioRecord sizingToPowerOfTwo::perform(const AudioRecord &record){
         temp[i].push_back(0);
 
     for(int i = 0; i < record.channelsCount; i++)
-        temp[i].insert(temp[i].end(),record.channelsData[i].begin(),record.channelsData[i].end());
+        temp[i].insert(temp[i].end(),record_data[i].begin(),record_data[i].end());
 
     for(int i = 0; i < record.channelsCount; i++)
     for(int j = 0; j < suffix_size; j++)
@@ -36,10 +41,12 @@ AudioRecord sizingToPowerOfTwo::perform(const AudioRecord &record){
     temp_record.bitsPerSample = record.bitsPerSample;
     temp_record.channelDataSize = temp[0].size();
     temp_record.channelsCount = record.channelsCount;
-    temp_record.channelsData = temp;
+    temp_record.setData(temp);
     temp_record.sampleRate = record.sampleRate;
+    temp_record.frequencyStep = temp_record.sampleRate / (2 * temp_record.channelDataSize * M_PI);
 
-
+    out_prefix_size = prefix_size;
+    out_suffix_size = suffix_size;
 
     return temp_record;
 }
