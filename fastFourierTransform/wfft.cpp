@@ -13,7 +13,7 @@ bool WFFT::perform(const std::vector<double> &Input, std::vector<complex> &Outpu
  complex *temp_array = new complex[window_size];
 
  for(int i = 0; i < N; i++)
-     input_array[i] = Input[i] * window.perform(i % window_size,window_size);
+     input_array[i] = Input[i] * window.perform(i % window_size ,window_size);
 
 
  for(int i = 0; i < N; i += window_size){
