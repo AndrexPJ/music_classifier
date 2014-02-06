@@ -33,9 +33,6 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
 
     resultRecord.sampleRate = header.sampleRate;
 
-    resultRecord.frequencyStep = resultRecord.sampleRate/(2*resultRecord.channelDataSize*M_PI);
-
-
 
     // ---------- wave data reading ----------
 

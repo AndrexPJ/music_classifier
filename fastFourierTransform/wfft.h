@@ -5,10 +5,11 @@
 #include "vector"
 #include "windowfunctions.h"
 #include <iostream>
+#include "tools.h"
 class WFFT
 {
 public:
-    static bool perform(const std::vector<double> &Input, std::vector<complex> &Output,WindowFunction &window,int Window_Size, int Offset = 0);
+    static bool perform(const std::vector<double> &Input, std::vector<complex> &Output,WindowFunction &window,int window_Size, int hop_size);
 };
 
 #endif // WFFT_H

@@ -10,8 +10,7 @@ class AudioData
 private:
       std::vector< std::vector<T> > channelsData;
 public:
-      int channelsCount, channelDataSize;
-      double frequencyStep;
+      int channelsCount, channelDataSize,sampleRate;
 
       AudioData();
       ~AudioData();

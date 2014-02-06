@@ -43,7 +43,6 @@ AudioRecord SizingToPowerOfTwo::perform(const AudioRecord &record, int &out_pref
     temp_record.channelsCount = record.channelsCount;
     temp_record.setData(temp);
     temp_record.sampleRate = record.sampleRate;
-    temp_record.frequencyStep = temp_record.sampleRate / (2 * temp_record.channelDataSize * M_PI);
 
     out_prefix_size = prefix_size;
     out_suffix_size = suffix_size;

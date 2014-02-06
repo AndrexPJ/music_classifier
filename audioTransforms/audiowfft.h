@@ -8,7 +8,7 @@
 class AudioWFFT
 {
 public:
-    static bool perform(AudioRecord &in_record, AudioSpectrum<complex> &out_spectrum,int window_size, int channels_count = 0);
+    static bool perform(AudioRecord &in_record, AudioSpectrum<complex> &out_spectrum,int window_size, int hop_size, int channels_count = 0);
 };
 
 #endif // AUDIOWFFT_H

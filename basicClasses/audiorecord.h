@@ -7,7 +7,7 @@
 class AudioRecord : public AudioData<double>
 {
     public:
-    int sampleRate,bitsPerSample;
+    int bitsPerSample;
     AudioRecord();
     AudioRecord(const AudioRecord &record);
 
