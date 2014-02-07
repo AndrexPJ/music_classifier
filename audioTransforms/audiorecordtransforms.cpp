@@ -1,8 +1,6 @@
 #include "audiorecordtransforms.h"
 
-using namespace AudioRecordTransforms;
-
-AudioRecord SizingToPowerOfTwo::perform(const AudioRecord &record, int &out_prefix_size, int &out_suffix_size){
+AudioRecord AudioRecordTransforms::sizeToPowerOfTwo(const AudioRecord &record, int &out_prefix_size, int &out_suffix_size){
     int old_size = record.channelDataSize;
 
     if((old_size & (old_size - 1)) == 0){ // if old_size is power of two!

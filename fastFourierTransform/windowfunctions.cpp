@@ -14,7 +14,7 @@ double RectangleWindowFunction::perform(int n, int N){
 
 HannWindowFunction::HannWindowFunction() : WindowFunction(){}
 double HannWindowFunction::perform(int n, int N){
-    return 0.5 * (1 - cos((2*M_PI*n+1)/(N-1)));
+    return 0.5 * (1 - cos((2*M_PI*n)/(N-1)));
 }
 
 //### ##################### ###

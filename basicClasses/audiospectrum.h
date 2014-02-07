@@ -7,12 +7,13 @@
 #include <iostream>
 
 template <class T>
-class AudioSpectrum : public AudioData<T>
+class AudioSpectrum : public AudioData< std::vector<T> >
 {
 private:
     bool updateFrequencyStep();
 public:
     AudioSpectrum();
+    AudioSpectrum(const AudioSpectrum<T> &spectrum);
     double frequencyStep;
     int windowSize;
     double getFrequency(int n);
@@ -32,8 +33,16 @@ AudioSpectrum<T>::AudioSpectrum()
 }
 
 template <class T>
+AudioSpectrum<T>::AudioSpectrum(const AudioSpectrum<T> &spectrum){
+    this->setData(spectrum.getData());
+    this->frequencyStep = spectrum.frequencyStep;
+    this->sampleRate = spectrum.sampleRate;
+    this->windowSize = spectrum.windowSize;
+}
+
+template <class T>
 bool AudioSpectrum<T>::updateFrequencyStep(){
-    this->frequencyStep = this->sampleRate/(2*this->windowSize*M_PI);
+    this->frequencyStep = this->sampleRate/(this->windowSize);
     return true;
 }
 
@@ -44,7 +53,7 @@ double AudioSpectrum<T>::getFrequency(int n){
 
 template <class T>
 bool AudioSpectrum<T>::setDataSize(int channels_count, int data_size){
-    if(!AudioData<T>::setDataSize(channels_count,data_size)) return false;
+    if(!this->AudioData< std::vector<T> >::setDataSize(channels_count,data_size)) return false;
     return true;
 }
 
