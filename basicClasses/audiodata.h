@@ -132,7 +132,7 @@ bool AudioData<T>::setDataSize(int channels_count, int data_size){
 
 template <class T>
 std::vector<T>& AudioData<T>::operator [](int i){
-    return (this->channelsData[i]);
+    return this->channelsData[i];
 }
 
 

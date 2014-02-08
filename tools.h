@@ -6,48 +6,39 @@ namespace Tools {
 
 unsigned int nearestPowerOfTwoAbove(unsigned int number);
 
+template <class T>
+T getAverage(std::vector<T> &in_vector);
 
 template <class T>
-class SizingToPowerOfTwo{
-public:
-    static std::vector<T> perform(const std::vector<T> &in_vector, int &out_prefix_size, int &out_suffix_size);
-};
-
+T signum(T t);
 
 }
 
 
 template <class T>
-std::vector<T> Tools::SizingToPowerOfTwo<T>::perform(const std::vector<T> &in_vector, int &out_prefix_size, int &out_suffix_size){
-    int old_size = in_vector.size();
+T Tools::getAverage(std::vector<T> &in_vector){
+    int size = in_vector.size();
 
-    if((old_size & (old_size - 1)) == 0){ // if old_size is power of two!
-        out_prefix_size = 0;
-        out_suffix_size = 0;
-        return in_vector;
-    }
+    if(size == 0) return 0;
 
-    int new_size = Tools::nearestPowerOfTwoAbove(old_size);
+    T temp = in_vector[0];
 
-    int prefix_size = (new_size - old_size)/2;
-    int suffix_size = (new_size - old_size) - prefix_size;
+    if(size == 1) return temp;
 
-    std::vector<T> temp;
 
-    temp.resize(new_size);
+    for(int i = 1; i < size; i++)
+        temp += in_vector[i];
 
-    for(int i = 0; i < prefix_size; i++)
-        temp.push_back(0);
+    return temp/size;
 
-        temp.insert(temp.end(),in_vector.begin(),in_vector.end());
-
-    for(int i = 0; i < suffix_size; i++)
-        temp.push_back(0);
-
-    out_prefix_size = prefix_size;
-    out_suffix_size = suffix_size;
-
-    return temp;
 }
+
+
+template <class T>
+T Tools::signum(T t){
+    if (t >= T(0)) return T(1);
+    return T(0);
+}
+
 
 #endif // TOOLS_H

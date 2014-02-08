@@ -26,7 +26,7 @@ bool WFFT::perform(const std::vector<double> &Input,  std::vector< std::vector<c
     Output[output_i].resize(window_size/2);
 
     for(int j = 0; j < window_size/2; j++){
-         Output[output_i][j] = temp_array[j];
+         Output[output_i][j] = temp_array[j]/sqrt(window_size);
     }
 
     output_i++;

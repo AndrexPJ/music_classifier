@@ -60,13 +60,13 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
             case 8:
                 {
                     inFileStream.read((char*)&tChar,sizeof(unsigned char));
-                    resultRecord.setSpecificData((double(tChar)/maxIntValue),ch,step);
+                    resultRecord.setSpecificData((double(tChar)/maxIntValue)*2 - 1,ch,step); // normalized [-1..1]
                     break;
                 }
             case 16:
                 {
                     inFileStream.read((char*)&tInt,sizeof(short int));
-                    resultRecord.setSpecificData(((double(tInt)/maxIntValue) + 1)/2,ch,step);
+                    resultRecord.setSpecificData((double(tInt)/maxIntValue),ch,step); // normalized [-1..1]
                     break;
                 }
             default:

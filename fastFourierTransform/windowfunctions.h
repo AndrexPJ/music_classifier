@@ -16,9 +16,9 @@ public:
     double perform(int n, int N);
 };
 
-class  HannWindowFunction : public WindowFunction{
+class  HanningWindowFunction : public WindowFunction{
 public:
-    HannWindowFunction();
+    HanningWindowFunction();
     double perform(int n, int N);
 };
 

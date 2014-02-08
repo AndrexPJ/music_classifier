@@ -30,13 +30,13 @@ public:
 	//     Output - transform result
 	//     N      - length of both input data and result
 	//     Scale  - if to scale result
-	static bool Inverse(const complex *const Input, complex *const Output, const unsigned int N, const bool Scale = true);
+    static bool Inverse(const complex *const Input, complex *const Output, const unsigned int N, const bool Scale = false);
 
 	//   INVERSE FOURIER TRANSFORM, INPLACE VERSION
 	//     Data  - both input data and output
 	//     N     - length of both input data and result
 	//     Scale - if to scale result
-	static bool Inverse(complex *const Data, const unsigned int N, const bool Scale = true);
+    static bool Inverse(complex *const Data, const unsigned int N, const bool Scale = false);
 
 protected:
 	//   Rearrange function and its inplace version
