@@ -2,4 +2,6 @@
 *.wav
 *.au
 *.txt.user
+*.dat
+data
 dataset
