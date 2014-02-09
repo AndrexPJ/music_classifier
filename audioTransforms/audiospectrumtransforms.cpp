@@ -9,11 +9,10 @@ AudioAmpSpectrum AudioSpectrumTransforms::getAmpSpectrum(AudioSpectrum<complex> 
 
     temp.setDataSize(spectrum.channelsCount,spectrum.channelDataSize);
 
-
     for(int i = 0; i < spectrum.channelsCount; i++){
         for(int j = 0; j < spectrum.channelDataSize; j++){
             temp[i][j].resize(half_window);
-            std::cerr << j << " " << spectrum.channelDataSize << " " << spectrum[i].size() << std::endl;
+
             for(int k = 0; k < half_window; k++){
                 temp[i][j][k] =  sqrt(pow(spectrum[i][j][k].im(),2) + pow(spectrum[i][j][k].re(),2));
             }

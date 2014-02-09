@@ -1,20 +1,34 @@
 #include "windowfunctions.h"
 
-WindowFunction::WindowFunction(){}
+WindowFunction::WindowFunction(){
 
+}
 
-//### Window Functions list ###
-
-RectangleWindowFunction::RectangleWindowFunction() : WindowFunction(){}
-double RectangleWindowFunction::perform(int n, int N){
-    if  ((n >= 0) && (n<N)) return 1.0;
-    else                    return 0.0;
+WindowFunction::WindowFunction(int window_size){
+    this->values = new double[window_size];
+    this->window_size = window_size;
 }
 
 
-HanningWindowFunction::HanningWindowFunction() : WindowFunction(){}
-double HanningWindowFunction::perform(int n, int N){
-    return 0.5 * (1 - cos((2*M_PI*n)/(N-1)));
+double WindowFunction::perform(int n){
+    if((n < 0) || (n >= window_size)) return 0.0;
+    return this->values[n];
+}
+
+//### Window Functions list ###
+
+RectangleWindowFunction::RectangleWindowFunction(int window_size) : WindowFunction(window_size){
+    for(int i = 0; i < window_size; i++)
+        this->values[i] = 1.0;
+
+}
+
+
+
+HanningWindowFunction::HanningWindowFunction(int window_size) : WindowFunction(window_size){
+    for(int i = 0; i < window_size; i++){
+        this->values[i] =  0.5 * (1 - cos((2*M_PI*i)/(window_size-1)));
+    }
 }
 
 //### ##################### ###

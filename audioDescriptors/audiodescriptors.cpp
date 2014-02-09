@@ -54,12 +54,12 @@ std::vector<double> ZCRDescriptorExtractor::extract(){
 }
 
 
-SpCentroidDescriptroExtractor::SpCentroidDescriptroExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
+SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
 }
 
 
-std::vector<double> SpCentroidDescriptroExtractor::extract(){
+std::vector<double> SpCentroidDescriptorExtractor::extract(){
 
     std::vector<double> temp_vector;
     temp_vector.resize(spectrum.channelsCount);

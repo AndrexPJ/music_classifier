@@ -4,22 +4,25 @@
 #include <math.h>
 class WindowFunction
 {
+protected:
+    double *values;
+    int window_size;
 public:
     WindowFunction();
-    virtual double perform(int n,int N) = 0;
+    WindowFunction(int window_size);
+    virtual double perform(int n);
 };
 
 
 class RectangleWindowFunction : public WindowFunction{
 public:
-    RectangleWindowFunction();
-    double perform(int n, int N);
+    RectangleWindowFunction(int window_size);
 };
 
 class  HanningWindowFunction : public WindowFunction{
+
 public:
-    HanningWindowFunction();
-    double perform(int n, int N);
+    HanningWindowFunction(int window_size);
 };
 
 #endif // WINDOWFUNCTIONS_H

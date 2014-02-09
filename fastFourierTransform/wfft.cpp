@@ -10,8 +10,8 @@ bool WFFT::perform(const std::vector<double> &Input,  std::vector< std::vector<c
  if(window_size & (window_size-1)) return false;
 
 
- //Output.resize((N/hop_size) * (window_size/2));
  int output_i = 0;
+ int output_size = Output.size();
 
  complex *input_array = new complex[window_size];
  complex *temp_array = new complex[window_size];
@@ -19,7 +19,7 @@ bool WFFT::perform(const std::vector<double> &Input,  std::vector< std::vector<c
 
  for(int i = 0; i + window_size < N; i += hop_size){
      for(int j = 0; j < window_size; j++){
-         input_array[j] = Input[i+j] * window.perform(j,window_size);
+         input_array[j] = Input[i+j] * window.perform(j);
      }
 
     CFFT::Forward(input_array,temp_array,window_size);
@@ -28,12 +28,10 @@ bool WFFT::perform(const std::vector<double> &Input,  std::vector< std::vector<c
     for(int j = 0; j < window_size/2; j++){
          Output[output_i][j] = temp_array[j]/sqrt(window_size);
     }
-
     output_i++;
+    if(output_i >= output_size) break;
 
  }
-
-
 
  delete temp_array;
  delete input_array;

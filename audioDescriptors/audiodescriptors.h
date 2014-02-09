@@ -22,11 +22,11 @@ public:
 };
 
 
-class SpCentroidDescriptroExtractor : AudioDescriptorExtractor{
+class SpCentroidDescriptorExtractor : AudioDescriptorExtractor{
 private:
     AudioAmpSpectrum spectrum;
 public:
-    SpCentroidDescriptroExtractor(AudioAmpSpectrum &spectrum);
+    SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum);
     std::vector<double> extract();
 };
 
