@@ -47,3 +47,21 @@ AudioRecord AudioRecordTransforms::sizeToPowerOfTwo(const AudioRecord &record, i
 
     return temp_record;
 }
+
+
+AudioRecord AudioRecordTransforms::performPreEmphasisFilter(const AudioRecord &record, double koefficient){
+    AudioRecord temp_record(record);
+    std::vector< std::vector<double> > temp;
+    temp.resize(temp_record.channelsCount);
+    for(int i = 0; i < temp_record.channelsCount; i++)
+        temp[i].resize(temp_record.channelDataSize);
+
+    for(int i = 0; i < temp_record.channelsCount; i++){
+        for(int j = 1; j < temp_record.channelDataSize; j++)
+            temp[i][j] = temp_record[i][j] - koefficient * temp_record[i][j - 1];
+    }
+
+    temp_record.setData(temp);
+    return temp_record;
+
+}

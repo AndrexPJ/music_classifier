@@ -9,6 +9,7 @@
 namespace AudioRecordTransforms {
 
     AudioRecord sizeToPowerOfTwo(const AudioRecord &record, int &out_prefix_size, int &out_suffix_size);
+    AudioRecord performPreEmphasisFilter(const AudioRecord &record, double koefficient);
 }
 
 #endif // AUDIORECORDTRANSFORMS_H

@@ -13,13 +13,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("metal.wav");
+    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("my.wav");
+
+    AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
     int window_size = 2048;
     int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
     HanningWindowFunction wf(window_size);
-
-    cout << ar.channelDataSize << endl;
 
     AudioSpectrum<complex> sp;
     sp.setWindowSize(window_size);
@@ -27,15 +27,13 @@ int main(int argc, char *argv[])
 
     AudioWFFT::perform(ar,sp,wf,window_size,hop_size);
 
-    cout << sp.channelDataSize << endl;
-
     AudioAmpSpectrum amp_sp = AudioSpectrumTransforms::getAmpSpectrum(sp);
 
-    EnergyDescriptorExtractor energy_de(ar);
+    /*EnergyDescriptorExtractor energy_de(ar);
     ZCRDescriptorExtractor zcr_de(ar);
-    SpCentroidDescriptorExtractor spc_de(amp_sp);
+    SpCentroidDescriptorExtractor spc_de(amp_sp);*/
 
-    std::vector<double> out = energy_de.extract();
+    /*std::vector<double> out = energy_de.extract();
     for(int i = 0; i < out.size(); i++){
         cout << out[i] << " ";
     }
@@ -49,10 +47,10 @@ int main(int argc, char *argv[])
     out = spc_de.extract();
     for(int i = 0; i < out.size(); i++){
         cout << out[i] << endl;
-    }
+    }*/
 
-    /*ofstream out_stream;
-    out_stream.open("out.txt",ios_base::out);
+    ofstream out_stream;
+    out_stream.open("out1.txt",ios_base::out);
 
 
     for(int i = 0; i < amp_sp.channelDataSize;i++){
@@ -61,6 +59,9 @@ int main(int argc, char *argv[])
         }
     }
 
+
+    /*for(int i = 0; i < ar.channelDataSize; i++)
+        out_stream << ar[0][i] << " " << ar_filtered[0][i] << endl;
 
     out_stream.close();*/
 
