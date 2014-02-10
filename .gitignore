@@ -3,5 +3,5 @@
 *.au
 *.txt.user
 *.dat
-data
-dataset
+*data
+*dataset
