@@ -13,12 +13,13 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("test.wav");
+    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("metal.wav");
 
     int window_size = 2048;
     int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
     HanningWindowFunction wf(window_size);
 
+    cout << ar.channelDataSize << endl;
 
     AudioSpectrum<complex> sp;
     sp.setWindowSize(window_size);
@@ -26,6 +27,7 @@ int main(int argc, char *argv[])
 
     AudioWFFT::perform(ar,sp,wf,window_size,hop_size);
 
+    cout << sp.channelDataSize << endl;
 
     AudioAmpSpectrum amp_sp = AudioSpectrumTransforms::getAmpSpectrum(sp);
 
@@ -59,10 +61,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    for(int i = 0; i< ar.channelDataSize; i++)
-        out_stream << ar[0][i] << endl;*/
 
-    //out_stream.close();
+    out_stream.close();*/
 
     //TODO : fix problem with spectrum size
     return 0;

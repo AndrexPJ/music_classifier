@@ -17,7 +17,7 @@ public:
     double frequencyStep;
     int windowSize;
     double getFrequency(int n);
-    bool setDataSize(int channels_count, int data_size);
+    bool setDataSize(int channels_count, int data_size, int window_size);
     bool setSampleRate(int sample_rate);
     bool setWindowSize(int windows_size);
 };
@@ -52,8 +52,11 @@ double AudioSpectrum<T>::getFrequency(int n){
 }
 
 template <class T>
-bool AudioSpectrum<T>::setDataSize(int channels_count, int data_size){
+bool AudioSpectrum<T>::setDataSize(int channels_count, int data_size, int window_size){
     if(!this->AudioData< std::vector<T> >::setDataSize(channels_count,data_size)) return false;
+    for(int i = 0; i < channels_count; i++)
+        for(int j = 0; j < data_size; j++)
+            this->channelsData[i][j].resize(window_size);
     return true;
 }
 

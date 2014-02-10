@@ -15,12 +15,12 @@ bool AudioWFFT::perform(AudioRecord &in_record, AudioSpectrum<complex> &out_spec
     else
         channels_true_count = channels_count;
 
-    out_spectrum.setDataSize(channels_true_count,((in_record.channelDataSize - window_size)/hop_size));
+    out_spectrum.setDataSize(channels_true_count,((in_record.channelDataSize - window_size + 1)/hop_size) +1 , window_size/2);
     out_spectrum.setSampleRate(in_record.sampleRate);
 
 
     for(int channel = 0; channel < channels_true_count; channel++){
-        if(! WFFT::perform(in_record[channel],out_spectrum[channel],wf,window_size,hop_size)) return false;
+        if(!WFFT::perform(in_record[channel],out_spectrum[channel],wf,window_size,hop_size)) return false;
     }
 
     return true;

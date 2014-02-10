@@ -9,4 +9,4 @@ aux_source_directory(./audioTransforms SRC_LIST)
 aux_source_directory(./basicClasses SRC_LIST)
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses)
-
+add_definitions(-ffast-math )

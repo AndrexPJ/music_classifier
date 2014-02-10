@@ -7,7 +7,7 @@
 template < class T >
 class AudioData
 {
-private:
+protected:
       std::vector< std::vector<T> > channelsData;
 public:
       int channelsCount, channelDataSize,sampleRate;
