@@ -3,6 +3,7 @@
 
 
 #include "audiorecord.h"
+#include "audioExceptions/audioexceptions.h"
 #include <string>
 
 class AudioLoader{

@@ -1,5 +1,6 @@
 #include <iostream>
 #include "audioLoaders/waveaudioloader.h"
+#include "audioSavers/audiosavers.h"
 #include "audioTransforms/audiowfft.h"
 #include "audioTransforms/audiorecordtransforms.h"
 #include "audioTransforms/audiospectrumtransforms.h"
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
     AudioRecord ar =  WaveAudioLoader::loadAudioRecord("my.wav");
 
     AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
+
+    WaveAudioSaver::saveAudioRecord(ar_filtered,"my_f.wav");
 
     int window_size = 2048;
     int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
@@ -64,8 +67,6 @@ int main(int argc, char *argv[])
         out_stream << ar[0][i] << " " << ar_filtered[0][i] << endl;
 
     out_stream.close();*/
-
-    //TODO : fix problem with spectrum size
     return 0;
 }
 

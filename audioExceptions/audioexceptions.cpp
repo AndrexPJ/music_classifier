@@ -1,4 +1,4 @@
-#include "audioloaderexceptions.h"
+#include "audioexceptions.h"
 
 const char* AudioFilePathException::what() const throw(){
     return "Bad audio file path!";

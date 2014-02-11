@@ -19,12 +19,12 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
     if((header.bitsPerSample !=8) && (header.bitsPerSample != 16))
         throw(WaveFormatException("Supported only 8bit and 16bit wave!"));
 
-
     AudioRecord resultRecord;
 
 
     resultRecord.channelDataSize = (8 * header.subchunk2Size) / (header.numChannels
                                 * header.bitsPerSample);
+
     resultRecord.channelsCount = header.numChannels;
 
     resultRecord.setDataSize(resultRecord.channelsCount,resultRecord.channelDataSize);

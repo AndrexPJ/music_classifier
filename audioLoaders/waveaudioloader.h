@@ -3,10 +3,11 @@
 
 #include <math.h>
 #include "audioloader.h"
-#include "audioloaderexceptions.h"
+
 #include "fstream"
 
 using namespace std;
+
 //----------wave format loader---------------
 //----------wave header---------
 struct WavHeader
@@ -72,6 +73,7 @@ struct WavHeader
 
     // Далее следуют непосредственно Wav данные.
 };
+
 
 
 //-------------------------------
