@@ -14,11 +14,12 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("my.wav");
+    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("classical.wav");
 
     AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
-    WaveAudioSaver::saveAudioRecord(ar_filtered,"my_f.wav");
+    //cout << AudioSpectrumTransforms::getCriticalBandRate(22000) << endl;
+    //WaveAudioSaver::saveAudioRecord(ar_filtered,"test2.wav");*/
 
     int window_size = 2048;
     int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
@@ -28,9 +29,17 @@ int main(int argc, char *argv[])
     sp.setWindowSize(window_size);
 
 
-    AudioWFFT::perform(ar,sp,wf,window_size,hop_size);
+    AudioWFFT::perform(ar_filtered,sp,wf,window_size,hop_size);
 
     AudioAmpSpectrum amp_sp = AudioSpectrumTransforms::getAmpSpectrum(sp);
+
+    SpFlatnessDescriptorExtractor spfl_de(amp_sp);
+
+
+    vector<double> barks = spfl_de.extract();
+    //  cout << barks.size();
+    for(int i = 0; i < barks.size(); i++)
+        cout << barks[i] << " ";
 
     /*EnergyDescriptorExtractor energy_de(ar);
     ZCRDescriptorExtractor zcr_de(ar);
@@ -52,15 +61,15 @@ int main(int argc, char *argv[])
         cout << out[i] << endl;
     }*/
 
-    ofstream out_stream;
-    out_stream.open("out1.txt",ios_base::out);
+    /*ofstream out_stream;
+    out_stream.open("out.txt",ios_base::out);
 
 
     for(int i = 0; i < amp_sp.channelDataSize;i++){
         for(int j = 0; j < window_size/2; j++){
             out_stream << amp_sp.getFrequency(j) << " " << 10*log(amp_sp[0][i][j]) << endl;
         }
-    }
+    }*/
 
 
     /*for(int i = 0; i < ar.channelDataSize; i++)

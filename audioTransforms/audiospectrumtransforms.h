@@ -9,6 +9,8 @@ namespace AudioSpectrumTransforms{
 
    AudioAmpSpectrum getAmpSpectrum(AudioSpectrum<complex> &spectrum);
 
+   int getCriticalBandRate(double frequency);
+
 }
 
 #endif // AUDIOSPECTRUMTRANSFORMS_H

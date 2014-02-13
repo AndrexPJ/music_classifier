@@ -24,3 +24,10 @@ AudioAmpSpectrum AudioSpectrumTransforms::getAmpSpectrum(AudioSpectrum<complex> 
     return temp;
 
 }
+
+int AudioSpectrumTransforms::getCriticalBandRate(double frequency){
+    double result = 26.81/(1 + 1960/frequency) - 0.53;
+    if(result < 2.0) result += 0.15*(2 - result);
+    if(result > 20.1) result += 0.22*(result - 20.1);
+    return result;
+}

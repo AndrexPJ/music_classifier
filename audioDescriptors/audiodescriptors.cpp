@@ -91,3 +91,86 @@ std::vector<double> SpCentroidDescriptorExtractor::extract(){
     return temp_vector;
 
 }
+
+
+SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
+    this->spectrum = spectrum;
+}
+
+std::vector<double> SpFlatnessDescriptorExtractor::extract(){
+    std::vector < std::vector<double> > temp_vector;
+    std::vector<double> out_vector;
+    std::vector <int> bark_size;
+
+    double gmean,amean,temp;
+    double frequency, bark;
+    double eps = std::numeric_limits<double>::epsilon();
+    int bark_count = 24;
+
+    out_vector.resize(bark_count);
+    bark_size.resize(bark_count);
+    temp_vector.resize(bark_count); // count of critical bands
+
+    // vectors prepare
+    for(int i = 0; i < bark_count; i++){
+        bark_size[i] = 0;
+        temp_vector[i].resize(spectrum.channelDataSize);
+        for(int j = 0; j < spectrum.channelDataSize; j++)
+            temp_vector[i][j] = 0.0;
+    }
+
+    // spectral power calculating
+    for(int ch = 0; ch < spectrum.channelsCount; ch++){
+        for(int fq_i = 0; fq_i < spectrum.windowSize/2; fq_i++){
+            frequency = spectrum.getFrequency(fq_i);
+            if(frequency < 105) continue;
+            if(frequency > 22000) break;
+
+            bark = AudioSpectrumTransforms::getCriticalBandRate(frequency) - 1;
+
+            bark_size[bark]++;
+            for(int i = 0; i < spectrum.channelDataSize; i++){
+                temp_vector[bark][i] += spectrum[ch][i][fq_i] * spectrum[ch][i][fq_i];
+            }
+
+        }
+    }
+
+
+    //calculates gmean and amean
+    for(int i = 0; i < bark_count; i++){
+        out_vector[i] = 0.0;
+        gmean = 0.0;
+        amean = 0.0;
+
+        for(int j = 0; j < spectrum.channelDataSize; j++){
+           if(bark_size[i] == 0)
+               temp = 0;
+           else
+               temp = temp_vector[i][j]/bark_size[i];
+
+            amean += temp;
+
+            if(temp <= eps){
+                gmean += 0.0;
+            }
+            else{
+                gmean += log(temp);
+            }
+        }
+
+        gmean = exp(gmean/spectrum.channelDataSize);
+        amean = amean/spectrum.channelDataSize;
+
+        if(amean <= eps)
+            out_vector[i] = 0.0;
+        else
+            out_vector[i] = gmean / amean;
+
+    }
+
+    temp_vector.clear();
+    bark_size.clear();
+    return out_vector;
+}
+
