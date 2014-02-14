@@ -13,7 +13,7 @@ public:
       int channelsCount, channelDataSize,sampleRate;
 
       AudioData();
-      ~AudioData();
+      //~AudioData();
       bool setData(std::vector< std::vector<T> > const &data);
       std::vector< std::vector<T> > getData() const;
 
@@ -38,10 +38,10 @@ AudioData<T>::AudioData(){
     this->channelsData.resize(0);
 }
 
-template <class T>
+/*template <class T>
 AudioData<T>::~AudioData(){
-    this->channelsData.clear();
-}
+   this->channelsData.clear();
+}*/
 
 template <class T>
 bool AudioData<T>::setData(std::vector<std::vector<T> > const &data){

@@ -1,5 +1,7 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 
+
+// --- Record Energy ---
 EnergyDescriptorExtractor::EnergyDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
 }
@@ -24,9 +26,10 @@ std::vector<double> EnergyDescriptorExtractor::extract(){
     temp_vector.push_back(temp);
     return temp_vector;
 }
+// --- ------------- ---
 
 
-
+// --- Record Zero Crossing Rate ---
 ZCRDescriptorExtractor::ZCRDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
 }
@@ -52,6 +55,6 @@ std::vector<double> ZCRDescriptorExtractor::extract(){
     return temp_vector;
 
 }
-
+// --- ------------------------- ---
 
 

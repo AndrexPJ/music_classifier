@@ -1,9 +1,10 @@
 #include "audiospectrumdescriptors.h"
 
+
+// --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
 }
-
 
 std::vector<double> SpCentroidDescriptorExtractor::extract(){
 
@@ -37,8 +38,10 @@ std::vector<double> SpCentroidDescriptorExtractor::extract(){
     return temp_vector;
 
 }
+// --- ----------------- ---
 
 
+// --- Spectral Flatness ---
 SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
 }
@@ -112,3 +115,63 @@ std::vector<double> SpFlatnessDescriptorExtractor::extract(){
     bark_size.clear();
     return out_vector;
 }
+// --- ----------------- ---
+
+
+// --- Spectral Flux ---
+SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int frames_count) : AudioDescriptorExtractor(){
+    this->spectrum = spectrum;
+    if(frames_count > spectrum.channelDataSize)
+        this->frames_count = spectrum.channelDataSize;
+    else
+        this->frames_count = frames_count;
+}
+
+std::vector<double> SpFluxDescriptorExtractor::extract(){
+
+    int step = this->spectrum.channelDataSize / this->frames_count;
+
+    std::vector<double> out_vector;
+    out_vector.resize(this->frames_count);
+
+    double frame_temp, temp;
+    int it, frame;
+
+    for(frame = 0; frame < this->frames_count - 1; frame++){
+        frame_temp = 0.0;
+        it = frame * step;
+        for(int i = it; i < it+step - 1; i++){
+            for(int fq_i = 0; fq_i < spectrum.windowSize/2; fq_i++){
+                temp = 0.0;
+                for(int ch = 0; ch < spectrum.channelsCount; ch++)
+                    temp += spectrum[ch][i + 1][fq_i] - spectrum[ch][i][fq_i];
+
+                temp = temp/spectrum.channelsCount;
+                frame_temp += temp * temp;
+                }
+            frame_temp /= spectrum.windowSize/2;
+        }
+        out_vector[frame] = frame_temp;
+    }
+
+    // --- last frame ---
+    frame_temp = 0.0;
+    it = frame * step;
+    for(int i = it; i < spectrum.channelDataSize - 1; i++){
+        for(int fq_i = 0; fq_i < spectrum.windowSize/2; fq_i++){
+            temp = 0.0;
+            for(int ch = 0; ch < spectrum.channelsCount; ch++)
+                temp += spectrum[ch][i + 1][fq_i] - spectrum[ch][i][fq_i];
+
+            temp = temp/spectrum.channelsCount;
+            frame_temp += temp * temp;
+            }
+        frame_temp /= spectrum.windowSize/2;
+        }
+    out_vector[frame] = frame_temp;
+    // --- --------- ---
+
+    return out_vector;
+}
+
+// --- ------------- ---
