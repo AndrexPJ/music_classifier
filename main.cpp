@@ -37,7 +37,6 @@ int main(int argc, char *argv[])
 
 
     vector<double> barks = spfl_de.extract();
-    //  cout << barks.size();
     for(int i = 0; i < barks.size(); i++)
         cout << barks[i] << " ";
 

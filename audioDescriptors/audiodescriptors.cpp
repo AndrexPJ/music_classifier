@@ -129,6 +129,7 @@ std::vector<double> SpFlatnessDescriptorExtractor::extract(){
             bark = AudioSpectrumTransforms::getCriticalBandRate(frequency) - 1;
 
             bark_size[bark]++;
+
             for(int i = 0; i < spectrum.channelDataSize; i++){
                 temp_vector[bark][i] += spectrum[ch][i][fq_i] * spectrum[ch][i][fq_i];
             }
@@ -144,28 +145,20 @@ std::vector<double> SpFlatnessDescriptorExtractor::extract(){
         amean = 0.0;
 
         for(int j = 0; j < spectrum.channelDataSize; j++){
-           if(bark_size[i] == 0)
-               temp = 0;
-           else
-               temp = temp_vector[i][j]/bark_size[i];
-
-            amean += temp;
-
-            if(temp <= eps){
-                gmean += 0.0;
-            }
-            else{
+           if(bark_size[i] != 0){
+                temp = temp_vector[i][j]/bark_size[i];
+                amean += temp;
                 gmean += log(temp);
-            }
+           }
         }
-
-        gmean = exp(gmean/spectrum.channelDataSize);
-        amean = amean/spectrum.channelDataSize;
 
         if(amean <= eps)
             out_vector[i] = 0.0;
-        else
+        else{
+            gmean = exp(gmean/spectrum.channelDataSize);
+            amean = amean/spectrum.channelDataSize;
             out_vector[i] = gmean / amean;
+        }
 
     }
 
