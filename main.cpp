@@ -5,7 +5,7 @@
 #include "audioTransforms/audiorecordtransforms.h"
 #include "audioTransforms/audiospectrumtransforms.h"
 #include "audioDescriptors/audiodescriptorextractor.h"
-#include "audioDescriptors/audiodescriptors.h"
+#include "audioDescriptors/audiospectrumdescriptors.h"
 
 #include <fstream>
 
