@@ -6,11 +6,13 @@
 
 class AudioRecord : public AudioData<double>
 {
-
-public:
+protected:
     int bitsPerSample;
+public:
     AudioRecord();
     AudioRecord(const AudioRecord &record);
+    int getBitsPerSample() const;
+    bool setBitsPerSample(int bps);
 
 };
 

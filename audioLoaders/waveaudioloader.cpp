@@ -22,16 +22,12 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
     AudioRecord resultRecord;
 
 
-    resultRecord.channelDataSize = (8 * header.subchunk2Size) / (header.numChannels
-                                * header.bitsPerSample);
+    resultRecord.setDataSize(header.numChannels,(8 * header.subchunk2Size) / (header.numChannels
+                                                                            * header.bitsPerSample));
 
-    resultRecord.channelsCount = header.numChannels;
+    resultRecord.setBitsPerSample(header.bitsPerSample);
 
-    resultRecord.setDataSize(resultRecord.channelsCount,resultRecord.channelDataSize);
-
-    resultRecord.bitsPerSample = header.bitsPerSample;
-
-    resultRecord.sampleRate = header.sampleRate;
+    resultRecord.setSampleRate(header.sampleRate);
 
 
     // ---------- wave data reading ----------
@@ -41,22 +37,23 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
 
 
     int maxIntValue;
+    int bps = resultRecord.getBitsPerSample();
 
-    switch (resultRecord.bitsPerSample) {
+    switch (bps) {
     case 8:
-        maxIntValue = int(pow(2, resultRecord.bitsPerSample) - 1);
+        maxIntValue = int(pow(2, bps) - 1);
         break;
     case 16:
-        maxIntValue = int(pow(2, resultRecord.bitsPerSample - 1) - 1);
+        maxIntValue = int(pow(2, bps - 1) - 1);
         break;
     default:
         throw(WaveFormatException("Supported only 8bit and 16bit wave!"));
         break;
     }
 
-    for(int step = 0; (step < resultRecord.channelDataSize) && inFileStream.good(); step++){
-        for(int ch = 0; ch < resultRecord.channelsCount; ch++){
-            switch(resultRecord.bitsPerSample){
+    for(int step = 0; (step < resultRecord.getChannelDataSize()) && inFileStream.good(); step++){
+        for(int ch = 0; ch < resultRecord.getChannelsCount(); ch++){
+            switch(bps){
             case 8:
                 {
                     inFileStream.read((char*)&tChar,sizeof(unsigned char));

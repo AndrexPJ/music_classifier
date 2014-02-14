@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 {
     AudioRecord ar =  WaveAudioLoader::loadAudioRecord("classical.wav");
 
-    AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
+    //AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
 
     int window_size = 2048;
@@ -37,6 +37,14 @@ int main(int argc, char *argv[])
     for(int i = 0; i < out.size(); i++){
         cout << out[i] << " ";
     }
+
+  /*  ofstream out_stream;
+    out_stream.open("out.txt",ios_base::out);
+
+    for(int i = 0; i < amp_sp.getChannelDataSize(); i++)
+        for(int j = 0; j < amp_sp.getFrequencyCount(); j++){
+            out_stream << amp_sp.getFrequency(j) << " " << amp_sp[0][i][j] << endl;
+        }*/
 
 
     return 0;

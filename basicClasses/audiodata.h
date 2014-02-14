@@ -9,9 +9,8 @@ class AudioData
 {
 protected:
       std::vector< std::vector<T> > channelsData;
-public:
       int channelsCount, channelDataSize,sampleRate;
-
+public:
       AudioData();
       //~AudioData();
       bool setData(std::vector< std::vector<T> > const &data);
@@ -26,6 +25,12 @@ public:
 
       bool setDataSize(int channels_count, int data_size);
       bool setDataSize(int channels_count);
+
+      int getChannelsCount() const;
+      int getChannelDataSize() const;
+
+      int getSampleRate() const;
+      bool setSampleRate(int sample_rate);
 
       std::vector<T>& operator[] (int i);
 };
@@ -128,6 +133,27 @@ bool AudioData<T>::setDataSize(int channels_count, int data_size){
     }
     else return false;
 
+}
+
+template <class T>
+int AudioData<T>::getChannelsCount() const{
+    return this->channelsCount;
+}
+
+template <class T>
+int AudioData<T>::getChannelDataSize() const{
+    return this->channelDataSize;
+}
+
+template <class T>
+bool AudioData<T>::setSampleRate(int sample_rate){
+    this->sampleRate = sample_rate;
+    return true;
+}
+
+template <class T>
+int AudioData<T>::getSampleRate() const{
+    return this->sampleRate;
 }
 
 template <class T>

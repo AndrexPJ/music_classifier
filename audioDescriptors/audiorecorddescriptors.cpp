@@ -8,16 +8,18 @@ EnergyDescriptorExtractor::EnergyDescriptorExtractor(AudioRecord &record) : Audi
 
 std::vector<double> EnergyDescriptorExtractor::extract(){
     std::vector<double> temp_vector;
-    temp_vector.resize(record.channelsCount);
+    int channels_count = record.getChannelsCount();
+    int data_size = record.getChannelDataSize();
+    temp_vector.resize(channels_count);
 
     double temp;
 
-    for(int i = 0; i < record.channelsCount; i++){
+    for(int i = 0; i < channels_count; i++){
         temp = 0;
-        for(int j = 0; j < record.channelDataSize; j++){
+        for(int j = 0; j < data_size; j++){
             temp += pow(record[i][j],2);
         }
-        temp_vector[i] = temp/record.channelDataSize; // normalized
+        temp_vector[i] = temp/data_size; // normalized
     }
 
     temp = Tools::getAverage(temp_vector);
@@ -36,16 +38,20 @@ ZCRDescriptorExtractor::ZCRDescriptorExtractor(AudioRecord &record) : AudioDescr
 
 std::vector<double> ZCRDescriptorExtractor::extract(){
     std::vector<double> temp_vector;
-    temp_vector.resize(record.channelsCount);
+
+    int channels_count = record.getChannelsCount();
+    int data_size = record.getChannelDataSize();
+
+    temp_vector.resize(channels_count);
 
     double temp;
 
-    for(int i = 0; i < record.channelsCount; i++){
+    for(int i = 0; i < channels_count; i++){
         temp = 0;
-        for(int j = 1; j < record.channelDataSize; j++){
+        for(int j = 1; j < data_size; j++){
             temp += abs(Tools::signum(record[i][j]) - Tools::signum(record[i][j-1]));
         }
-        temp_vector[i] = temp/(2 * record.channelDataSize); // normalized
+        temp_vector[i] = temp/(2 * data_size); // normalized
     }
 
     temp = Tools::getAverage(temp_vector);

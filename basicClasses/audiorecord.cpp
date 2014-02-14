@@ -14,3 +14,12 @@ AudioRecord::AudioRecord(const AudioRecord &record){
     this->sampleRate = record.sampleRate;
     this->setData(record.getData());
 }
+
+int AudioRecord::getBitsPerSample() const{
+    return this->bitsPerSample;
+}
+
+bool AudioRecord::setBitsPerSample(int bps){
+    this->bitsPerSample = bps;
+    return true;
+}

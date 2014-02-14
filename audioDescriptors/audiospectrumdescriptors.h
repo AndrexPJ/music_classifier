@@ -27,7 +27,7 @@ private:
     AudioAmpSpectrum spectrum;
     int frames_count;
 public:
-    SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int frames_count = 16);
+    SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int frames_count = 8);
     std::vector<double> extract();
 };
 

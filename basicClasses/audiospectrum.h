@@ -11,15 +11,23 @@ class AudioSpectrum : public AudioData< std::vector<T> >
 {
 private:
     bool updateFrequencyStep();
+protected:
+    double frequencyStep;
+    int windowSize;
 public:
     AudioSpectrum();
     AudioSpectrum(const AudioSpectrum<T> &spectrum);
-    double frequencyStep;
-    int windowSize;
-    double getFrequency(int n);
+    double getFrequency(int n) const;
     bool setDataSize(int channels_count, int data_size, int window_size);
     bool setSampleRate(int sample_rate);
     bool setWindowSize(int windows_size);
+
+    double getFrequencyStep() const;
+    bool setFrequencyStep(double step);
+
+    int getFrequencyCount() const;
+    int getWindowSize() const;
+
 };
 
 
@@ -47,7 +55,7 @@ bool AudioSpectrum<T>::updateFrequencyStep(){
 }
 
 template <class T>
-double AudioSpectrum<T>::getFrequency(int n){
+double AudioSpectrum<T>::getFrequency(int n) const{
     return this->frequencyStep * n;
 }
 
@@ -72,6 +80,27 @@ bool AudioSpectrum<T>::setWindowSize(int windows_size){
     this->windowSize = windows_size;
     this->updateFrequencyStep();
     return true;
+}
+
+template <class T>
+double AudioSpectrum<T>::getFrequencyStep() const{
+    return this->frequencyStep;
+}
+
+template <class T>
+bool AudioSpectrum<T>::setFrequencyStep(double step){
+    this->frequencyStep = step;
+    return true;
+}
+
+template <class T>
+int AudioSpectrum<T>::getFrequencyCount() const{
+    return this->getWindowSize()/2;
+}
+
+template <class T>
+int AudioSpectrum<T>::getWindowSize() const{
+    return this->windowSize;
 }
 
 #endif // AUDIOSPECTRUM_H
