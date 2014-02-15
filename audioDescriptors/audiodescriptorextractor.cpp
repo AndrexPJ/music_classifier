@@ -1,6 +1,5 @@
 #include "audiodescriptorextractor.h"
 
-AudioDescriptorExtractor::AudioDescriptorExtractor()
-{
-}
+AudioDescriptorExtractor::AudioDescriptorExtractor(){}
+
 

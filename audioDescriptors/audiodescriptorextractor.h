@@ -17,4 +17,5 @@ public:
     virtual std::vector<double> extract() = 0;
 };
 
+
 #endif // AUDIODESCRIPTOREXTRACTOR_H

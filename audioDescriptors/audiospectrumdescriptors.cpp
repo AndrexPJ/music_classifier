@@ -1,5 +1,70 @@
 #include "audiospectrumdescriptors.h"
 
+// --- Base Class ---
+AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_count) : AudioDescriptorExtractor(){
+    this->spectrum = spectrum;
+    if(result_count > spectrum.getChannelDataSize())
+        this->result_count = spectrum.getChannelDataSize();
+    else
+        this->result_count = result_count;
+;
+}
+
+std::vector<double> AudioSpectrumDescriptorExtractor::getAverageValues(std::vector< std::vector<double> > &channels_values, int result_frames_count){
+    std::vector<double> result_values;
+    result_values.resize(result_frames_count);
+
+    int channels_count = this->spectrum.getChannelsCount();
+    int frames_count = this->spectrum.getChannelDataSize();
+
+    int step = frames_count / result_frames_count;
+
+    int frame, it;
+    double frame_temp;
+
+    // for 0 .. result_frames_count - 1
+    for(frame = 0; frame < result_frames_count - 1; frame++){
+        frame_temp = 0.0;
+        it = frame * step;
+        for(int i = it; i < it+step; i++)
+            for(int ch = 0; ch < channels_count; ch++)
+                frame_temp += channels_values[ch][i];
+
+        result_values[frame] = frame_temp / (channels_count * step);
+    }
+
+    // last frame
+    frame_temp = 0.0;
+    it = frame * step;
+    for(int i = it; i < frames_count; i++)
+        for(int ch = 0; ch < channels_count; ch++)
+            frame_temp += channels_values[ch][i];
+
+    result_values[frame] = frame_temp / (channels_count * (frames_count - it));
+
+    return result_values;
+}
+
+std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
+    std::vector < std::vector<double> > channels_values;
+
+    int channels_count = this->spectrum.getChannelsCount();
+    int frames_count = this->spectrum.getChannelDataSize();
+
+    channels_values.resize(channels_count);
+
+    for(int i = 0; i < channels_count; i++){
+        channels_values[i].resize(frames_count);
+        for(int j = 0; j < frames_count; j++)
+            channels_values[i][j] = this->extractForOneFrame(i,j);
+    }
+
+    return this->getAverageValues(channels_values,this->result_count);
+}
+// --- ---------- ---
+
+
+
 
 // --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
@@ -127,63 +192,27 @@ std::vector<double> SpFlatnessDescriptorExtractor::extract(){
 
 
 // --- Spectral Flux ---
-SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int frames_count) : AudioDescriptorExtractor(){
-    this->spectrum = spectrum;
-    if(frames_count > spectrum.getChannelDataSize())
-        this->frames_count = spectrum.getChannelDataSize();
-    else
-        this->frames_count = frames_count;
+SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
 }
 
-std::vector<double> SpFluxDescriptorExtractor::extract(){
-
-    int data_size = this->spectrum.getChannelDataSize();
-    int channels_count = this->spectrum.getChannelsCount();
+double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
     int fq_count = this->spectrum.getFrequencyCount();
+    double temp = 0.0;
+    double fq_temp;
 
-    int step = data_size / this->frames_count;
-
-    std::vector<double> out_vector;
-    out_vector.resize(this->frames_count);
-
-    double frame_temp, temp;
-    int it, frame;
-
-    for(frame = 0; frame < this->frames_count - 1; frame++){
-        frame_temp = 0.0;
-        it = frame * step;
-        for(int i = it; i < it+step - 1; i++){
-            for(int fq_i = 0; fq_i < fq_count; fq_i++){
-                temp = 0.0;
-                for(int ch = 0; ch < channels_count; ch++)
-                    temp += spectrum[ch][i + 1][fq_i] - spectrum[ch][i][fq_i];
-
-                temp = temp/channels_count;
-                frame_temp += temp * temp;
-                }
-            frame_temp /= fq_count;
+    for(int fq_i = 0; fq_i < fq_count; fq_i++){
+        switch (frame_number) {
+        case 0:
+            fq_temp = this->spectrum[channel_number][frame_number][fq_i];
+            break;
+        default:
+            fq_temp = this->spectrum[channel_number][frame_number][fq_i] - this->spectrum[channel_number][frame_number - 1][fq_i];
+            break;
         }
-        out_vector[frame] = frame_temp;
+        temp += fq_temp * fq_temp;
     }
 
-    // --- last frame ---
-    frame_temp = 0.0;
-    it = frame * step;
-    for(int i = it; i < data_size - 1; i++){
-        for(int fq_i = 0; fq_i < fq_count; fq_i++){
-            temp = 0.0;
-            for(int ch = 0; ch < channels_count; ch++)
-                temp += spectrum[ch][i + 1][fq_i] - spectrum[ch][i][fq_i];
-
-            temp = temp/channels_count;
-            frame_temp += temp * temp;
-            }
-        frame_temp /= fq_count;
-        }
-    out_vector[frame] = frame_temp;
-    // --- --------- ---
-
-    return out_vector;
+    return temp / fq_count ;
 }
 
 // --- ------------- ---
