@@ -28,13 +28,11 @@ public:
 };
 
 
-class SpFlatnessDescriptorExtractor : AudioDescriptorExtractor{
-private:
-    AudioAmpSpectrum spectrum;
+class SpFlatnessDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
+protected:
+    virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum);
-    std::vector<double> extract();
-
+    SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count = 8);
 };
 
 class SpFluxDescriptorExtractor : public AudioSpectrumDescriptorExtractor{

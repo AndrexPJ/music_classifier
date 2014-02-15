@@ -111,84 +111,62 @@ std::vector<double> SpCentroidDescriptorExtractor::extract(){
 
 
 // --- Spectral Flatness ---
-SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
-    this->spectrum = spectrum;
+SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
 }
 
-std::vector<double> SpFlatnessDescriptorExtractor::extract(){
-    std::vector < std::vector<double> > temp_vector;
-    std::vector<double> out_vector;
-    std::vector <int> bark_size;
-
-    int channels_count = spectrum.getChannelsCount();
-    int data_size = spectrum.getChannelDataSize();
+double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
+    int bark;
+    int bark_count = 24;
     int fq_count = spectrum.getFrequencyCount();
 
-    double gmean,amean,temp;
-    double frequency, bark;
+    double gmean, amean, frequency, temp;
     double eps = std::numeric_limits<double>::epsilon();
-    int bark_count = 24;
 
-    out_vector.resize(bark_count);
+    std::vector < double > temp_vector;
+    temp_vector.resize(bark_count);
+
+    std::vector <int> bark_size;
     bark_size.resize(bark_count);
-    temp_vector.resize(bark_count); // count of critical bands
 
-    // vectors prepare
     for(int i = 0; i < bark_count; i++){
         bark_size[i] = 0;
-        temp_vector[i].resize(data_size);
-        for(int j = 0; j < data_size; j++)
-            temp_vector[i][j] = 0.0;
-    }
-
-    // spectral power calculating
-    for(int ch = 0; ch < channels_count; ch++){
-        for(int fq_i = 0; fq_i < fq_count; fq_i++){
-            frequency = spectrum.getFrequency(fq_i);
-            if(frequency < 105) continue;
-            if(frequency > 22000) break;
-
-            bark = AudioSpectrumTransforms::getCriticalBandRate(frequency) - 1;
-
-            bark_size[bark]++;
-
-            for(int i = 0; i < data_size; i++){
-                temp_vector[bark][i] += spectrum[ch][i][fq_i] * spectrum[ch][i][fq_i];
-            }
-
-        }
+        temp_vector[i] = 0.0;
     }
 
 
-    //calculates gmean and amean
+    for(int fq_i = 0; fq_i < fq_count; fq_i++){
+        frequency = this->spectrum.getFrequency(fq_i);
+        if(frequency < 105) continue;
+        if(frequency > 22000) break;
+
+        bark = AudioSpectrumTransforms::getCriticalBandRate(frequency) - 1;
+        bark_size[bark]++;
+        temp_vector[bark] += this->spectrum[channel_number][frame_number][fq_i] * this->spectrum[channel_number][frame_number][fq_i];
+    }
+
+    amean = 0.0;
+    gmean = 0.0;
+    int bark_true_count = 0;
+
     for(int i = 0; i < bark_count; i++){
-        out_vector[i] = 0.0;
-        gmean = 0.0;
-        amean = 0.0;
-
-        for(int j = 0; j < data_size; j++){
-           if(bark_size[i] != 0){
-                temp = temp_vector[i][j]/bark_size[i];
-                amean += temp;
-                gmean += log(temp);
-           }
+        if(bark_size[i]){
+            bark_true_count++;
+            temp = temp_vector[i] / bark_size[i];
+            amean += temp;
+            gmean += log(temp);
         }
-
-        if(amean <= eps)
-            out_vector[i] = 0.0;
-        else{
-            gmean = exp(gmean/data_size);
-            amean = amean/data_size;
-            out_vector[i] = gmean / amean;
-        }
-
     }
 
-    temp_vector.clear();
-    bark_size.clear();
-    return out_vector;
+    if(amean <= eps) return 0.0;
+
+    gmean = exp(gmean/bark_true_count);
+    amean /= bark_true_count;
+
+    return (gmean / amean);
+
 }
 // --- ----------------- ---
+
 
 
 // --- Spectral Flux ---
