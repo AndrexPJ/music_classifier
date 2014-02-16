@@ -19,12 +19,11 @@ public:
 
 
 
-class SpCentroidDescriptorExtractor : AudioDescriptorExtractor{
-private:
-    AudioAmpSpectrum spectrum;
+class SpCentroidDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
+protected:
+    virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum);
-    std::vector<double> extract();
+    SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count = 8);
 };
 
 

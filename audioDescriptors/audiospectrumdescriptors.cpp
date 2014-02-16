@@ -67,45 +67,21 @@ std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
 
 
 // --- Spectral Centroid ---
-SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum) : AudioDescriptorExtractor(){
-    this->spectrum = spectrum;
+SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
 }
 
-std::vector<double> SpCentroidDescriptorExtractor::extract(){
 
-    std::vector<double> temp_vector;
-    int channels_count = spectrum.getChannelsCount();
-    int data_size = spectrum.getChannelDataSize();
-    int fq_count = spectrum.getFrequencyCount();
+double SpCentroidDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
+     int fq_count = spectrum.getFrequencyCount();
+     double fq_amp_sum = 0.0;
+     double amp_sum = 0.0;
 
-    temp_vector.resize(channels_count);
+     for(int fq_i = 0; fq_i < fq_count; fq_i++){
+         fq_amp_sum += this->spectrum.getFrequency(fq_i) * this->spectrum[channel_number][frame_number][fq_i];
+         amp_sum += this->spectrum[channel_number][frame_number][fq_i];
+     }
 
-    double fq_amp_sum;
-    double amp_sum;
-
-    double temp_sum;
-
-    for(int i = 0; i < channels_count; i++){
-        temp_sum = 0;
-        for(int j = 0; j < data_size; j++)
-        {
-            fq_amp_sum = 0;
-            amp_sum = 0;
-            for(int k = 0; k < fq_count; k++){
-                fq_amp_sum += spectrum.getFrequency(k) * spectrum[i][j][k];
-                amp_sum += spectrum.getFrequency(k);
-            }
-            temp_sum += fq_amp_sum/amp_sum;
-        }
-        temp_vector[i] = temp_sum/data_size;
-    }
-
-    temp_sum = Tools::getAverage(temp_vector);
-
-    temp_vector.clear();
-    temp_vector.push_back(temp_sum);
-    return temp_vector;
-
+     return (fq_amp_sum / (amp_sum * this->spectrum.getFrequency(1) * fq_count));
 }
 // --- ----------------- ---
 
@@ -190,7 +166,7 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
         temp += fq_temp * fq_temp;
     }
 
-    return temp / fq_count ;
+    return sqrt(temp) / fq_count;
 }
 
 // --- ------------- ---

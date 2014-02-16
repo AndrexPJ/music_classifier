@@ -14,10 +14,10 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("neoclassical.wav");
+    try{
+    AudioRecord ar =  WaveAudioLoader::loadAudioRecord("classical.wav");
 
     AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
-
 
     int window_size = 2048;
     int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
@@ -25,18 +25,20 @@ int main(int argc, char *argv[])
 
     AudioSpectrum<complex> sp;
     sp.setWindowSize(window_size);
-
-
     AudioWFFT::perform(ar_filtered,sp,wf,window_size,hop_size);
-
     AudioAmpSpectrum amp_sp = AudioSpectrumTransforms::getAmpSpectrum(sp);
 
-    //SpFluxDescriptorExtractor spflux_de(amp_sp,10);
-    SpFlatnessDescriptorExtractor spflat_de(amp_sp,16);
+    SpFluxDescriptorExtractor spflux_de(amp_sp);
+    SpFlatnessDescriptorExtractor spflat_de(amp_sp);
+    SpCentroidDescriptorExtractor spcen_de(amp_sp);
 
-    vector<double> out = spflat_de.extract();
-    for(int i = 0; i < out.size(); i++){
-        cout << out[i] << " ";
+    vector<double> flux_out = spflux_de.extract();
+    vector<double> flat_out = spflat_de.extract();
+    vector<double> cen_out = spcen_de.extract();
+
+
+    for(int i = 0; i < 8; i++){
+       cout << flux_out[i] << " " << flat_out[i] << " " << cen_out[i] << endl;
     }
 
     /*ofstream out_stream;
@@ -47,7 +49,12 @@ int main(int argc, char *argv[])
             out_stream << amp_sp.getFrequency(j) << " " << amp_sp[0][i][j] << endl;
         }*/
 
-
     return 0;
+    }
+    catch(exception &ex){
+        std::cerr << ex.what() << std::endl;
+        return 1;
+    }
+
 }
 
