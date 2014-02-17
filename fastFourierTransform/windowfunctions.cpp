@@ -9,6 +9,10 @@ WindowFunction::WindowFunction(int window_size){
     this->window_size = window_size;
 }
 
+int WindowFunction::getWindowSize(){
+    return this->window_size;
+}
+
 
 double WindowFunction::perform(int n){
     if((n < 0) || (n >= window_size)) return 0.0;

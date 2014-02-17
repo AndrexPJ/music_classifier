@@ -11,6 +11,7 @@ public:
     WindowFunction();
     WindowFunction(int window_size);
     virtual double perform(int n);
+    int getWindowSize();
 };
 
 

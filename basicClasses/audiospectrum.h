@@ -50,6 +50,7 @@ AudioSpectrum<T>::AudioSpectrum(const AudioSpectrum<T> &spectrum){
 
 template <class T>
 bool AudioSpectrum<T>::updateFrequencyStep(){
+    if(this->windowSize == 0) return false;
     this->frequencyStep = this->sampleRate/(this->windowSize);
     return true;
 }

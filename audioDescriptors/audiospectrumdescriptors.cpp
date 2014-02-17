@@ -1,71 +1,5 @@
 #include "audiospectrumdescriptors.h"
 
-// --- Base Class ---
-AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_count) : AudioDescriptorExtractor(){
-    this->spectrum = spectrum;
-    if(result_count > spectrum.getChannelDataSize())
-        this->result_count = spectrum.getChannelDataSize();
-    else
-        this->result_count = result_count;
-;
-}
-
-std::vector<double> AudioSpectrumDescriptorExtractor::getAverageValues(std::vector< std::vector<double> > &channels_values, int result_frames_count){
-    std::vector<double> result_values;
-    result_values.resize(result_frames_count);
-
-    int channels_count = this->spectrum.getChannelsCount();
-    int frames_count = this->spectrum.getChannelDataSize();
-
-    int step = frames_count / result_frames_count;
-
-    int frame, it;
-    double frame_temp;
-
-    // for 0 .. result_frames_count - 1
-    for(frame = 0; frame < result_frames_count - 1; frame++){
-        frame_temp = 0.0;
-        it = frame * step;
-        for(int i = it; i < it+step; i++)
-            for(int ch = 0; ch < channels_count; ch++)
-                frame_temp += channels_values[ch][i];
-
-        result_values[frame] = frame_temp / (channels_count * step);
-    }
-
-    // last frame
-    frame_temp = 0.0;
-    it = frame * step;
-    for(int i = it; i < frames_count; i++)
-        for(int ch = 0; ch < channels_count; ch++)
-            frame_temp += channels_values[ch][i];
-
-    result_values[frame] = frame_temp / (channels_count * (frames_count - it));
-
-    return result_values;
-}
-
-std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
-    std::vector < std::vector<double> > channels_values;
-
-    int channels_count = this->spectrum.getChannelsCount();
-    int frames_count = this->spectrum.getChannelDataSize();
-
-    channels_values.resize(channels_count);
-
-    for(int i = 0; i < channels_count; i++){
-        channels_values[i].resize(frames_count);
-        for(int j = 0; j < frames_count; j++)
-            channels_values[i][j] = this->extractForOneFrame(i,j);
-    }
-
-    return this->getAverageValues(channels_values,this->result_count);
-}
-// --- ---------- ---
-
-
-
-
 // --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
 }
@@ -115,7 +49,7 @@ double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int
         if(frequency < 105) continue;
         if(frequency > 22000) break;
 
-        bark = AudioSpectrumTransforms::getCriticalBandRate(frequency) - 1;
+        bark = AudioSpectrumTools::getCriticalBandRate(frequency) - 1;
         bark_size[bark]++;
         temp_vector[bark] += this->spectrum[channel_number][frame_number][fq_i] * this->spectrum[channel_number][frame_number][fq_i];
     }
@@ -168,5 +102,37 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
 
     return sqrt(temp) / fq_count;
 }
-
 // --- ------------- ---
+
+
+// --- Spectral Roll-off ---
+SpRollOffDescriptorExtractor::SpRollOffDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count, double threshold) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
+    this->threshold = threshold;
+}
+
+double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
+    int fq_count = this->spectrum.getFrequencyCount();
+
+    double max_sum = 0.0;
+    double temp_sum = 0.0;
+
+    for(int fq_i = 0; fq_i < fq_count; fq_i++)
+        max_sum += this->spectrum[channel_number][frame_number][fq_i];
+    temp_sum = max_sum;
+    max_sum *= this->threshold;
+
+    int result_fq_i;
+    for(result_fq_i = fq_count - 1; result_fq_i >= 0; result_fq_i--){
+        temp_sum -= this->spectrum[channel_number][frame_number][result_fq_i];
+        if(temp_sum < max_sum) break;
+    }
+
+
+    //return (double(result_fq_i) / fq_count) ;
+    return this->spectrum.getFrequency(result_fq_i);
+}
+
+// --- ----------------- ---
+
+
+
