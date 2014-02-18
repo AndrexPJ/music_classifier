@@ -1,5 +1,71 @@
 #include "audiospectrumdescriptors.h"
 
+AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_count) : AudioDescriptorExtractor(){
+    this->spectrum = spectrum;
+    if(result_count > spectrum.getChannelDataSize())
+        this->result_count = spectrum.getChannelDataSize();
+    else
+        this->result_count = result_count;
+
+}
+
+std::vector<double> AudioSpectrumDescriptorExtractor::getAverageValues(std::vector< std::vector<double> > &channels_values, int result_frames_count){
+    std::vector<double> result_values;
+    result_values.resize(result_frames_count);
+
+    int channels_count = this->spectrum.getChannelsCount();
+    int frames_count = this->spectrum.getChannelDataSize();
+
+    int step = frames_count / result_frames_count;
+
+    int frame, it;
+    double frame_temp;
+
+    // for 0 .. result_frames_count - 1
+    for(frame = 0; frame < result_frames_count - 1; frame++){
+        frame_temp = 0.0;
+        it = frame * step;
+        for(int i = it; i < it+step; i++)
+            for(int ch = 0; ch < channels_count; ch++)
+                frame_temp += channels_values[ch][i];
+
+        result_values[frame] = frame_temp / (channels_count * step);
+    }
+
+    // last frame
+    frame_temp = 0.0;
+    it = frame * step;
+    for(int i = it; i < frames_count; i++)
+        for(int ch = 0; ch < channels_count; ch++)
+            frame_temp += channels_values[ch][i];
+
+    result_values[frame] = frame_temp / (channels_count * (frames_count - it));
+
+    return result_values;
+}
+
+
+
+std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
+    std::vector < std::vector<double> > channels_values;
+
+    int channels_count = this->spectrum.getChannelsCount();
+    int frames_count = this->spectrum.getChannelDataSize();
+
+    channels_values.resize(channels_count);
+
+    for(int i = 0; i < channels_count; i++){
+        channels_values[i].resize(frames_count);
+        for(int j = 0; j < frames_count; j++)
+            channels_values[i][j] = this->extractForOneFrame(i,j);
+    }
+
+    return this->getAverageValues(channels_values,this->result_count);
+}
+// --- ---------- ---
+
+
+
 // --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
 }
@@ -134,5 +200,10 @@ double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int 
 
 // --- ----------------- ---
 
+
+// --- MFCC ---
+
+
+// --- ---- ---
 
 
