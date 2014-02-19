@@ -1,5 +1,5 @@
 
-$style = "metal";
+$style = "classical";
 $dir_path = "./data/dataset/".$style."_wav";
 open(F1, ">", "./data/".$style.".dat") or die "Ошибка открытия файла:  $!";
 opendir (DIR,$dir_path);

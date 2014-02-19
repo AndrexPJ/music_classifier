@@ -10,6 +10,16 @@
 
 //   Include complex numbers header
 #include "complex.h"
+#include <vector>
+
+class FFT{
+public:
+    static bool Forward(std::vector<complex> &Input, std::vector<complex> &Output, int N = -1);
+    static bool Forward(std::vector<double> &Input, std::vector<complex> &Output);
+    static bool Inverse(std::vector<complex> &Input, std::vector<complex> &Output, int N = -1);
+    static bool Inverse(std::vector<double> &Input, std::vector<complex> &Output);
+
+};
 
 class CFFT
 {

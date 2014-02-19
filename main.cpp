@@ -6,6 +6,7 @@
 #include "audioTransforms/audiospectrumtransforms.h"
 #include "audioDescriptors/audiodescriptorextractor.h"
 #include "audioDescriptors/audiospectrumdescriptors.h"
+#include "audioDescriptors/audiorecorddescriptors.h"
 
 #include <fstream>
 
@@ -15,7 +16,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     try{
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("metal.wav");
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(argv[1]);
 
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
@@ -34,22 +35,34 @@ int main(int argc, char *argv[])
         AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
-        int result_size = 8;
+        int result_size = 4;
 
 
+        ZCRDescriptorExtractor zcr_de(ar);
+        EnergyDescriptorExtractor energy_de(ar);
         SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
         SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
         SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
+        //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
+        vector<double> zcr_out = zcr_de.extract();
+        vector<double> energy_out = energy_de.extract();
         vector<double> flux_out = spflux_de.extract();
         vector<double> flat_out = spflat_de.extract();
         vector<double> cen_out = spcen_de.extract();
         vector<double> roll_out = sproll_de.extract();
+        //vector<double> mfcc_out = mfcc_de.extract();
+
+           cout << zcr_out[0] << " " << energy_out[0] << " ";
 
        for(int i = 0; i < result_size; i++){
-           cout << flux_out[i] << " " << flat_out[i] << " " << cen_out[i] << " " << roll_out[i] << endl;
+           cout << flux_out[i] << " " << flat_out[i] << " " << cen_out[i] << " " << roll_out[i] << " ";
        }
+
+       /*for(int i = 0; i < mfcc_out.size(); i++)
+           cout << mfcc_out[i] << " ";*/
+       cout << endl;
 
        return 0;
     }
@@ -57,6 +70,6 @@ int main(int argc, char *argv[])
         std::cerr << ex.what() << std::endl;
         return 1;
     }
-
+    // TODO : mfcc descriptor extractor
 }
 

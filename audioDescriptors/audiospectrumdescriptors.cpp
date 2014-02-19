@@ -1,5 +1,7 @@
 #include "audiospectrumdescriptors.h"
 
+
+// --- Base Class ---
 AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_count) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
     if(result_count > spectrum.getChannelDataSize())
@@ -8,6 +10,7 @@ AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpect
         this->result_count = result_count;
 
 }
+
 
 std::vector<double> AudioSpectrumDescriptorExtractor::getAverageValues(std::vector< std::vector<double> > &channels_values, int result_frames_count){
     std::vector<double> result_values;
@@ -63,8 +66,6 @@ std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
     return this->getAverageValues(channels_values,this->result_count);
 }
 // --- ---------- ---
-
-
 
 // --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
@@ -194,15 +195,83 @@ double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int 
     }
 
 
-    //return (double(result_fq_i) / fq_count) ;
-    return this->spectrum.getFrequency(result_fq_i);
+    return (double(result_fq_i) / fq_count) ;
+    //return this->spectrum.getFrequency(result_fq_i);
 }
 
 // --- ----------------- ---
 
 
 // --- MFCC ---
+MFCCDescriptorExtractor::MFCCDescriptorExtractor(AudioAmpSpectrum &spectrum, int mfcc_count) : AudioDescriptorExtractor(){
+    this->spectrum = spectrum;
+    this->mfcc_count = mfcc_count;
+    int fq_count = this->spectrum.getFrequencyCount();
+    this->filters = AudioSpectrumTools::getMelFilterbank(fq_count, this->spectrum.getFrequency(fq_count - 1),300,this->mfcc_count);
+}
 
+
+std::vector<double> MFCCDescriptorExtractor::getAverageValues(std::vector<std::vector<std::vector<double> > > &channels_values){
+     std::vector<double> result;
+     result.resize(this->mfcc_count);
+
+     int channels_count = this->spectrum.getChannelsCount();
+     int data_size = this->spectrum.getChannelDataSize();
+
+     double temp;
+     for(int i = 0; i < this->mfcc_count; i++){
+         temp = 0.0;
+         for(int ch = 0; ch < channels_count; ch++)
+             for(int step = 0; step < data_size; step++)
+                temp+=channels_values[ch][step][i];
+         result[i] = temp / (data_size * channels_count);
+     }
+     return result;
+}
+
+std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
+    std::vector<double> temp_in;
+    std::vector<double> result;
+    std::vector<complex> temp_out;
+    temp_in.resize(this->mfcc_count);
+    temp_out.resize(this->mfcc_count);
+    result.resize(this->mfcc_count);
+
+    int fq_count = this->spectrum.getFrequencyCount();
+    double temp;
+
+    for(int i = 0; i < this->mfcc_count; i++){
+        temp = 0.0;
+        for(int fq_i = 0; fq_i < fq_count; fq_i++)
+            temp += this->spectrum[channel_number][frame_number][fq_i] * this->filters[i][fq_i];
+        temp_in[i] = temp * temp;
+    }
+
+    FFT::Inverse(temp_in,temp_out);
+
+    for(int i = 0; i < this->mfcc_count; i++)
+        result[i] = sqrt(pow(temp_out[i].re(),2) + pow(temp_out[i].im(),2));
+
+    return result;
+}
+
+std::vector<double> MFCCDescriptorExtractor::extract(){
+
+    std::vector < std::vector< std::vector<double> > > channels_values;
+
+    int channels_count = this->spectrum.getChannelsCount();
+    int frames_count = this->spectrum.getChannelDataSize();
+
+    channels_values.resize(channels_count);
+
+    for(int i = 0; i < channels_count; i++){
+        channels_values[i].resize(frames_count);
+        for(int j = 0; j < frames_count; j++)
+            channels_values[i][j] = this->extractForOneFrame(i,j);
+    }
+
+    return this->getAverageValues(channels_values);
+}
 
 // --- ---- ---
 

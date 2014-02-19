@@ -3,8 +3,10 @@
 
 #include "audioDescriptors/audiodescriptorextractor.h"
 #include "audioTransforms/audiospectrumtransforms.h"
+#include "fastFourierTransform/fft.h"
 
 // --- Base Class ---
+
 class AudioSpectrumDescriptorExtractor : public AudioDescriptorExtractor{
 protected:
     AudioAmpSpectrum spectrum;
@@ -18,6 +20,8 @@ public:
     std::vector<double> extract();
 
 };
+// --- ---------- ---
+
 
 
 class SpCentroidDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
@@ -54,11 +58,14 @@ public:
 
 class MFCCDescriptorExtractor : public AudioDescriptorExtractor{
 private:
-    AudioAmpSpectrum &spectrum;
+    int mfcc_count;
+    AudioAmpSpectrum spectrum;
+    std::vector< std::vector<double> > filters;
+    std::vector<double> extractForOneFrame(int channel_number, int frame_number);
+    std::vector<double> getAverageValues(std::vector<std::vector<std::vector<double> > > &channels_values);
 public:
-    MFCCDescriptorExtractor(AudioAmpSpectrum &spectrum, int mfcc_count = 26);
+    MFCCDescriptorExtractor(AudioAmpSpectrum &spectrum, int mfcc_count = 32);
     std::vector<double> extract();
-
 };
 
 #endif // AUDIOSPECTRUMDESCRIPTORS_H

@@ -10,6 +10,78 @@
 //   Include math library
 #include <math.h>
 
+
+bool FFT::Forward(std::vector<complex> &Input, std::vector<complex> &Output, int N){
+    if(N == -1){
+    N = Input.size();
+    if (N < 1 || N & (N - 1))
+        return false;
+    }
+    Output.resize(N);
+
+    complex *output = new complex[N];
+
+    if(CFFT::Forward(Input.data(), output,N)){
+    for(int i = 0; i < N; i++)
+        Output[i] = output[i] / sqrt(N);
+
+    delete output;
+    return true;
+    }
+
+    delete output;
+    return false;
+}
+
+bool FFT::Inverse(std::vector<complex> &Input, std::vector<complex> &Output, int N){
+    if(N == -1){
+    N = Input.size();
+    if (N < 1 || N & (N - 1))
+        return false;
+    }
+    Output.resize(N);
+
+    complex *output = new complex[N];
+
+    if(CFFT::Inverse(Input.data(), output,N)){
+    for(int i = 0; i < N; i++)
+        Output[i] = output[i] / sqrt(N);
+
+    delete output;
+    return true;
+    }
+
+    delete output;
+    return false;
+}
+
+bool FFT::Forward(std::vector<double> &Input, std::vector<complex> &Output){
+    int N = Input.size();
+    if (N < 1 || N & (N - 1))
+        return false;
+
+    std::vector<complex> temp_input;
+    temp_input.resize(N);
+    for(int i = 0; i < N; i++)
+        temp_input[i] = Input[i];
+
+    return FFT::Forward(temp_input,Output,N);
+}
+
+bool FFT::Inverse(std::vector<double> &Input, std::vector<complex> &Output){
+    int N = Input.size();
+    if (N < 1 || N & (N - 1))
+        return false;
+
+    std::vector<complex> temp_input;
+    temp_input.resize(N);
+    for(int i = 0; i < N; i++)
+        temp_input[i] = Input[i];
+
+    return FFT::Inverse(temp_input,Output,N);
+
+}
+
 //   FORWARD FOURIER TRANSFORM
 //     Input  - input data
 //     Output - transform result
