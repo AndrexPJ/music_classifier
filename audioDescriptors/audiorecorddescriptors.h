@@ -3,7 +3,7 @@
 
 #include "audioDescriptors/audiodescriptorextractor.h"
 
-class EnergyDescriptorExtractor : AudioDescriptorExtractor {
+class EnergyDescriptorExtractor : public AudioDescriptorExtractor {
 private:
     AudioRecord record;
 public:
@@ -12,7 +12,7 @@ public:
 };
 
 
-class ZCRDescriptorExtractor : AudioDescriptorExtractor {
+class ZCRDescriptorExtractor : public AudioDescriptorExtractor {
 private:
     AudioRecord record;
 public:

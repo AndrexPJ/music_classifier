@@ -18,4 +18,13 @@ public:
 };
 
 
+class AudioDescriptorCollector : AudioDescriptorExtractor{
+private:
+    std::vector<AudioDescriptorExtractor *> de_vector;
+public:
+    AudioDescriptorCollector();
+    bool addDescriptorExtractor(AudioDescriptorExtractor &de);
+    std::vector<double> extract();
+};
+
 #endif // AUDIODESCRIPTOREXTRACTOR_H
