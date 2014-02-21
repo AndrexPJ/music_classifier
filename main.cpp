@@ -8,6 +8,8 @@
 #include "audioDescriptors/audiospectrumdescriptors.h"
 #include "audioDescriptors/audiorecorddescriptors.h"
 
+
+#include <ctime>
 #include <fstream>
 
 
@@ -16,6 +18,11 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     try{
+        /*if(argc < 2) {
+            cerr <<"Use: <programname> <filename>"<<endl;
+            return 1;
+        }*/
+
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(argv[1]);
 
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
@@ -52,25 +59,10 @@ int main(int argc, char *argv[])
         dc.addDescriptorExtractor(spcen_de);
         dc.addDescriptorExtractor(sproll_de);
 
-        //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
-
-        /*vector<double> zcr_out = zcr_de.extract();
-        vector<double> energy_out = energy_de.extract();
-        vector<double> flux_out = spflux_de.extract();
-        vector<double> flat_out = spflat_de.extract();
-        vector<double> cen_out = spcen_de.extract();
-        vector<double> roll_out = sproll_de.extract();*/
-        //vector<double> mfcc_out = mfcc_de.extract();
-
-       /*for(int i = 0; i < mfcc_out.size(); i++)
-           cout << mfcc_out[i] << " ";*/
-
-
         std::vector<double> out = dc.extract();
 
         for(int i = 0; i < out.size(); i++)
             cout<<i+1<<":"<<out[i]<<" ";
-        cout << endl;
 
        return 0;
     }

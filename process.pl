@@ -1,26 +1,73 @@
 
-$style = "classical";
-$target = -1;
-$dir_path = "./data/dataset/".$style."_wav";
-open(F1, ">>", "./data/test_blues.txt") or die "Ошибка открытия файла:  $!";
-opendir (DIR,$dir_path);
-my $i = 0;
-my $stop = 80;
+$main_genre = 'reggae';
 
-foreach my $cur_file (readdir(DIR)){
-	if($cur_file =~/.wav/){
-	if($i < $stop){
-		$i++;
-		next;
+$exapmles_main_size = 80;
+$exapmles_sub_size = 10; 
+
+$test_main_size = 20;
+$test_sub_size = 20;
+
+
+
+$test_file_name = "test_".$main_genre;
+$examples_file_name = "examples_".$main_genre;
+
+@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
+
+
+
+sub calculateAndWrite{
+	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size) = @_;
+
+	opendir (DIR,$dir_path);
+
+	my $i = 0;
+	foreach my $cur_file (readdir(DIR)){
+
+		if($cur_file =~/.wav/){
+			my $res = `./music_classifier-release-build/music_classifier $dir_path"/"$cur_file`;
+
+			print $i," ",$cur_file," ",$res,"\n";
+			
+			if($i < $exaples_size){
+				print $file_examples $target." ".$res."\n";
+			}
+			else{
+				if($i < $exaples_size + $test_size){
+				  print $file_test $target." ".$res."\n";
+				}
+				else{
+					last;
+				}
+			}
+			
+			$i++;
+		}
 	}
-	print $i," ";
-	my $res = `./music_classifier-build/music_classifier $dir_path"/"$cur_file`;
-	print $res," ",$cur_file,"\n";
-	print F1 $target." ".$res;
-	$i++;
-	#if($i == $stop){
-	#	last;
-	#}
-	}
+	
+	closedir (DIR);
 }
-closedir (DIR);
+
+open(Fexmp, ">", "./data/".$examples_file_name.".txt") or die "Ошибка открытия файла:  $!";
+open(Ftest, ">", "./data/".$test_file_name.".txt") or die "Ошибка открытия файла:  $!";
+
+for my $genre (@genre_list){
+	
+	$dir_path = "./data/dataset/".$genre."_wav";
+
+	if($genre eq $main_genre){
+		calculateAndWrite(Fexmp,Ftest,$dir_path,1,$exapmles_main_size,$test_main_size);
+	} else {
+		calculateAndWrite(Fexmp,Ftest,$dir_path,-1,$exapmles_sub_size,$test_sub_size);
+	}
+
+    
+	
+	
+}
+
+close(Fexmp);
+close(Ftest);
+
+
+

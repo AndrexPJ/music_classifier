@@ -76,13 +76,15 @@ double SpCentroidDescriptorExtractor::extractForOneFrame(int channel_number, int
      int fq_count = spectrum.getFrequencyCount();
      double fq_amp_sum = 0.0;
      double amp_sum = 0.0;
+     double temp = 0.0;
 
      for(int fq_i = 0; fq_i < fq_count; fq_i++){
-         fq_amp_sum += this->spectrum.getFrequency(fq_i) * this->spectrum[channel_number][frame_number][fq_i];
-         amp_sum += this->spectrum[channel_number][frame_number][fq_i];
+         temp = pow(this->spectrum[channel_number][frame_number][fq_i],2);
+         fq_amp_sum += fq_i * temp;
+         amp_sum += temp;
      }
-
-     return (fq_amp_sum / (amp_sum * this->spectrum.getFrequency(1) * fq_count));
+     if(amp_sum == 0.0) return 0.0;
+     return (fq_amp_sum / (amp_sum * fq_count));
 }
 // --- ----------------- ---
 

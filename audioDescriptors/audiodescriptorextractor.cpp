@@ -16,22 +16,12 @@ std::vector<double> AudioDescriptorCollector::extract(){
  std::vector<double> result;
  std::vector<double> temp;
 
- for(int i = 0; i < this->de_vector.size(); i++){
-     temp = this->de_vector[i]->extract();
+ //double norm = 0.0;
+
+ for(std::vector<AudioDescriptorExtractor*>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
+     temp = (*it)->extract();
      result.insert(result.end(),temp.begin(),temp.end());
  }
 
- double norm = 0.0;
- //scaling
-/* for(int i = 0; i < this->de_vector.size(); i++){
-     norm += pow(result[i],2);
- }
- norm = sqrt(norm);
-
- for(int i = 0; i < this->de_vector.size(); i++){
-     result[i] /= norm;
- }*/
-
  return result;
-
 }
