@@ -1,8 +1,8 @@
 
-$main_genre = 'reggae';
+$main_genre = 'rock';
 
 $exapmles_main_size = 80;
-$exapmles_sub_size = 10; 
+$exapmles_sub_size = 80; 
 
 $test_main_size = 20;
 $test_sub_size = 20;
@@ -12,9 +12,9 @@ $test_sub_size = 20;
 $test_file_name = "test_".$main_genre;
 $examples_file_name = "examples_".$main_genre;
 
-@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
-
-
+#@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
+#@genre_list = ("classical","metal","rock","disco","pop");
+@genre_list = ("rock","country");
 
 sub calculateAndWrite{
 	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size) = @_;
@@ -27,7 +27,7 @@ sub calculateAndWrite{
 		if($cur_file =~/.wav/){
 			my $res = `./music_classifier-release-build/music_classifier $dir_path"/"$cur_file`;
 
-			print $i," ",$cur_file," ",$res,"\n";
+			print $i," ",$cur_file,"\n";
 			
 			if($i < $exaples_size){
 				print $file_examples $target." ".$res."\n";

@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
         SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
         SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
+        //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
         AudioDescriptorCollector dc;
         dc.addDescriptorExtractor(zcr_de);
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
         dc.addDescriptorExtractor(spflat_de);
         dc.addDescriptorExtractor(spcen_de);
         dc.addDescriptorExtractor(sproll_de);
+        //dc.addDescriptorExtractor(mfcc_de);
 
         std::vector<double> out = dc.extract();
 
@@ -71,6 +73,5 @@ int main(int argc, char *argv[])
         return 1;
     }
     // TODO : mfcc descriptor extractor
-    // one of descriptors return nan number 5 may be spcen
 }
 

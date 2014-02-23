@@ -215,13 +215,13 @@ MFCCDescriptorExtractor::MFCCDescriptorExtractor(AudioAmpSpectrum &spectrum, int
 
 std::vector<double> MFCCDescriptorExtractor::getAverageValues(std::vector<std::vector<std::vector<double> > > &channels_values){
      std::vector<double> result;
-     result.resize(this->mfcc_count);
+     result.resize(this->mfcc_count/2);
 
      int channels_count = this->spectrum.getChannelsCount();
      int data_size = this->spectrum.getChannelDataSize();
 
      double temp;
-     for(int i = 0; i < this->mfcc_count; i++){
+     for(int i = 0; i < this->mfcc_count/2; i++){
          temp = 0.0;
          for(int ch = 0; ch < channels_count; ch++)
              for(int step = 0; step < data_size; step++)
@@ -237,7 +237,7 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
     std::vector<complex> temp_out;
     temp_in.resize(this->mfcc_count);
     temp_out.resize(this->mfcc_count);
-    result.resize(this->mfcc_count);
+    result.resize(this->mfcc_count/2);
 
     int fq_count = this->spectrum.getFrequencyCount();
     double temp;
@@ -246,12 +246,15 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
         temp = 0.0;
         for(int fq_i = 0; fq_i < fq_count; fq_i++)
             temp += this->spectrum[channel_number][frame_number][fq_i] * this->filters[i][fq_i];
-        temp_in[i] = temp * temp;
+        if(temp == 0.0)
+            temp_in[i] = 0.0;
+        else
+            temp_in[i] = log10(temp * temp);
     }
 
     FFT::Inverse(temp_in,temp_out);
 
-    for(int i = 0; i < this->mfcc_count; i++)
+    for(int i = 0; i < this->mfcc_count/2; i++)
         result[i] = sqrt(pow(temp_out[i].re(),2) + pow(temp_out[i].im(),2));
 
     return result;
