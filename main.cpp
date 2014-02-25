@@ -7,7 +7,7 @@
 #include "audioDescriptors/audiodescriptorextractor.h"
 #include "audioDescriptors/audiospectrumdescriptors.h"
 #include "audioDescriptors/audiorecorddescriptors.h"
-
+#include "audioDescriptors/audiorhythmdescriptors.h"
 
 #include <ctime>
 #include <fstream>
@@ -18,33 +18,45 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     try{
-        /*if(argc < 2) {
-            cerr <<"Use: <programname> <filename>"<<endl;
-            return 1;
-        }*/
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(argv[1]);
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("metal.wav");
 
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
-        //WaveAudioSaver::saveAudioRecord(ar_filtered,"neoclassical_f.wav");
-
         int window_size = 2048;
         int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
+        int hop_size_rhythm = window_size;
         HanningWindowFunction wf(window_size);
 
         AudioSpectrum<complex> sp_clear;
         AudioSpectrum<complex> sp_filtered;
+        AudioSpectrum<complex> sp_rhythm;
 
         AudioWFFT::perform(ar,sp_clear,wf,hop_size);
         AudioWFFT::perform(ar_filtered,sp_filtered,wf,hop_size);
+        AudioWFFT::perform(ar,sp_rhythm,wf,hop_size_rhythm);
 
+
+        AudioAmpSpectrum amp_sp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_rhythm);
         AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
         int result_size = 1;
 
-        ZCRDescriptorExtractor zcr_de(ar);
+        FluxNoveltyFunction flux_nf(amp_sp_rhythm);
+        AutocorrelationFunction ac_f(flux_nf.getValues()[0]);
+
+        ofstream out_stream;
+        out_stream.open("out.txt",ios_base::out);
+
+        cout << ac_f.getIntervalSize() << endl;
+
+        for(int i = 2; i < ac_f.getIntervalSize(); i++)
+            out_stream << 60 / ac_f.perform(i) << endl;
+
+        out_stream.close();
+
+        /*ZCRDescriptorExtractor zcr_de(ar);
         EnergyDescriptorExtractor energy_de(ar);
         SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
@@ -58,14 +70,14 @@ int main(int argc, char *argv[])
         dc.addDescriptorExtractor(spflux_de);
         dc.addDescriptorExtractor(spflat_de);
         dc.addDescriptorExtractor(spcen_de);
-        dc.addDescriptorExtractor(sproll_de);
+        dc.addDescriptorExtractor(sproll_de);*/
         //dc.addDescriptorExtractor(mfcc_de);
 
-        std::vector<double> out = dc.extract();
+       // std::vector<double> out = dc.extract();
 
-        for(int i = 0; i < out.size(); i++)
+      /*  for(int i = 0; i < out.size(); i++)
             cout<<i+1<<":"<<out[i]<<" ";
-
+      */
        return 0;
     }
     catch(exception &ex){

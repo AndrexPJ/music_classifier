@@ -8,6 +8,7 @@ protected:
     double *values;
     int window_size;
 public:
+    ~WindowFunction();
     WindowFunction();
     WindowFunction(int window_size);
     virtual double perform(int n);
