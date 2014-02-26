@@ -1,9 +1,12 @@
 #ifndef AUDIORHYTHMDESCRIPTORS_H
 #define AUDIORHYTHMDESCRIPTORS_H
+#include "audioDescriptors/audiodescriptorextractor.h"
 #include "audioDescriptors/noveltyfunctions.h"
-#include <fastFourierTransform/fft.h>
+#include "fastFourierTransform/fft.h"
 #include <vector>
 #include <tools.h>
+
+
 class AutocorrelationFunction{
 protected:
     std::vector<double> values;
@@ -17,6 +20,19 @@ public:
 
     std::vector<double> getValues() const;
 };
+
+
+class BeatHistogramDescriptorExtractor : public AudioDescriptorExtractor{
+private:
+    std::vector<double> histogram;
+    int histogram_size;
+public:
+    BeatHistogramDescriptorExtractor(AutocorrelationFunction &ac_func);
+    std::vector<double> extract();
+
+};
+
+
 
 
 #endif // AUDIORHYTHMDESCRIPTORS_H

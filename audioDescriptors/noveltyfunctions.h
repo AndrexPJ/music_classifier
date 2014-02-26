@@ -15,10 +15,11 @@ public:
     NoveltyFunction();
     NoveltyFunction(int interval_size, int channels_count);
     virtual double perform(int n, int channel);
+    virtual std::vector< std::vector<double> > getValues() const;
 
     int getChannelsCount() const;
     int getIntervalSize() const;
-    std::vector< std::vector<double> > getValues() const;
+
 };
 
 class FluxNoveltyFunction : public NoveltyFunction{

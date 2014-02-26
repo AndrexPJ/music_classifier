@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 {
     try{
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("metal.wav");
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("beat.wav");
 
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
@@ -49,23 +49,23 @@ int main(int argc, char *argv[])
         ofstream out_stream;
         out_stream.open("out.txt",ios_base::out);
 
-        cout << ac_f.getIntervalSize() << endl;
 
         for(int i = 2; i < ac_f.getIntervalSize(); i++)
-            out_stream << 60 / ac_f.perform(i) << endl;
-
-        out_stream.close();
+            out_stream << ac_f.perform(i) << endl;
 
         /*ZCRDescriptorExtractor zcr_de(ar);
         EnergyDescriptorExtractor energy_de(ar);
         SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
         SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
-        SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
+        SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);*/
         //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
+
+        /*BeatHistogramDescriptorExtractor bh_de(ac_f);
         AudioDescriptorCollector dc;
-        dc.addDescriptorExtractor(zcr_de);
+        dc.addDescriptorExtractor(bh_de);*/
+        /*dc.addDescriptorExtractor(zcr_de);
         dc.addDescriptorExtractor(energy_de);
         dc.addDescriptorExtractor(spflux_de);
         dc.addDescriptorExtractor(spflat_de);
@@ -73,11 +73,11 @@ int main(int argc, char *argv[])
         dc.addDescriptorExtractor(sproll_de);*/
         //dc.addDescriptorExtractor(mfcc_de);
 
-       // std::vector<double> out = dc.extract();
+        /*std::vector<double> out = dc.extract();
 
-      /*  for(int i = 0; i < out.size(); i++)
-            cout<<i+1<<":"<<out[i]<<" ";
-      */
+        for(int i = 0; i < out.size(); i++)
+            cout<<i+1<<":"<<out[i]<<" ";*/
+
        return 0;
     }
     catch(exception &ex){
