@@ -64,3 +64,49 @@ AudioRecord AudioRecordTransforms::performPreEmphasisFilter(const AudioRecord &r
     return temp_record;
 
 }
+
+
+AudioRecord AudioRecordTransforms::performHighPassFilter(const AudioRecord &record, double cut_off){
+
+    double RC = 1.0 / (2 * M_PI * cut_off);
+    double dt = 1.0 / record.getSampleRate();
+    double alpha = RC / (RC + dt);
+
+    AudioRecord temp_record(record);
+    std::vector< std::vector<double> > temp;
+    temp.resize(temp_record.getChannelsCount());
+    for(int i = 0; i < temp_record.getChannelsCount(); i++)
+        temp[i].resize(temp_record.getChannelDataSize());
+
+    for(int i = 0; i < temp_record.getChannelsCount(); i++){
+        temp[i][0] = temp_record[i][0];
+        for(int j = 1; j < temp_record.getChannelDataSize(); j++)
+            temp[i][j] = alpha * (temp[i][j-1] + temp_record[i][j] - temp_record[i][j - 1]);
+    }
+
+    temp_record.setData(temp);
+    return temp_record;
+}
+
+
+AudioRecord AudioRecordTransforms::performLowPassFilter(const AudioRecord &record, double cut_off){
+
+    double RC = 1.0 / (2 * M_PI * cut_off);
+    double dt = 1.0 / record.getSampleRate();
+    double alpha = dt / (RC + dt);
+
+    AudioRecord temp_record(record);
+    std::vector< std::vector<double> > temp;
+    temp.resize(temp_record.getChannelsCount());
+    for(int i = 0; i < temp_record.getChannelsCount(); i++)
+        temp[i].resize(temp_record.getChannelDataSize());
+
+    for(int i = 0; i < temp_record.getChannelsCount(); i++){
+        temp[i][0] = temp_record[i][0];
+        for(int j = 1; j < temp_record.getChannelDataSize(); j++)
+            temp[i][j] = temp[i][j-1] + alpha * (temp_record[i][j] - temp[i][j - 1]);
+    }
+
+    temp_record.setData(temp);
+    return temp_record;
+}

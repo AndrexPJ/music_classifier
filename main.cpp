@@ -19,8 +19,10 @@ int main(int argc, char *argv[])
 {
     try{
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("beat.wav");
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("test.wav");
 
+        AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
+        AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
         int window_size = 2048;
@@ -30,28 +32,32 @@ int main(int argc, char *argv[])
 
         AudioSpectrum<complex> sp_clear;
         AudioSpectrum<complex> sp_filtered;
-        AudioSpectrum<complex> sp_rhythm;
+        AudioSpectrum<complex> sp_lp_rhythm;
+        AudioSpectrum<complex> sp_hp_rhythm;
 
         AudioWFFT::perform(ar,sp_clear,wf,hop_size);
         AudioWFFT::perform(ar_filtered,sp_filtered,wf,hop_size);
-        AudioWFFT::perform(ar,sp_rhythm,wf,hop_size_rhythm);
+        AudioWFFT::perform(ar_lp_filtered,sp_lp_rhythm,wf,hop_size_rhythm);
+        AudioWFFT::perform(ar_hp_filtered,sp_hp_rhythm,wf,hop_size_rhythm);
 
-
-        AudioAmpSpectrum amp_sp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_rhythm);
+        AudioAmpSpectrum amp_sp_hp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_hp_rhythm);
+        AudioAmpSpectrum amp_sp_lp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_lp_rhythm);
         AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
         int result_size = 1;
 
-        FluxNoveltyFunction flux_nf(amp_sp_rhythm);
-        AutocorrelationFunction ac_f(flux_nf.getValues()[0]);
+        FluxNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+        FluxNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
+
+        CorrelationFunction cr_f(flux_lp_nf.getValues()[0],flux_hp_nf.getValues()[0]);
 
         ofstream out_stream;
         out_stream.open("out.txt",ios_base::out);
 
 
-        for(int i = 2; i < ac_f.getIntervalSize(); i++)
-            out_stream << ac_f.perform(i) << endl;
+        for(int i = 0; i < cr_f.getIntervalSize(); i++)
+            out_stream << cr_f.perform(i) << endl;
 
         /*ZCRDescriptorExtractor zcr_de(ar);
         EnergyDescriptorExtractor energy_de(ar);

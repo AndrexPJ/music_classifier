@@ -7,18 +7,25 @@
 #include <tools.h>
 
 
-class AutocorrelationFunction{
+class CorrelationFunction{
 protected:
     std::vector<double> values;
     int interval_size;
 
 public:
-    AutocorrelationFunction(std::vector<double> in_values);
+    CorrelationFunction();
+    CorrelationFunction(std::vector<double> first_in_values, std::vector<double> second_in_values);
 
     double perform(int n);
     int getIntervalSize() const;
 
     std::vector<double> getValues() const;
+
+};
+
+class AutocorrelationFunction : public CorrelationFunction{
+public:
+    AutocorrelationFunction(std::vector<double> in_values);
 };
 
 
@@ -27,7 +34,7 @@ private:
     std::vector<double> histogram;
     int histogram_size;
 public:
-    BeatHistogramDescriptorExtractor(AutocorrelationFunction &ac_func);
+    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func);
     std::vector<double> extract();
 
 };
