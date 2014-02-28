@@ -110,3 +110,26 @@ AudioRecord AudioRecordTransforms::performLowPassFilter(const AudioRecord &recor
     temp_record.setData(temp);
     return temp_record;
 }
+
+AudioRecord AudioRecordTransforms::performDCRemoval(const AudioRecord &record){
+    AudioRecord temp_record(record);
+
+    double a_mean  = 0.0;
+
+    int channels_count = temp_record.getChannelsCount();
+    int data_size = temp_record.getChannelDataSize();
+
+    for(int ch = 0; ch < channels_count; ch++){
+        a_mean = 0.0;
+
+        for(int i = 0; i < data_size; i++)
+            a_mean += temp_record[ch][i];
+        a_mean /= data_size;
+
+        for(int i = 0; i < data_size; i++)
+            temp_record[ch][i] -= a_mean;
+    }
+
+    return temp_record;
+}
+

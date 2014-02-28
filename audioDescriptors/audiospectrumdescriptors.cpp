@@ -255,7 +255,7 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
     FFT::Inverse(temp_in,temp_out);
 
     for(int i = 0; i < this->mfcc_count/2; i++)
-        result[i] = sqrt(pow(temp_out[i].re(),2) + pow(temp_out[i].im(),2));
+        result[i] = temp_out[i].norm();
 
     return result;
 }

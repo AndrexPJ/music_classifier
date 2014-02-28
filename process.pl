@@ -1,5 +1,5 @@
 
-$main_genre = 'pop';
+$main_genre = 'metal';
 
 $exapmles_main_size = 80;
 $exapmles_sub_size = 20; 

@@ -14,7 +14,7 @@ AudioAmpSpectrum AudioSpectrumTransforms::getAmpSpectrum(AudioSpectrum<complex> 
     for(int i = 0; i < channels_count; i++){
         for(int j = 0; j < data_size; j++){
             for(int k = 0; k < half_window; k++){
-                temp[i][j][k] =  sqrt(pow(spectrum[i][j][k].im(),2) + pow(spectrum[i][j][k].re(),2));
+                temp[i][j][k] =  spectrum[i][j][k].norm();
             }
         }
     }

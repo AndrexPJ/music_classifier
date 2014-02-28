@@ -65,15 +65,13 @@ DuxburyNoveltyFunction::DuxburyNoveltyFunction(AudioSpectrum<complex> &specrtum)
     for(int ch = 0; ch < this->channels_count; ch++){
         this->values[ch][0] = 0.0;
         for(int fq_i = 0; fq_i < fq_count; fq_i++)
-            this->values[ch][0] += sqrt(pow(this->spectrum[ch][0][fq_i].im(),2) + pow(this->spectrum[ch][0][fq_i].re(),2));
+            this->values[ch][0] += this->spectrum[ch][0][fq_i].norm();
         this->values[ch][0] /= fq_count;
 
-        complex temp;
         for(int n = 1; n < this->interval_size; n++){
             this->values[ch][n] = 0.0;
             for(int fq_i = 0; fq_i < fq_count; fq_i++){
-                temp = this->spectrum[ch][n][fq_i] - this->spectrum[ch][n-1][fq_i];
-                this->values[ch][n] += sqrt(pow(temp.im(),2) + pow(temp.re(),2));
+                this->values[ch][n] += (this->spectrum[ch][n][fq_i] - this->spectrum[ch][n-1][fq_i]).norm();
             }
             this->values[ch][n] /= fq_count;
         }

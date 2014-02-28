@@ -19,7 +19,8 @@ int main(int argc, char *argv[])
 {
     try{
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord("test.wav");
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(argv[1]);
+        ar = AudioRecordTransforms::performDCRemoval(ar);
 
         AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
@@ -50,39 +51,39 @@ int main(int argc, char *argv[])
         FluxNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
         FluxNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
 
-        CorrelationFunction cr_f(flux_lp_nf.getValues()[0],flux_hp_nf.getValues()[0]);
+        AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
-        ofstream out_stream;
+        /*ofstream out_stream;
         out_stream.open("out.txt",ios_base::out);
 
 
-        for(int i = 0; i < cr_f.getIntervalSize(); i++)
-            out_stream << cr_f.perform(i) << endl;
+        for(int i = 2; i < cr_f.getIntervalSize() /2; i++)
+            out_stream << cr_f.perform(i) << endl;*/
 
-        /*ZCRDescriptorExtractor zcr_de(ar);
+        ZCRDescriptorExtractor zcr_de(ar);
         EnergyDescriptorExtractor energy_de(ar);
         SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
         SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
-        SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);*/
+        SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
         //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
 
-        /*BeatHistogramDescriptorExtractor bh_de(ac_f);
+        BeatHistogramDescriptorExtractor bh_de(cr_f);
         AudioDescriptorCollector dc;
-        dc.addDescriptorExtractor(bh_de);*/
-        /*dc.addDescriptorExtractor(zcr_de);
+        dc.addDescriptorExtractor(bh_de);
+        dc.addDescriptorExtractor(zcr_de);
         dc.addDescriptorExtractor(energy_de);
         dc.addDescriptorExtractor(spflux_de);
         dc.addDescriptorExtractor(spflat_de);
         dc.addDescriptorExtractor(spcen_de);
-        dc.addDescriptorExtractor(sproll_de);*/
+        dc.addDescriptorExtractor(sproll_de);
         //dc.addDescriptorExtractor(mfcc_de);
 
-        /*std::vector<double> out = dc.extract();
+        std::vector<double> out = dc.extract();
 
         for(int i = 0; i < out.size(); i++)
-            cout<<i+1<<":"<<out[i]<<" ";*/
+            cout<<i+1<<":"<<out[i]<<" ";
 
        return 0;
     }

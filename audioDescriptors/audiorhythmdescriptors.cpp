@@ -43,7 +43,7 @@ CorrelationFunction::CorrelationFunction(std::vector<double> first_in_values, st
     this->interval_size = N - suffix_size;
 
     for(int i = 0; i < N - suffix_size; i++)
-        this->values[i] = sqrt(pow(result[i].im(),2) + pow(result[i].re(),2));
+        this->values[i] = result[i].norm();
 
 }
 
@@ -81,7 +81,7 @@ AutocorrelationFunction::AutocorrelationFunction(std::vector<double> in_values){
     FFT::Forward(in_values, temp);
 
     for(int i = 0; i < N; i++)
-        temp[i] *= temp[i];
+        temp[i] *= temp[i].conjugate();
 
     FFT::Inverse(temp,result);
 
@@ -89,7 +89,7 @@ AutocorrelationFunction::AutocorrelationFunction(std::vector<double> in_values){
     this->interval_size = N - suffix_size;
 
     for(int i = 0; i < N - suffix_size; i++)
-        this->values[i] = sqrt(pow(result[i].im(),2) + pow(result[i].re(),2));
+        this->values[i] = result[i].norm();
 }
 
 
@@ -103,7 +103,7 @@ BeatHistogramDescriptorExtractor::BeatHistogramDescriptorExtractor(CorrelationFu
     this->histogram.resize(temp_size - 2);
     this->histogram_size = this->histogram.size();
 
-    for(int i = 2; i < temp_size; i++){
+    for(int i = 2; i < temp_size / 2; i++){
         this->histogram[i-2] = temp[i];
     }
 
@@ -141,9 +141,9 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
     }
 
     result.push_back(sum);
-    result.push_back(first_peak_amp);
-    result.push_back(second_peak_amp);
-    result.push_back(second_peak_amp / first_peak_amp);
+    //result.push_back(first_peak_amp);
+    //result.push_back(second_peak_amp);
+    //result.push_back(second_peak_amp / first_peak_amp);
     result.push_back(double(abs(first_peak_n - second_peak_n)) / this->histogram_size);
     //result.push_back(double(second_peak_n) / this->histogram_size);
     return result;

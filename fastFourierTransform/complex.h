@@ -8,6 +8,8 @@
 #ifndef _COMPLEX_H_
 #define _COMPLEX_H_
 
+#include <math.h>
+
 class complex
 {
 protected:
@@ -46,7 +48,7 @@ public:
 	//   Norm   
 	double norm() const
 	{
-		return m_re * m_re + m_im * m_im;
+        return sqrt(m_re * m_re + m_im * m_im);
 	}
 
 	//   Arithmetic operations
