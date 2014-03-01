@@ -27,6 +27,8 @@ double NoveltyFunction::perform(int n, int channel){
     else return this->values[channel][n];
 }
 
+
+
 std::vector < std::vector<double> > NoveltyFunction::getValues() const{
     return this->values;
 }
@@ -41,8 +43,6 @@ FluxNoveltyFunction::FluxNoveltyFunction(AudioAmpSpectrum &spectrum) : NoveltyFu
         this->values[ch][0] = 0.0;
         for(int fq_i = 0; fq_i < fq_count; fq_i++)
             this->values[ch][0] += sqrt(this->spectrum[ch][0][fq_i]);
-        this->values[ch][0] /= fq_count;
-
 
         for(int n = 1; n < this->interval_size; n++){
             this->values[ch][n] = 0.0;
@@ -51,10 +51,10 @@ FluxNoveltyFunction::FluxNoveltyFunction(AudioAmpSpectrum &spectrum) : NoveltyFu
                 temp = (temp + fabs(temp)) / 2;
                 this->values[ch][n] += temp;
             }
-            this->values[ch][n] /= fq_count;
         }
 
     }
+    //this->normalize();
 
 }
 
@@ -66,17 +66,15 @@ DuxburyNoveltyFunction::DuxburyNoveltyFunction(AudioSpectrum<complex> &specrtum)
         this->values[ch][0] = 0.0;
         for(int fq_i = 0; fq_i < fq_count; fq_i++)
             this->values[ch][0] += this->spectrum[ch][0][fq_i].norm();
-        this->values[ch][0] /= fq_count;
 
         for(int n = 1; n < this->interval_size; n++){
             this->values[ch][n] = 0.0;
             for(int fq_i = 0; fq_i < fq_count; fq_i++){
                 this->values[ch][n] += (this->spectrum[ch][n][fq_i] - this->spectrum[ch][n-1][fq_i]).norm();
             }
-            this->values[ch][n] /= fq_count;
         }
-
     }
+    //this->normalize();
 }
 
 HainsworthNoveltyFunction::HainsworthNoveltyFunction(AudioAmpSpectrum &spectrum) : NoveltyFunction(spectrum.getChannelDataSize(),spectrum.getChannelsCount()){
@@ -86,9 +84,7 @@ HainsworthNoveltyFunction::HainsworthNoveltyFunction(AudioAmpSpectrum &spectrum)
     for(int ch = 0; ch < this->channels_count; ch++){
         this->values[ch][0] = 0.0;
         for(int fq_i = 0; fq_i < fq_count; fq_i++)
-            this->values[ch][0] += log2(this->spectrum[ch][0][fq_i] / (fq_count * epsilon));
-        this->values[ch][0] /= fq_count;
-
+            this->values[ch][0] += log2(this->spectrum[ch][0][fq_i] / epsilon);
 
         for(int n = 1; n < this->interval_size; n++){
             this->values[ch][n] = 0.0;
@@ -98,8 +94,7 @@ HainsworthNoveltyFunction::HainsworthNoveltyFunction(AudioAmpSpectrum &spectrum)
             else
                 this->values[ch][n] += log2(this->spectrum[ch][n][fq_i] / this->spectrum[ch][n - 1][fq_i]);
             }
-            this->values[ch][n] /= fq_count;
         }
-
     }
+    //this->normalize();
 }

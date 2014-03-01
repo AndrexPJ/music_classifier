@@ -78,3 +78,42 @@ AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
 
     return resultRecord;
 }
+
+AudioRecord BinaryAudioLoader::loadAudioRecord(string filename){
+
+    ifstream inFileStream;
+    inFileStream.open(filename,ios::binary);
+
+    if(!inFileStream)
+        throw(AudioFilePathException());
+
+    AudioRecord resultRecord;
+
+
+
+
+    resultRecord.setBitsPerSample(16);
+
+    resultRecord.setSampleRate(44100);
+
+
+    // ---------- wave data reading ----------
+
+    short int tInt;
+    int maxIntValue =  int(pow(2, 16 - 1) - 1);
+
+    std::vector< std::vector<double> > temp;
+    temp.resize(1);
+
+    while(inFileStream.good()){
+          inFileStream.read((char*)&tInt,sizeof(short int));
+          temp[0].push_back((double(tInt)/maxIntValue));
+    }
+
+    resultRecord.setData(temp);
+
+    inFileStream.close();
+
+    return resultRecord;
+
+}

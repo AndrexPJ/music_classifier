@@ -11,6 +11,7 @@ class NoveltyFunction {
 protected:
     std::vector < std::vector<double> > values;
     int interval_size, channels_count;
+
 public:
     NoveltyFunction();
     NoveltyFunction(int interval_size, int channels_count);

@@ -85,4 +85,10 @@ public:
 
 
 
+class BinaryAudioLoader : public AudioLoader{  // its a joke
+public:
+    static AudioRecord loadAudioRecord(string filename);
+};
+
+
 #endif // WAVEAUDIOLOADER_H

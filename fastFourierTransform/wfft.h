@@ -1,11 +1,12 @@
 #ifndef WFFT_H
 #define WFFT_H
 
-#include "fft.h"
-#include "vector"
-#include "windowfunctions.h"
-#include <iostream>
+
+#include "specialFunctions/windowfunctions.h"
+#include "fastFourierTransform/fft.h"
 #include "tools.h"
+#include <iostream>
+#include <vector>
 class WFFT
 {
 public:

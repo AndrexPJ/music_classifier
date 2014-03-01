@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
 
         int result_size = 1;
 
-        FluxNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
-        FluxNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
+        HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+        //HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
 
         AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         out_stream.open("out.txt",ios_base::out);
 
 
-        for(int i = 2; i < cr_f.getIntervalSize() /2; i++)
+        for(int i = 1; i < cr_f.getIntervalSize()/2; i++)
             out_stream << cr_f.perform(i) << endl;*/
 
         ZCRDescriptorExtractor zcr_de(ar);
@@ -66,24 +66,25 @@ int main(int argc, char *argv[])
         SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
         SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
         SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
-        //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
+        MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
 
         BeatHistogramDescriptorExtractor bh_de(cr_f);
-        AudioDescriptorCollector dc;
-        dc.addDescriptorExtractor(bh_de);
-        dc.addDescriptorExtractor(zcr_de);
-        dc.addDescriptorExtractor(energy_de);
-        dc.addDescriptorExtractor(spflux_de);
-        dc.addDescriptorExtractor(spflat_de);
-        dc.addDescriptorExtractor(spcen_de);
-        dc.addDescriptorExtractor(sproll_de);
-        //dc.addDescriptorExtractor(mfcc_de);
+        AudioDescriptorCollector dc; 
+        //dc.addDescriptorExtractor(bh_de);
+        //dc.addDescriptorExtractor(zcr_de);
+        //dc.addDescriptorExtractor(energy_de);
+        //dc.addDescriptorExtractor(spflux_de);
+        //dc.addDescriptorExtractor(spflat_de);
+        //dc.addDescriptorExtractor(spcen_de);
+        //dc.addDescriptorExtractor(sproll_de);
+        dc.addDescriptorExtractor(mfcc_de);
 
         std::vector<double> out = dc.extract();
 
         for(int i = 0; i < out.size(); i++)
-            cout<<i+1<<":"<<out[i]<<" ";
+            cout << out[i]<<" ";
+            //cout<<i+1<<":"<<out[i]<<" ";
 
        return 0;
     }

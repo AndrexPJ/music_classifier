@@ -8,9 +8,10 @@ aux_source_directory(./audioDescriptors SRC_LIST)
 aux_source_directory(./audioTransforms SRC_LIST)
 aux_source_directory(./basicClasses SRC_LIST)
 aux_source_directory(./audioExceptions SRC_LIST)
+aux_source_directory(./specialFunctions SRC_LIST)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses ./audioExceptions)
+include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses ./audioExceptions ./specialFunctions)
 
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 set( CMAKE_CXX_FLAGS "-O3")

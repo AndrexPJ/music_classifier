@@ -5,3 +5,5 @@
 *.dat
 *data/
 *dataset/
+*.RData
+*.Rhistory
