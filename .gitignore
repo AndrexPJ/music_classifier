@@ -1,9 +1,9 @@
-*-build/
 *.wav
 *.au
 *.txt.user
 *.dat
-*data/
-*dataset/
 *.RData
 *.Rhistory
+*data/
+*dataset/
+*-build/
