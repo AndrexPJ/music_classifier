@@ -2,7 +2,7 @@
 
 
 // --- Base Class ---
-AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_count) : AudioDescriptorExtractor(){
+AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_count) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
     if(result_count > spectrum.getChannelDataSize())
         this->result_count = spectrum.getChannelDataSize();
@@ -68,7 +68,7 @@ std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
 // --- ---------- ---
 
 // --- Spectral Centroid ---
-SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
+SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
 }
 
 
@@ -90,7 +90,7 @@ double SpCentroidDescriptorExtractor::extractForOneFrame(int channel_number, int
 
 
 // --- Spectral Flatness ---
-SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
+SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
 }
 
 double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
@@ -149,7 +149,7 @@ double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int
 
 
 // --- Spectral Flux ---
-SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
+SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
 }
 
 double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
@@ -175,7 +175,7 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
 
 
 // --- Spectral Roll-off ---
-SpRollOffDescriptorExtractor::SpRollOffDescriptorExtractor(AudioAmpSpectrum &spectrum, int result_frames_count, double threshold) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
+SpRollOffDescriptorExtractor::SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count, double threshold) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
     this->threshold = threshold;
 }
 
@@ -205,7 +205,7 @@ double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int 
 
 
 // --- MFCC ---
-MFCCDescriptorExtractor::MFCCDescriptorExtractor(AudioAmpSpectrum &spectrum, int mfcc_count) : AudioDescriptorExtractor(){
+MFCCDescriptorExtractor::MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count) : AudioDescriptorExtractor(){
     this->spectrum = spectrum;
     this->mfcc_count = mfcc_count;
     int fq_count = this->spectrum.getFrequencyCount();
@@ -279,5 +279,28 @@ std::vector<double> MFCCDescriptorExtractor::extract(){
 }
 
 // --- ---- ---
+
+HistogramDescriptorExtractor::HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum){
+    this->spectrum = spectrum;
+}
+
+std::vector<double> HistogramDescriptorExtractor::extract(){
+    int frequency_count = this->spectrum.getFrequencyCount();
+    int data_size = this->spectrum.getChannelDataSize();
+    int channels_count = this->spectrum.getChannelsCount();
+
+    std::vector<double> result;
+    result.assign(frequency_count,0.0);
+
+    for(int fq_i = 0; fq_i < frequency_count; fq_i++){
+        for(int i = 0; i < data_size; i++)
+            for(int ch = 0; ch < channels_count; ch++)
+                result[fq_i] += this->spectrum[ch][i][fq_i];
+        result[fq_i] /= (channels_count * data_size);
+    }
+
+    return result;
+
+}
 
 

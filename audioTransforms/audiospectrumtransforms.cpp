@@ -27,6 +27,52 @@ AudioAmpSpectrum AudioSpectrumTransforms::getAmpSpectrum(AudioSpectrum<complex> 
 
 }
 
+AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spectrum){
+    AudioPitchChroma temp;
+
+    int filters_count = 12;
+
+    double norm;
+    int frequency_count = spectrum.getFrequencyCount();
+    int data_size = spectrum.getChannelDataSize();
+    int channels_count = spectrum.getChannelsCount();
+
+    std::vector< std::vector<double> > filters = AudioSpectrumTools::getSemiToneFilterbank(frequency_count);
+
+    std::vector<std::vector<std::vector<double> > > result(channels_count);
+
+    for(int ch = 0; ch < channels_count; ch++){
+        result[ch].resize(data_size);
+        for(int i = 0; i < data_size; i++){
+            result[ch][i].assign(filters_count,0.0);
+            norm = 0.0;
+
+            for(int filt_i = 0; filt_i < filters_count; filt_i++){
+                for(int fq_i = 0; fq_i < frequency_count; fq_i++)
+                    result[ch][i][filt_i] += spectrum[ch][i][fq_i] * filters[filt_i][fq_i];
+
+            norm += result[ch][i][filt_i] * result[ch][i][filt_i];
+            }
+
+            norm = sqrt(norm);
+            for(int filt_i = 0; filt_i < filters_count; filt_i++)
+                result[ch][i][filt_i] /= norm;
+
+        }
+    }
+
+    temp.setData(result);
+    temp.setSampleRate(spectrum.getSampleRate());
+    //temp.setFrequencyStep(spectrum.getFrequencyStep());
+    //temp.setSampleRate(spectrum.getSampleRate());
+    temp.setWindowSize(24);
+
+    return temp;
+
+}
+
+
+
 int AudioSpectrumTools::getCriticalBandRate(double frequency){
     double result = 26.81/(1 + 1960/frequency) - 0.53;
     if(result < 2.0) result += 0.15*(2 - result);
@@ -79,3 +125,53 @@ std::vector< std::vector<double> > AudioSpectrumTools::getMelFilterbank(int freq
     return result_filters;
 
 }
+
+
+std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int frequency_count, double mid_frequency, int octaves_count){
+    int filters_count = 12;
+
+    int sample_rate = frequency_count * 2;
+
+    double first_bound_base = 0.971532;
+    double second_bound_base = 1.0293;
+    double bound_step = 1.05946;
+
+    int power_of_two;
+
+    int first_bound_i, second_bound_i;
+    double first_bound, second_bound;
+
+    while(mid_frequency * (2 << (octaves_count - 1)) > sample_rate /2)
+        octaves_count--;
+
+
+    std::vector< std::vector<double> > result_filters(filters_count);
+    //result_filters.resize(filters_count);
+
+    for(int filt_i = 0; filt_i < filters_count; filt_i++){
+        //result_filters[filt_i].resize(frequency_count);
+        result_filters[filt_i].assign(frequency_count,0.0);
+
+        first_bound = first_bound_base * mid_frequency;
+        second_bound = second_bound_base * mid_frequency;
+
+        power_of_two = 1;
+
+        for(int octv_i = 0; octv_i < octaves_count; octv_i++){
+            first_bound_i = ceil(power_of_two * first_bound);
+            second_bound_i = floor(power_of_two * second_bound);
+
+            power_of_two <<= 1;
+
+            for(int i = first_bound_i; i < second_bound_i + 1; i++)
+                result_filters[filt_i][i] = 1.0 / (second_bound_i + 1 - first_bound_i);
+        }
+
+        mid_frequency *= bound_step;
+
+    }
+
+    return result_filters;
+}
+
+
