@@ -1,4 +1,3 @@
-#include <iostream>
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
 #include "audioTransforms/audiowfft.h"
@@ -9,7 +8,7 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 #include "audioDescriptors/audiorhythmdescriptors.h"
 
-#include <ctime>
+#include <iostream>
 #include <fstream>
 
 
@@ -18,8 +17,13 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     try{
+        string filename;
+        if(argc < 2)
+            filename = "test.wav";
+        else
+            filename = argv[1];
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(argv[1]);
+        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
         ar = AudioRecordTransforms::performDCRemoval(ar);
 
         AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
@@ -33,6 +37,7 @@ int main(int argc, char *argv[])
 
         AudioSpectrum<complex> sp_clear;
         AudioSpectrum<complex> sp_filtered;
+        AudioSpectrum<complex> sp_pitch;
         AudioSpectrum<complex> sp_lp_rhythm;
         AudioSpectrum<complex> sp_hp_rhythm;
 
@@ -40,34 +45,60 @@ int main(int argc, char *argv[])
         AudioWFFT::perform(ar_filtered,sp_filtered,wf,hop_size);
         AudioWFFT::perform(ar_lp_filtered,sp_lp_rhythm,wf,hop_size_rhythm);
         AudioWFFT::perform(ar_hp_filtered,sp_hp_rhythm,wf,hop_size_rhythm);
+        AudioWFFT::perform(ar,sp_pitch,wf,window_size);
 
         AudioAmpSpectrum amp_sp_hp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_hp_rhythm);
         AudioAmpSpectrum amp_sp_lp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_lp_rhythm);
         AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
-        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);
 
+        AudioAmpSpectrum amp_sp_pitch = AudioSpectrumTransforms::getAmpSpectrum(sp_pitch);
+        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_pitch);
 
         int result_size = 1;
 
+        //ofstream out_stream;
+        //out_stream.open("out.txt",ios_base::out);
 
-        HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+        /*for(int i = 0; i < flux_lp_nf.getIntervalSize();i++)
+            out_stream << i << " " << flux_lp_nf.perform(i,0)<<endl;*/
+        /*for(int i = 0; i < pch.getChannelDataSize(); i++){
+            for(int j = 0; j < pch.getFrequencyCount(); j++){
+
+                for(int k = 0; k < 20; k++)
+                    out_stream << i << " " << 20*j + k << " "<< (pch[0][i][j]) << endl;
+            }
+        }*/
+
+        /*for(int i = 0; i < amp_sp_clear.getChannelDataSize(); i++){
+            for(int j = 0; j < amp_sp_clear.getFrequencyCount(); j++){
+                    out_stream << i << " " << j << " "<< (amp_sp_clear[0][i][j]) << endl;
+            }
+        }*/
+
+        //out_stream.close();
+
+        //HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
         //HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
+        //AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
-        AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
+        //ZCRDescriptorExtractor zcr_de(ar);
+        //EnergyDescriptorExtractor energy_de(ar);
 
+        //SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
+        //SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
+        //SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
+        //SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
 
+        //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
-
-        ZCRDescriptorExtractor zcr_de(ar);
-        EnergyDescriptorExtractor energy_de(ar);
-        SpFluxDescriptorExtractor spflux_de(amp_sp_clear,result_size);
-        SpFlatnessDescriptorExtractor spflat_de(amp_sp_filtered,result_size);
-        SpCentroidDescriptorExtractor spcen_de(amp_sp_clear,result_size);
-        SpRollOffDescriptorExtractor sproll_de(amp_sp_clear,result_size);
-        MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
         HistogramDescriptorExtractor h_de(pch);
-        BeatHistogramDescriptorExtractor bh_de(cr_f);
+        //SpFluxDescriptorExtractor spflux_pch_de(pch,result_size);
+        //SpFlatnessDescriptorExtractor spflat_pch_de(pch,result_size);
+        //SpCentroidDescriptorExtractor spcen_pch_de(pch,result_size);
+        //SpRollOffDescriptorExtractor sproll_pch_de(pch,result_size);
+
+        //BeatHistogramDescriptorExtractor bh_de(cr_f);
 
         AudioDescriptorCollector dc;
         dc.addDescriptorExtractor(h_de);
@@ -80,11 +111,20 @@ int main(int argc, char *argv[])
         //dc.addDescriptorExtractor(sproll_de);
         //dc.addDescriptorExtractor(mfcc_de);
 
+        //dc.addDescriptorExtractor(spflux_pch_de);
+        //dc.addDescriptorExtractor(spflat_pch_de);
+        //dc.addDescriptorExtractor(spcen_pch_de);
+        //dc.addDescriptorExtractor(sproll_pch_de);
+
         std::vector<double> out = dc.extract();
 
-        for(int i = 0; i < out.size(); i++)
+        //double sum = 0.0;
+
+        for(int i = 0; i < out.size(); i++){
+            //cout << i << " " << out[i] << endl;
             //cout << out[i]<<" ";
-            cout<<i+1<<":"<<out[i]<<" ";
+           cout<<i+1<<":"<<out[i]<<" ";
+        }
 
        return 0;
     }

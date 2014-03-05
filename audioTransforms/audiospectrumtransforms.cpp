@@ -37,24 +37,24 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
     int data_size = spectrum.getChannelDataSize();
     int channels_count = spectrum.getChannelsCount();
 
-    std::vector< std::vector<double> > filters = AudioSpectrumTools::getSemiToneFilterbank(frequency_count);
+    std::vector< std::vector<double> > filters = AudioSpectrumTools::getSemiToneFilterbank(frequency_count,spectrum.getFrequency(frequency_count - 1));
 
     std::vector<std::vector<std::vector<double> > > result(channels_count);
 
     for(int ch = 0; ch < channels_count; ch++){
         result[ch].resize(data_size);
+
         for(int i = 0; i < data_size; i++){
-            result[ch][i].assign(filters_count,0.0);
             norm = 0.0;
+            result[ch][i].assign(filters_count,0.0);
 
             for(int filt_i = 0; filt_i < filters_count; filt_i++){
                 for(int fq_i = 0; fq_i < frequency_count; fq_i++)
-                    result[ch][i][filt_i] += spectrum[ch][i][fq_i] * filters[filt_i][fq_i];
-
-            norm += result[ch][i][filt_i] * result[ch][i][filt_i];
+                    result[ch][i][filt_i] += spectrum[ch][i][fq_i] * spectrum[ch][i][fq_i] * filters[filt_i][fq_i];
+            norm += result[ch][i][filt_i];
             }
 
-            norm = sqrt(norm);
+
             for(int filt_i = 0; filt_i < filters_count; filt_i++)
                 result[ch][i][filt_i] /= norm;
 
@@ -63,8 +63,6 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
 
     temp.setData(result);
     temp.setSampleRate(spectrum.getSampleRate());
-    //temp.setFrequencyStep(spectrum.getFrequencyStep());
-    //temp.setSampleRate(spectrum.getSampleRate());
     temp.setWindowSize(24);
 
     return temp;
@@ -127,21 +125,23 @@ std::vector< std::vector<double> > AudioSpectrumTools::getMelFilterbank(int freq
 }
 
 
-std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int frequency_count, double mid_frequency, int octaves_count){
+std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int frequency_count, double max_frequency , double mid_frequency, int octaves_count){
     int filters_count = 12;
 
     int sample_rate = frequency_count * 2;
 
-    double first_bound_base = 0.971532;
-    double second_bound_base = 1.0293;
-    double bound_step = 1.05946;
+    double first_bound_base = pow(2,-1.0/24) * frequency_count / max_frequency ; //0.971532;
+    double second_bound_base = pow(2,1.0/24) * frequency_count / max_frequency ; //1.0293;
+    double bound_step = pow(2,1.0/12);// 1.05946;
 
+    double peak = 0.0;
     int power_of_two;
+    int center;
 
     int first_bound_i, second_bound_i;
     double first_bound, second_bound;
 
-    while(mid_frequency * (2 << (octaves_count - 1)) > sample_rate /2)
+    while(mid_frequency * (2 << (octaves_count - 1)) > frequency_count)
         octaves_count--;
 
 
@@ -158,13 +158,24 @@ std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int
         power_of_two = 1;
 
         for(int octv_i = 0; octv_i < octaves_count; octv_i++){
-            first_bound_i = ceil(power_of_two * first_bound);
-            second_bound_i = floor(power_of_two * second_bound);
+            first_bound_i = ceil(power_of_two * first_bound );
+            second_bound_i = floor(power_of_two * second_bound );
 
             power_of_two <<= 1;
 
-            for(int i = first_bound_i; i < second_bound_i + 1; i++)
-                result_filters[filt_i][i] = 1.0 / (second_bound_i + 1 - first_bound_i);
+            peak = 1.0 / (second_bound_i + 1 - first_bound_i);
+            center = (first_bound_i + second_bound_i) / 2;
+
+            for(int i = first_bound_i; i <= second_bound_i; i++)
+                result_filters[filt_i][i] = peak;
+
+            /*for(int i = first_bound_i; i <= center; i++){
+                result_filters[filt_i][i] = ((i - first_bound_i) * peak) / (center - first_bound_i);
+            }
+            for(int i = center + 1; i <= second_bound_i; i++){
+                result_filters[filt_i][i] = ((second_bound_i - i) * peak) / (second_bound_i - center);
+            }*/
+
         }
 
         mid_frequency *= bound_step;

@@ -299,6 +299,20 @@ std::vector<double> HistogramDescriptorExtractor::extract(){
         result[fq_i] /= (channels_count * data_size);
     }
 
+    /*double max = result[0];
+    int n = 0;
+
+    for(int fq_i = 1; fq_i < frequency_count; fq_i++){
+        if(max < result[fq_i]){
+            max = result[fq_i];
+            n = fq_i;
+        }
+    }
+
+    result.clear();
+
+    result.push_back(max);
+    result.push_back(double(n)/frequency_count);*/
     return result;
 
 }

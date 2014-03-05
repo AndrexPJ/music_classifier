@@ -17,7 +17,7 @@ namespace AudioSpectrumTools {
     double melToFrequency(double mel);
 
     std::vector< std::vector<double> > getMelFilterbank(int frequency_count, double max_frequency, double min_frequency = 300, int filters_count = 26);
-    std::vector< std::vector<double> > getSemiToneFilterbank(int frequency_count, double mid_frequency = 261.63, int octaves_count = 4);
+    std::vector< std::vector<double> > getSemiToneFilterbank(int frequency_count, double max_frequency , double mid_frequency = 261.63, int octaves_count = 4);
 
 }
 #endif // AUDIOSPECTRUMTRANSFORMS_H
