@@ -22,6 +22,6 @@ link_libraries(${LIBS})
 add_executable(${PROJECT_NAME} ${SRC_LIST})
 include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses ./audioExceptions ./specialFunctions ./waveletTransform)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
-#set( CMAKE_CXX_FLAGS "-O3")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
+set( CMAKE_CXX_FLAGS "-O3")
 

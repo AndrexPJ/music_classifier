@@ -28,18 +28,6 @@ int main(int argc, char *argv[])
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
         ar = AudioRecordTransforms::performDCRemoval(ar);
 
-
-
-        std::vector< std::vector<double> > out;
-        out.resize(1);
-
-        DWT::Forward(ar[0],out[0]);
-
-        ar.setData(out);
-
-        WaveAudioSaver::saveAudioRecord(ar,"xm.wav");
-
-
         /*
         AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);

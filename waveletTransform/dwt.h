@@ -4,7 +4,10 @@
 #include <vector>
 #include <gsl/gsl_wavelet.h>
 #include <iostream>
+#include <math.h>
 #include "tools.h"
+
+
 
 class DWT{
 public:

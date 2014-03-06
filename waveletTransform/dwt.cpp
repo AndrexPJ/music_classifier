@@ -3,6 +3,7 @@
 bool DWT::Forward(std::vector<double> Input, std::vector<double> &Output){
  int N = Input.size();
  int suffix_size = 0;
+ int levels_count;
 
  if(N & (N-1)){
      N = Tools::nearestPowerOfTwoAbove(N);
@@ -12,6 +13,7 @@ bool DWT::Forward(std::vector<double> Input, std::vector<double> &Output){
  }
 
  double *data = new double[N];
+ levels_count = log2(N);
 
  gsl_wavelet *wavelet;
  gsl_wavelet_workspace *workspace;
