@@ -24,7 +24,7 @@ private:
 public:
     AudioDescriptorCollector();
     bool addDescriptorExtractor(AudioDescriptorExtractor &de);
-    std::vector<double> extract();
+    virtual std::vector<double> extract();
 };
 
 #endif // AUDIODESCRIPTOREXTRACTOR_H

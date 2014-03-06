@@ -25,9 +25,9 @@ public:
 
 class FluxNoveltyFunction : public NoveltyFunction{
 protected:
-    AudioAmpSpectrum spectrum;
+    AudioSpectrum<double> spectrum;
 public:
-    FluxNoveltyFunction(AudioAmpSpectrum &spectrum);
+    FluxNoveltyFunction(AudioSpectrum<double> &spectrum);
 };
 
 class DuxburyNoveltyFunction : public NoveltyFunction{
@@ -39,9 +39,9 @@ public:
 
 class HainsworthNoveltyFunction : public NoveltyFunction{
 protected:
-    AudioAmpSpectrum spectrum;
+    AudioSpectrum<double> spectrum;
 public:
-    HainsworthNoveltyFunction(AudioAmpSpectrum &spectrum);
+    HainsworthNoveltyFunction(AudioSpectrum<double> &spectrum);
 };
 
 #endif // NOVELTYFUNCTIONS_H

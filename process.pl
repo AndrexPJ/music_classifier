@@ -1,20 +1,20 @@
 
-$main_genre = 'hiphop';
+$main_genre = 'jazz';
 
-$exapmles_main_size = 100 ;
-$exapmles_sub_size = 0; 
+$exapmles_main_size = 70;
+$exapmles_sub_size = 70; 
 
-$test_main_size = 0;
-$test_sub_size = 0;
+$test_main_size = 30;
+$test_sub_size = 30;
 
 
 
 $test_file_name = "test_".$main_genre;
 $examples_file_name = "examples_".$main_genre;
 
-@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
+#@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
 #@genre_list = ("metal","rock");
-#@genre_list = ("jazz","blues");
+@genre_list = ("jazz","blues");
 
 sub calculateAndWrite{
 	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size) = @_;

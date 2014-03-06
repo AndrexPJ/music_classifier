@@ -7,6 +7,7 @@
 #include "audioDescriptors/audiospectrumdescriptors.h"
 #include "audioDescriptors/audiorecorddescriptors.h"
 #include "audioDescriptors/audiorhythmdescriptors.h"
+#include "audioDescriptors/audiotonalitydescriptors.h"
 
 #include <iostream>
 #include <fstream>
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "test.wav";
+            filename = "hiphop.wav";
         else
             filename = argv[1];
 
@@ -53,15 +54,13 @@ int main(int argc, char *argv[])
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
         AudioAmpSpectrum amp_sp_pitch = AudioSpectrumTransforms::getAmpSpectrum(sp_pitch);
-        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_pitch);
+        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);
 
         int result_size = 1;
 
         //ofstream out_stream;
         //out_stream.open("out.txt",ios_base::out);
 
-        /*for(int i = 0; i < flux_lp_nf.getIntervalSize();i++)
-            out_stream << i << " " << flux_lp_nf.perform(i,0)<<endl;*/
         /*for(int i = 0; i < pch.getChannelDataSize(); i++){
             for(int j = 0; j < pch.getFrequencyCount(); j++){
 
@@ -78,10 +77,22 @@ int main(int argc, char *argv[])
 
         //out_stream.close();
 
-        //HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
-        //HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
-        //AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
+        HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+        HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
+        AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
+
+        /*ofstream out_stream;
+        out_stream.open("out.txt",ios_base::out);
+        HainsworthNoveltyFunction h_nf(pch);
+
+        AutocorrelationFunction cr_f(h_nf.getValues()[0]);
+
+        for(int i = 1 ; i < cr_f.getIntervalSize(); i++){
+            out_stream << i << " " << cr_f.perform(i) << endl;
+        }
+
+        out_stream.close();*/
         //ZCRDescriptorExtractor zcr_de(ar);
         //EnergyDescriptorExtractor energy_de(ar);
 
@@ -92,17 +103,17 @@ int main(int argc, char *argv[])
 
         //MFCCDescriptorExtractor mfcc_de(amp_sp_clear);
 
-        HistogramDescriptorExtractor h_de(pch);
+        //HistogramDescriptorExtractor h_de(pch);
         //SpFluxDescriptorExtractor spflux_pch_de(pch,result_size);
         //SpFlatnessDescriptorExtractor spflat_pch_de(pch,result_size);
         //SpCentroidDescriptorExtractor spcen_pch_de(pch,result_size);
         //SpRollOffDescriptorExtractor sproll_pch_de(pch,result_size);
 
-        //BeatHistogramDescriptorExtractor bh_de(cr_f);
+        BeatHistogramDescriptorExtractor bh_de(cr_f);
 
         AudioDescriptorCollector dc;
-        dc.addDescriptorExtractor(h_de);
-        //dc.addDescriptorExtractor(bh_de);
+        //dc.addDescriptorExtractor(h_de);
+        dc.addDescriptorExtractor(bh_de);
         //dc.addDescriptorExtractor(zcr_de);
         //dc.addDescriptorExtractor(energy_de);
         //dc.addDescriptorExtractor(spflux_de);

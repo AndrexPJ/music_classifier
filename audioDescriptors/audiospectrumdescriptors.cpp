@@ -289,6 +289,8 @@ std::vector<double> HistogramDescriptorExtractor::extract(){
     int data_size = this->spectrum.getChannelDataSize();
     int channels_count = this->spectrum.getChannelsCount();
 
+    double norm = 0.0;
+
     std::vector<double> result;
     result.assign(frequency_count,0.0);
 
@@ -297,22 +299,14 @@ std::vector<double> HistogramDescriptorExtractor::extract(){
             for(int ch = 0; ch < channels_count; ch++)
                 result[fq_i] += this->spectrum[ch][i][fq_i];
         result[fq_i] /= (channels_count * data_size);
+        norm += result[fq_i];
     }
 
-    /*double max = result[0];
-    int n = 0;
 
     for(int fq_i = 1; fq_i < frequency_count; fq_i++){
-        if(max < result[fq_i]){
-            max = result[fq_i];
-            n = fq_i;
-        }
+        result[fq_i] /= norm;
     }
 
-    result.clear();
-
-    result.push_back(max);
-    result.push_back(double(n)/frequency_count);*/
     return result;
 
 }
