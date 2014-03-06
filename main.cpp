@@ -8,6 +8,7 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 #include "audioDescriptors/audiorhythmdescriptors.h"
 #include "audioDescriptors/audiotonalitydescriptors.h"
+#include "waveletTransform/dwt.h"
 
 #include <iostream>
 #include <fstream>
@@ -20,13 +21,26 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "hiphop.wav";
+            filename = "neoclassical.wav";
         else
             filename = argv[1];
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
         ar = AudioRecordTransforms::performDCRemoval(ar);
 
+
+
+        std::vector< std::vector<double> > out;
+        out.resize(1);
+
+        DWT::Forward(ar[0],out[0]);
+
+        ar.setData(out);
+
+        WaveAudioSaver::saveAudioRecord(ar,"xm.wav");
+
+
+        /*
         AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
@@ -54,9 +68,9 @@ int main(int argc, char *argv[])
         AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
         AudioAmpSpectrum amp_sp_pitch = AudioSpectrumTransforms::getAmpSpectrum(sp_pitch);
-        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);
+        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);*/
 
-        int result_size = 1;
+       // int result_size = 1;
 
         //ofstream out_stream;
         //out_stream.open("out.txt",ios_base::out);
@@ -77,9 +91,9 @@ int main(int argc, char *argv[])
 
         //out_stream.close();
 
-        HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
-        HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
-        AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
+        //HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+       // HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
+       // AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
 
         /*ofstream out_stream;
@@ -109,11 +123,11 @@ int main(int argc, char *argv[])
         //SpCentroidDescriptorExtractor spcen_pch_de(pch,result_size);
         //SpRollOffDescriptorExtractor sproll_pch_de(pch,result_size);
 
-        BeatHistogramDescriptorExtractor bh_de(cr_f);
+       // BeatHistogramDescriptorExtractor bh_de(cr_f);
 
-        AudioDescriptorCollector dc;
+        //AudioDescriptorCollector dc;
         //dc.addDescriptorExtractor(h_de);
-        dc.addDescriptorExtractor(bh_de);
+        //dc.addDescriptorExtractor(bh_de);
         //dc.addDescriptorExtractor(zcr_de);
         //dc.addDescriptorExtractor(energy_de);
         //dc.addDescriptorExtractor(spflux_de);
@@ -127,15 +141,15 @@ int main(int argc, char *argv[])
         //dc.addDescriptorExtractor(spcen_pch_de);
         //dc.addDescriptorExtractor(sproll_pch_de);
 
-        std::vector<double> out = dc.extract();
+        //std::vector<double> out = dc.extract();
 
         //double sum = 0.0;
 
-        for(int i = 0; i < out.size(); i++){
+       // for(int i = 0; i < out.size(); i++){
             //cout << i << " " << out[i] << endl;
             //cout << out[i]<<" ";
-           cout<<i+1<<":"<<out[i]<<" ";
-        }
+       //    cout<<i+1<<":"<<out[i]<<" ";
+       // }
 
        return 0;
     }
