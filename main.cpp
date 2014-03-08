@@ -1,6 +1,7 @@
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
 #include "audioTransforms/audiowfft.h"
+#include "audioTransforms/audiodwt.h"
 #include "audioTransforms/audiorecordtransforms.h"
 #include "audioTransforms/audiospectrumtransforms.h"
 #include "audioDescriptors/audiodescriptorextractor.h"
@@ -8,7 +9,6 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 #include "audioDescriptors/audiorhythmdescriptors.h"
 #include "audioDescriptors/audiotonalitydescriptors.h"
-#include "waveletTransform/dwt.h"
 
 #include <iostream>
 #include <fstream>
@@ -27,6 +27,10 @@ int main(int argc, char *argv[])
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
         ar = AudioRecordTransforms::performDCRemoval(ar);
+
+        AudioWaveletImage awi;
+
+        AudioDWT::perform(ar,awi);
 
         /*
         AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);

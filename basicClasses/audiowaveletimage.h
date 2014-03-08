@@ -10,15 +10,16 @@ private:
     int channels_count;
     std::vector<std::vector<double> > values;
 
-    bool checkAvailability(int channel,int level, int number);
+    bool checkAvailability(int channel,int level, int number) const;
 public:
     AudioWaveletImage();
     AudioWaveletImage(const std::vector< std::vector<double> > &wavelet_raw_data);
 
-    int getLevelsCount();
-    int getLevelSize(int level);
+    int getLevelsCount() const ;
+    int getLevelSize(int level) const ;
+    int getChannelsCount() const ;
 
-    double get(int channel,int level, int number);
+    double get(int channel,int level, int number) const;
     bool set(int channel,int level, int number, double value);
 
 };
