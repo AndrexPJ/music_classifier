@@ -32,6 +32,9 @@ public:
       int getSampleRate() const;
       bool setSampleRate(int sample_rate);
 
+      virtual T get(int channel, int number) const;
+      virtual bool set(int channel, int number, T value);
+
       std::vector<T>& operator[] (int i);
 };
 
@@ -41,6 +44,7 @@ public:
 template <class T>
 AudioData<T>::AudioData(){
     this->channelsData.resize(0);
+    this->channelsCount = 0;
 }
 
 /*template <class T>
@@ -161,6 +165,22 @@ std::vector<T>& AudioData<T>::operator [](int i){
     return this->channelsData[i];
 }
 
+
+template <class T>
+T AudioData<T>::get(int channel, int number) const{
+    if(this->checkDataAvailability(channel, number)) return this->channelsData[channel][number];
+    else return T(0);
+}
+
+
+template <class T>
+bool AudioData<T>::set(int channel, int number, T value){
+    if(this->checkDataAvailability(channel, number)){
+        this->channelsData[channel][number] = value;
+        return true;
+    }
+    else return false;
+}
 
 #endif // AUDIODATA_H
 

@@ -3,12 +3,10 @@
 
 #include "basicClasses/audiodata.h"
 #include <math.h>
-class AudioWaveletImage
+class AudioWaveletImage : public AudioData<double>
 {
 private:
-    int levels_count;
-    int channels_count;
-    std::vector<std::vector<double> > values;
+    int levelsCount;
 
     bool checkAvailability(int channel,int level, int number) const;
 public:
@@ -19,8 +17,12 @@ public:
     int getLevelSize(int level) const ;
     int getChannelsCount() const ;
 
-    double get(int channel,int level, int number) const;
-    bool set(int channel,int level, int number, double value);
+    double get(int channel, int number, int level) const;
+    bool set(int channel, int number, double value, int level);
+
+    //double get(int channel, int number) const;
+    //bool set(int channel, int number, double value);
+
 
 };
 

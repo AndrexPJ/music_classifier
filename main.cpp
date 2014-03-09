@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
             //cout << out[i]<<" ";
        //    cout<<i+1<<":"<<out[i]<<" ";
        // }
-
+       // TODO: think about get/set methods in AudioData<T>
        return 0;
     }
     catch(exception &ex){
