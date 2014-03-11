@@ -28,7 +28,7 @@ bool WFFT::perform(const std::vector<double> &Input,  std::vector< std::vector<c
     }
  }
 
- delete temp_array;
- delete input_array;
+ delete[] temp_array;
+ delete[] input_array;
  return true;
 }

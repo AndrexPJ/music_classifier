@@ -11,9 +11,12 @@ protected:
 public:
     AudioRecord();
     AudioRecord(const AudioRecord &record);
+    AudioRecord(AudioData<double> &data, int bitsPerSample);
     int getBitsPerSample() const;
     bool setBitsPerSample(int bps);
 
 };
+
+
 
 #endif // AUDIORECORD_H

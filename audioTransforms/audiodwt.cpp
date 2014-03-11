@@ -13,6 +13,8 @@ bool AudioDWT::perform(AudioRecord &record, AudioWaveletImage &result_image){
     }
 
     result_image = AudioWaveletImage(temp);
+    result_image.setSampleRate(record.getSampleRate());
+
 
     return true;
 

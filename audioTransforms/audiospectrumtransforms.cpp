@@ -128,7 +128,7 @@ std::vector< std::vector<double> > AudioSpectrumTools::getMelFilterbank(int freq
 std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int frequency_count, double max_frequency , double mid_frequency, int octaves_count){
     int filters_count = 12;
 
-    int sample_rate = frequency_count * 2;
+    //int sample_rate = frequency_count * 2;
 
     double first_bound_base = pow(2,-1.0/24) * frequency_count / max_frequency ; //0.971532;
     double second_bound_base = pow(2,1.0/24) * frequency_count / max_frequency ; //1.0293;

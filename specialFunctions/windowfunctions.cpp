@@ -1,7 +1,7 @@
 #include "windowfunctions.h"
 
 WindowFunction::~WindowFunction(){
-    delete this->values;
+    delete[] this->values;
 }
 
 WindowFunction::WindowFunction(){

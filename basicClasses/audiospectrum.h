@@ -41,8 +41,7 @@ AudioSpectrum<T>::AudioSpectrum()
 }
 
 template <class T>
-AudioSpectrum<T>::AudioSpectrum(const AudioSpectrum<T> &spectrum){
-    this->setData(spectrum.getData());
+AudioSpectrum<T>::AudioSpectrum(const AudioSpectrum<T> &spectrum) : AudioData< std::vector<T> >(spectrum.getData()){
     this->frequencyStep = spectrum.frequencyStep;
     this->sampleRate = spectrum.sampleRate;
     this->windowSize = spectrum.windowSize;

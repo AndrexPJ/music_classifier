@@ -13,7 +13,8 @@ protected:
 public:
       AudioData();
       //~AudioData();
-      bool setData(std::vector< std::vector<T> > const &data);
+      AudioData(const std::vector< std::vector<T> > &data);
+      bool setData(const std::vector< std::vector<T> > &data);
       std::vector< std::vector<T> > getData() const;
 
       bool getSpecificData(T &out_data ,int channel, int n) const;
@@ -32,11 +33,19 @@ public:
       int getSampleRate() const;
       bool setSampleRate(int sample_rate);
 
-      virtual T get(int channel, int number) const;
-      virtual bool set(int channel, int number, T value);
+      //virtual T get(int channel, int number) const;
+      //virtual bool set(int channel, int number, T value);
 
       std::vector<T>& operator[] (int i);
 };
+
+class AudioHistogram : public AudioData<double>
+{
+public:
+    AudioHistogram(AudioData<double> &data);
+};
+
+
 
 
 // ##### methods implementation #####
@@ -45,6 +54,14 @@ template <class T>
 AudioData<T>::AudioData(){
     this->channelsData.resize(0);
     this->channelsCount = 0;
+    this->setSampleRate(0);
+}
+
+
+template <class T>
+AudioData<T>::AudioData(const std::vector<std::vector<T> > &data){
+    this->setData(data);
+    this->setSampleRate(0);
 }
 
 /*template <class T>
@@ -166,21 +183,21 @@ std::vector<T>& AudioData<T>::operator [](int i){
 }
 
 
-template <class T>
+/*template <class T>
 T AudioData<T>::get(int channel, int number) const{
     if(this->checkDataAvailability(channel, number)) return this->channelsData[channel][number];
     else return T(0);
-}
+}*/
 
 
-template <class T>
+/*template <class T>
 bool AudioData<T>::set(int channel, int number, T value){
     if(this->checkDataAvailability(channel, number)){
         this->channelsData[channel][number] = value;
         return true;
     }
     else return false;
-}
+}*/
 
 #endif // AUDIODATA_H
 

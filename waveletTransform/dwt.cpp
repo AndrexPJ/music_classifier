@@ -25,11 +25,11 @@ bool DWT::Forward(std::vector<double> Input, std::vector<double> &Output){
 
  gsl_wavelet_transform_forward(wavelet,data,1,N,workspace);
 
- Output.insert(Output.end(),data,data+(N));
+ Output.insert(Output.end(),data,data+N);
 
  gsl_wavelet_free(wavelet);
  gsl_wavelet_workspace_free(workspace);
 
- delete data;
+ delete[] data;
  return true;
 }

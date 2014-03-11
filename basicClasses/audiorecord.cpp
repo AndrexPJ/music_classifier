@@ -7,12 +7,18 @@ AudioRecord::AudioRecord() {
     this->sampleRate = 0;
 }
 
-AudioRecord::AudioRecord(const AudioRecord &record){
+AudioRecord::AudioRecord(const AudioRecord &record) : AudioData<double>(record.getData()){
     this->bitsPerSample = record.bitsPerSample;
-    this->channelDataSize = record.channelDataSize;
-    this->channelsCount = record.channelsCount;
-    this->sampleRate = record.sampleRate;
-    this->setData(record.getData());
+    this->channelDataSize = record.getChannelDataSize();
+    this->channelsCount = record.getChannelsCount();
+    this->sampleRate = record.getSampleRate();
+}
+
+AudioRecord::AudioRecord(AudioData<double> &data, int bitsPerSample) :  AudioData<double>(data.getData()){
+    this->bitsPerSample = bitsPerSample;
+    this->channelDataSize = data.getChannelDataSize();
+    this->channelsCount = data.getChannelsCount();
+    this->sampleRate = data.getSampleRate();
 }
 
 int AudioRecord::getBitsPerSample() const{
@@ -23,3 +29,5 @@ bool AudioRecord::setBitsPerSample(int bps){
     this->bitsPerSample = bps;
     return true;
 }
+
+

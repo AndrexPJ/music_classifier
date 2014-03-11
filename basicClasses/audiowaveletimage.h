@@ -17,13 +17,13 @@ public:
     int getLevelSize(int level) const ;
     int getChannelsCount() const ;
 
-    double get(int channel, int number, int level) const;
-    bool set(int channel, int number, double value, int level);
+    double get(int channel, int level, int number) const;
+    bool set(int channel,int level, int number, double value);
 
-    //double get(int channel, int number) const;
-    //bool set(int channel, int number, double value);
-
+    double getGlobal(int channel, int level, int number) const; // number from 0 to max lvl length
 
 };
+
+
 
 #endif // AUDIOWAVELETIMAGE_H

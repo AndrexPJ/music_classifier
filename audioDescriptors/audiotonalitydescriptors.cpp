@@ -1,7 +1,7 @@
 #include "audiotonalitydescriptors.h"
 
 MainPitchDescriptorExtractor::MainPitchDescriptorExtractor(AudioPitchChroma &pitch_chroma, int pitches_count) : HistogramDescriptorExtractor(pitch_chroma){
-this->pitches_count = pitches_count;
+ this->pitches_count = pitches_count;
 }
 
 std::vector<double> MainPitchDescriptorExtractor::extract(){

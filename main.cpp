@@ -9,6 +9,7 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 #include "audioDescriptors/audiorhythmdescriptors.h"
 #include "audioDescriptors/audiotonalitydescriptors.h"
+#include "audioTransforms/audiowavelettransforms.h"
 
 #include <iostream>
 #include <fstream>
@@ -21,19 +22,44 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "neoclassical.wav";
+            filename = "rock.wav";
         else
             filename = argv[1];
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
+        //ar = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         ar = AudioRecordTransforms::performDCRemoval(ar);
 
         AudioWaveletImage awi;
 
         AudioDWT::perform(ar,awi);
 
-        /*
-        AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
+        AudioWaveletImageTransforms::performFullWaveRectification(awi);
+        AudioWaveletImageTransforms::performLowPassFiltering(awi);
+        //AudioWaveletImageTransforms::performNoiseRemoval(awi);
+        AudioData<double> b_data = AudioWaveletImageTransforms::performSummation(awi);
+        AutocorrelationFunction cr_f(b_data[0]);
+
+        AudioRecord ar_w(b_data,16);
+
+        WaveAudioSaver::saveAudioRecord(ar_w,"xm.wav");
+
+        double koeff = 60 * b_data.getSampleRate();
+
+        ofstream out_stream;
+        out_stream.open("out.txt",ios_base::out);
+
+        for(int i = 1; i < cr_f.getIntervalSize() / 2; i++){
+            if(i > koeff/30) break;
+            if(i < koeff/240) continue;
+            out_stream << koeff / i << " " << cr_f.perform(i) << endl;
+        }
+
+
+
+        out_stream.close();
+
+        /*AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
         AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
@@ -87,18 +113,6 @@ int main(int argc, char *argv[])
        // HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
        // AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
-
-        /*ofstream out_stream;
-        out_stream.open("out.txt",ios_base::out);
-        HainsworthNoveltyFunction h_nf(pch);
-
-        AutocorrelationFunction cr_f(h_nf.getValues()[0]);
-
-        for(int i = 1 ; i < cr_f.getIntervalSize(); i++){
-            out_stream << i << " " << cr_f.perform(i) << endl;
-        }
-
-        out_stream.close();*/
         //ZCRDescriptorExtractor zcr_de(ar);
         //EnergyDescriptorExtractor energy_de(ar);
 
@@ -115,9 +129,9 @@ int main(int argc, char *argv[])
         //SpCentroidDescriptorExtractor spcen_pch_de(pch,result_size);
         //SpRollOffDescriptorExtractor sproll_pch_de(pch,result_size);
 
-       // BeatHistogramDescriptorExtractor bh_de(cr_f);
+        //BeatHistogramDescriptorExtractor bh_de(cr_f,b_data.getSampleRate());
 
-        //AudioDescriptorCollector dc;
+        AudioDescriptorCollector dc;
         //dc.addDescriptorExtractor(h_de);
         //dc.addDescriptorExtractor(bh_de);
         //dc.addDescriptorExtractor(zcr_de);
@@ -133,16 +147,15 @@ int main(int argc, char *argv[])
         //dc.addDescriptorExtractor(spcen_pch_de);
         //dc.addDescriptorExtractor(sproll_pch_de);
 
-        //std::vector<double> out = dc.extract();
+        std::vector<double> out = dc.extract();
 
         //double sum = 0.0;
 
-       // for(int i = 0; i < out.size(); i++){
+        for(int i = 0; i < out.size(); i++){
             //cout << i << " " << out[i] << endl;
             //cout << out[i]<<" ";
-       //    cout<<i+1<<":"<<out[i]<<" ";
-       // }
-       // TODO: think about get/set methods in AudioData<T>
+           cout<<i+1<<":"<<out[i]<<" ";
+        }
        return 0;
     }
     catch(exception &ex){

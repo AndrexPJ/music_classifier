@@ -25,11 +25,11 @@ bool FFT::Forward(std::vector<complex> &Input, std::vector<complex> &Output, int
     for(int i = 0; i < N; i++)
         Output[i] = output[i] / sqrt(N);
 
-    delete output;
+    delete[] output;
     return true;
     }
 
-    delete output;
+    delete[] output;
     return false;
 }
 
@@ -47,11 +47,11 @@ bool FFT::Inverse(std::vector<complex> &Input, std::vector<complex> &Output, int
     for(int i = 0; i < N; i++)
         Output[i] = output[i] / sqrt(N);
 
-    delete output;
+    delete[] output;
     return true;
     }
 
-    delete output;
+    delete[] output;
     return false;
 }
 

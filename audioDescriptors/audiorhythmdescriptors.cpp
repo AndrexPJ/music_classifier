@@ -1,14 +1,19 @@
 #include "audiorhythmdescriptors.h"
 
-BeatHistogramDescriptorExtractor::BeatHistogramDescriptorExtractor(CorrelationFunction &c_func) : AudioDescriptorExtractor(){
+BeatHistogramDescriptorExtractor::BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, int sample_rate) : AudioDescriptorExtractor(){
     std::vector<double> temp = c_func.getValues();
     int temp_size = temp.size();
+    int data_size = temp_size /2;
 
-    this->histogram.resize(temp_size - 2);
+    this->koeff = 60.0 * sample_rate;
+
+    this->histogram.resize(temp_size - 1);
     this->histogram_size = this->histogram.size();
 
-    for(int i = 2; i < temp_size / 2; i++){
-        this->histogram[i-2] = temp[i];
+    for(int i = 2; i < data_size ; i++){
+        if(i > this->koeff/50) break;
+        if(i < this->koeff/240) continue;
+        this->histogram[i-2] = temp[data_size - i + 1];
     }
 
 }
@@ -44,13 +49,13 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
         }
     }
 
-    result.push_back(sum / this->histogram_size); // +
+    //result.push_back(sum) ; // +
     //result.push_back(first_peak_amp);
     //result.push_back(second_peak_amp);
     //result.push_back(second_peak_amp / first_peak_amp);
-    //result.push_back(double(abs(first_peak_n - second_peak_n)) / this->histogram_size);
-    //result.push_back(double(first_peak_n) / this->histogram_size);
-    //result.push_back(double(second_peak_n) / this->histogram_size);
+    //result.push_back(double(abs(first_peak_n - second_peak_n)) );
+    result.push_back(this->koeff / first_peak_n);
+    result.push_back(this->koeff / second_peak_n);
     return result;
 
 }

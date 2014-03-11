@@ -1,19 +1,18 @@
 #include "audiowaveletimage.h"
-
+#include <iostream>
 AudioWaveletImage::AudioWaveletImage() : AudioData<double>()
 {
     this->levelsCount = 0;
 }
 
-AudioWaveletImage::AudioWaveletImage(const std::vector< std::vector<double> > &wavelet_raw_data) : AudioData<double>()
+AudioWaveletImage::AudioWaveletImage(const std::vector< std::vector<double> > &wavelet_raw_data) : AudioData<double>(wavelet_raw_data)
 {
-    this->setData(wavelet_raw_data);
-    this->levelsCount = log2(this->channelsData[this->channelsCount - 1].size());
+    this->levelsCount = log2(this->channelDataSize);
 }
 
 bool AudioWaveletImage::checkAvailability(int channel, int level, int number) const {
     int bound = 1 << level;
-    return (channel < 0 || channel >= this->channelsCount || level < 0 || level >= this->levelsCount || number < 0 || number >= bound);
+    return !(channel < 0 || channel >= this->channelsCount || level < 0 || level >= this->levelsCount || number < 0 || number >= bound);
 }
 
 int AudioWaveletImage::getLevelsCount() const {
@@ -28,18 +27,23 @@ int AudioWaveletImage::getLevelSize(int level) const {
 }
 
 
-double AudioWaveletImage::get(int channel,int number, int level) const {
+double AudioWaveletImage::get(int channel, int level, int number) const {
     int bound = 1 << level;
-    if (this->checkAvailability(channel,level,number))
+    if (!this->checkAvailability(channel,level,number))
         return 0.0;
 
     return this->channelsData[channel][bound + number];
 }
 
+double AudioWaveletImage::getGlobal(int channel, int level, int number) const{
+    int n = this->getLevelSize(level);
+    int i = (number * n) / this->channelDataSize;
+    return this->get(channel,level,i);
+}
 
-bool AudioWaveletImage::set(int channel,int number, double value, int level){
+bool AudioWaveletImage::set(int channel,int level, int number, double value){
     int bound = 1 << level;
-    if (this->checkAvailability(channel,level,number))
+    if (!this->checkAvailability(channel,level,number))
         return false;
 
     this->channelsData[channel][bound + number] = value;
@@ -49,3 +53,4 @@ bool AudioWaveletImage::set(int channel,int number, double value, int level){
 int AudioWaveletImage::getChannelsCount() const{
     return this->channelsCount;
 }
+
