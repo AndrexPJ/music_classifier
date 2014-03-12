@@ -22,12 +22,12 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "rock.wav";
+            filename = "metal.wav";
         else
             filename = argv[1];
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
-        //ar = AudioRecordTransforms::performLowPassFilter(ar,50.0);
+        //ar = AudioRecordTransforms::performLowPassFilter(ar,100.0);
         ar = AudioRecordTransforms::performDCRemoval(ar);
 
         AudioWaveletImage awi;
@@ -36,13 +36,13 @@ int main(int argc, char *argv[])
 
         AudioWaveletImageTransforms::performFullWaveRectification(awi);
         AudioWaveletImageTransforms::performLowPassFiltering(awi);
-        //AudioWaveletImageTransforms::performNoiseRemoval(awi);
+        AudioWaveletImageTransforms::performNoiseRemoval(awi);
         AudioData<double> b_data = AudioWaveletImageTransforms::performSummation(awi);
-        AutocorrelationFunction cr_f(b_data[0]);
 
         AudioRecord ar_w(b_data,16);
-
         WaveAudioSaver::saveAudioRecord(ar_w,"xm.wav");
+
+        AutocorrelationFunction cr_f(b_data[0]);
 
         double koeff = 60 * b_data.getSampleRate();
 
@@ -52,10 +52,8 @@ int main(int argc, char *argv[])
         for(int i = 1; i < cr_f.getIntervalSize() / 2; i++){
             if(i > koeff/30) break;
             if(i < koeff/240) continue;
-            out_stream << koeff / i << " " << cr_f.perform(i) << endl;
+            out_stream << koeff/i << " " << cr_f.perform(i) << endl;
         }
-
-
 
         out_stream.close();
 

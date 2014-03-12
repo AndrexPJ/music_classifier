@@ -17,7 +17,7 @@ bool AudioWaveletImageTransforms::performLowPassFiltering(AudioWaveletImage &ima
         for(int lvl = 0; lvl < image.getLevelsCount(); lvl++){
             image.set(ch,lvl,0,temp_i.get(ch,lvl,0));
             for(int i = 1; i < image.getLevelSize(lvl); i++){
-                temp = (1 - alpha)*temp_i.get(ch,lvl,i) - alpha * image.get(ch,lvl,i);
+                temp = alpha * temp_i.get(ch,lvl,i) + (1 - alpha) * image.get(ch,lvl,i - 1);
                 image.set(ch,lvl,i,temp);
             }
         }

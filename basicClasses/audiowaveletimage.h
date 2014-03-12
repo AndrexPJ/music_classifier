@@ -9,6 +9,7 @@ private:
     int levelsCount;
 
     bool checkAvailability(int channel,int level, int number) const;
+    int getBound(int level) const;
 public:
     AudioWaveletImage();
     AudioWaveletImage(const std::vector< std::vector<double> > &wavelet_raw_data);
