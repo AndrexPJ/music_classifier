@@ -25,6 +25,7 @@ public:
 
 class AutocorrelationFunction : public CorrelationFunction{
 public:
+    AutocorrelationFunction();
     AutocorrelationFunction(std::vector<double> in_values);
 };
 

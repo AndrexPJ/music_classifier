@@ -7,10 +7,11 @@
 
 namespace AudioWaveletImageTransforms {
     bool performFullWaveRectification(AudioWaveletImage &image);
-    bool performLowPassFiltering(AudioWaveletImage &image, double alpha = 0.99);
+    bool performLowPassFiltering(AudioWaveletImage &image, double alpha = 0.9);
+    bool perfromDownsampling(AudioWaveletImage &image, int down_sampling_koeff = 16);
     bool performNoiseRemoval(AudioWaveletImage &image);
 
-    AudioData<double> performSummation(AudioWaveletImage &image, int down_sampling_koeff = 16);
+    AudioData<double> performSummation(AudioWaveletImage &image);
 }
 
 #endif // AUDIOWAVELETTRANSFORMS_H

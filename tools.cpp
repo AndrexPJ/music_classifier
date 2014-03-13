@@ -10,3 +10,5 @@ unsigned int Tools::nearestPowerOfTwoAbove(unsigned int number){
     number |= (number >> 16);
     return number + 1;
 }
+
+

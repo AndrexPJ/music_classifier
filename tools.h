@@ -2,6 +2,7 @@
 #define TOOLS_H
 #include <vector>
 #include <numeric>
+#include <math.h>
 namespace Tools {
 
 unsigned int nearestPowerOfTwoAbove(unsigned int number);
@@ -17,6 +18,9 @@ std::vector<T> getAverage(std::vector<T> &a, std::vector<T> &b);
 
 template <class T>
 T signum(T t);
+
+template <class T>
+std::vector< std::vector<T> > getSimilarityMatrix(std::vector< std::vector<T> > &vectors);
 
 }
 
@@ -56,6 +60,52 @@ T Tools::signum(T t){
     if (t < T(0)) return T(-1);
     return T(0);
 }
+
+template <class T>
+std::vector< std::vector<T> > Tools::getSimilarityMatrix(std::vector<std::vector<T> > &vectors){
+
+ T epsilon = std::numeric_limits<T>::epsilon();
+ int N = vectors.size();
+ if(N == 0) return vectors;
+ int n = vectors[0].size();
+
+ std::vector< std::vector<T> > result;
+ result.resize(N);
+ T v1_n, v2_n, scalar;
+
+
+ for(int i = N - 1; i >= 0; i--){
+     result[i].assign(N,0.0);
+     for(int j = 0; j <= i; j++){
+         v1_n = 0.0;
+         v2_n = 0.0;
+         scalar = 0.0;
+
+         for(int k = 0; k < n; k++)
+         {
+             scalar += vectors[i][k] * vectors[j][k];
+             v1_n += vectors[i][k] * vectors[i][k];
+             v2_n += vectors[j][k] * vectors[j][k];
+         }
+         v1_n = sqrt(v1_n);
+         v2_n = sqrt(v2_n);
+
+         if((v1_n <= epsilon) && (v2_n <= epsilon))
+             result[i][j] = 1.0;
+
+         if((v1_n <= epsilon) || (v2_n <= epsilon))
+             result[i][j] = 0.0;
+         else
+            result[i][j] = scalar / (v1_n * v2_n);
+     }
+
+     for(int j = i + 1; j < N; j++)
+         result[i][j] = result[j][i];
+
+ }
+ return result;
+}
+
 
 
 #endif // TOOLS_H

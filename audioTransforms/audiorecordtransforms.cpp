@@ -133,3 +133,28 @@ AudioRecord AudioRecordTransforms::performDCRemoval(const AudioRecord &record){
     return temp_record;
 }
 
+
+AudioRecord AudioRecordTransforms::performDownSampling(const AudioRecord &record, int down_sampling_koeff){
+    AudioRecord temp_record(record);
+
+    std::vector< std::vector<double> > data;
+
+    int channels_count = temp_record.getChannelsCount();
+    int data_size = temp_record.getChannelDataSize() / down_sampling_koeff;
+
+    data.resize(channels_count);
+
+    for(int ch = 0; ch < channels_count; ch++){
+        data[ch].resize(data_size);
+
+        for(int i = 0; i < data_size; i++){
+            data[ch][i] = temp_record[ch][i * down_sampling_koeff];
+        }
+    }
+
+    temp_record.setData(data);
+    temp_record.setSampleRate(temp_record.getSampleRate() / down_sampling_koeff);
+
+    return temp_record;
+
+}

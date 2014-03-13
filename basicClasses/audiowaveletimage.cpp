@@ -20,6 +20,11 @@ int AudioWaveletImage::getLevelsCount() const {
     return this->levelsCount;
 }
 
+bool AudioWaveletImage::setLevelsCount(int count) {
+    this->levelsCount = count;
+    return true;
+}
+
 int AudioWaveletImage::getLevelSize(int level) const {
     if(level >= 0 && level < this->levelsCount){
         return (1 << (level));

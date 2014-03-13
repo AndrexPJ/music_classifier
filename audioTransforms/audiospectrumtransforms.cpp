@@ -69,6 +69,47 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
 
 }
 
+AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioAmpSpectrum &spectrum){
+    AudioBeatSpectrum temp;
+
+    std::vector< std::vector<std::vector<double> > > temp_vector;
+    std::vector< double > temp_ac_f;
+
+    int channels_count = spectrum.getChannelsCount();
+    int N = spectrum.getChannelDataSize();
+
+    temp_ac_f.resize(N);
+    temp_vector.resize(channels_count);
+
+    AutocorrelationFunction ac_f;
+
+    for(int ch = 0; ch < channels_count; ch++)
+    {
+        temp_vector[ch] = Tools::getSimilarityMatrix(spectrum[ch]);
+
+        for(int j = 0; j < N; j++){
+            for(int i = 0; i < N; i++)
+                temp_ac_f[i] = temp_vector[ch][i][j];
+
+            ac_f = AutocorrelationFunction(temp_ac_f);
+            temp_ac_f = ac_f.getValues();
+            for(int i = 0; i < N; i++)
+                temp_vector[ch][i][j] = temp_ac_f[i];
+        }
+
+        for(int i = 0; i < N; i++){
+            ac_f = AutocorrelationFunction(temp_vector[ch][i]);
+            temp_vector[ch][i] = ac_f.getValues();
+        }
+
+    }
+
+    temp.setData(temp_vector);
+    temp.setSampleRate(spectrum.getSampleRate());
+    temp.setWindowSize(spectrum.getWindowSize());
+
+    return temp;
+}
 
 
 int AudioSpectrumTools::getCriticalBandRate(double frequency){

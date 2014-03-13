@@ -22,69 +22,58 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "metal.wav";
+            filename = "beat60.wav";
         else
             filename = argv[1];
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
-        //ar = AudioRecordTransforms::performLowPassFilter(ar,100.0);
-        ar = AudioRecordTransforms::performDCRemoval(ar);
+        ar = AudioRecordTransforms::performLowPassFilter(ar,50.0);
 
-        AudioWaveletImage awi;
+        //AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
+        //AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
+        //AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
 
-        AudioDWT::perform(ar,awi);
+        //int window_size = 2048;
+        //int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
 
-        AudioWaveletImageTransforms::performFullWaveRectification(awi);
-        AudioWaveletImageTransforms::performLowPassFiltering(awi);
-        AudioWaveletImageTransforms::performNoiseRemoval(awi);
-        AudioData<double> b_data = AudioWaveletImageTransforms::performSummation(awi);
+        int window_size_rhythm = 2048;
+        int hop_size_rhythm = window_size_rhythm;
+        HanningWindowFunction wf_rhythm(window_size_rhythm);
 
-        AudioRecord ar_w(b_data,16);
-        WaveAudioSaver::saveAudioRecord(ar_w,"xm.wav");
+        //HanningWindowFunction wf(window_size);
 
-        AutocorrelationFunction cr_f(b_data[0]);
+        //AudioSpectrum<complex> sp_clear;
+        //AudioSpectrum<complex> sp_filtered;
+        //AudioSpectrum<complex> sp_pitch;
+        AudioSpectrum<complex> sp_rhythm;
+        AudioWFFT::perform(ar,sp_rhythm,wf_rhythm,hop_size_rhythm);
+        AudioAmpSpectrum amp_sp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_rhythm);
+        AudioBeatSpectrum beat_sp = AudioSpectrumTransforms::getBeatSpectrum(amp_sp_rhythm);
 
-        double koeff = 60 * b_data.getSampleRate();
+
 
         ofstream out_stream;
         out_stream.open("out.txt",ios_base::out);
 
-        for(int i = 1; i < cr_f.getIntervalSize() / 2; i++){
-            if(i > koeff/30) break;
-            if(i < koeff/240) continue;
-            out_stream << koeff/i << " " << cr_f.perform(i) << endl;
-        }
+        double koeff = double(window_size_rhythm) / ar.getSampleRate();
+        int N = beat_sp.getChannelDataSize();
+        for(int i = 0; i < N; i++)
+            for(int j = 0; j < N; j++)
+                out_stream << koeff * i << " " << koeff * j  << " " << beat_sp[0][i][j] << endl;
 
         out_stream.close();
 
-        /*AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
-        AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
-        AudioRecord ar_filtered = AudioRecordTransforms::performPreEmphasisFilter(ar,0.95);
+        //AudioWFFT::perform(ar,sp_clear,wf,hop_size);
+        //AudioWFFT::perform(ar_filtered,sp_filtered,wf,hop_size);
+        //AudioWFFT::perform(ar_lp_filtered,sp_lp_rhythm,wf,hop_size_rhythm);
+        //AudioWFFT::perform(ar,sp_pitch,wf,window_size);
 
-        int window_size = 2048;
-        int hop_size = window_size * 0.5; // 2048 window_size and hop_size = 0.5 * window_size is a best for audio analysing
-        int hop_size_rhythm = window_size;
-        HanningWindowFunction wf(window_size);
+        //AudioAmpSpectrum amp_sp_lp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_lp_rhythm);
+        //AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
+        //AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
 
-        AudioSpectrum<complex> sp_clear;
-        AudioSpectrum<complex> sp_filtered;
-        AudioSpectrum<complex> sp_pitch;
-        AudioSpectrum<complex> sp_lp_rhythm;
-        AudioSpectrum<complex> sp_hp_rhythm;
-
-        AudioWFFT::perform(ar,sp_clear,wf,hop_size);
-        AudioWFFT::perform(ar_filtered,sp_filtered,wf,hop_size);
-        AudioWFFT::perform(ar_lp_filtered,sp_lp_rhythm,wf,hop_size_rhythm);
-        AudioWFFT::perform(ar_hp_filtered,sp_hp_rhythm,wf,hop_size_rhythm);
-        AudioWFFT::perform(ar,sp_pitch,wf,window_size);
-
-        AudioAmpSpectrum amp_sp_hp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_hp_rhythm);
-        AudioAmpSpectrum amp_sp_lp_rhythm = AudioSpectrumTransforms::getAmpSpectrum(sp_lp_rhythm);
-        AudioAmpSpectrum amp_sp_clear = AudioSpectrumTransforms::getAmpSpectrum(sp_clear);
-        AudioAmpSpectrum amp_sp_filtered = AudioSpectrumTransforms::getAmpSpectrum(sp_filtered);
-
-        AudioAmpSpectrum amp_sp_pitch = AudioSpectrumTransforms::getAmpSpectrum(sp_pitch);
-        AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);*/
+        //AudioAmpSpectrum amp_sp_pitch = AudioSpectrumTransforms::getAmpSpectrum(sp_pitch);
+        //AudioPitchChroma pch = AudioSpectrumTransforms::getPitchChroma(amp_sp_clear);
 
        // int result_size = 1;
 
@@ -107,7 +96,24 @@ int main(int argc, char *argv[])
 
         //out_stream.close();
 
-        //HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+       //HainsworthNoveltyFunction flux_lp_nf(amp_sp_lp_rhythm);
+       //AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
+
+       //double koeff = 60 * (double(ar.getSampleRate()) / window_size);
+
+       /*ofstream out_stream;
+       out_stream.open("out.txt",ios_base::out);
+
+       for(int i = 1; i < cr_f.getIntervalSize() / 2; i++){
+           if(i > koeff/50) break;
+           if(i < koeff/240) continue;
+           out_stream << i << " " << cr_f.perform(i) << endl;
+       }
+
+       out_stream.close();*/
+
+
+
        // HainsworthNoveltyFunction flux_hp_nf(amp_sp_hp_rhythm);
        // AutocorrelationFunction cr_f(flux_lp_nf.getValues()[0]);
 
@@ -127,9 +133,9 @@ int main(int argc, char *argv[])
         //SpCentroidDescriptorExtractor spcen_pch_de(pch,result_size);
         //SpRollOffDescriptorExtractor sproll_pch_de(pch,result_size);
 
-        //BeatHistogramDescriptorExtractor bh_de(cr_f,b_data.getSampleRate());
+        //BeatHistogramDescriptorExtractor bh_de(cr_f,koeff);
 
-        AudioDescriptorCollector dc;
+        //AudioDescriptorCollector dc;
         //dc.addDescriptorExtractor(h_de);
         //dc.addDescriptorExtractor(bh_de);
         //dc.addDescriptorExtractor(zcr_de);
@@ -145,15 +151,15 @@ int main(int argc, char *argv[])
         //dc.addDescriptorExtractor(spcen_pch_de);
         //dc.addDescriptorExtractor(sproll_pch_de);
 
-        std::vector<double> out = dc.extract();
+        //std::vector<double> out = dc.extract();
 
         //double sum = 0.0;
 
-        for(int i = 0; i < out.size(); i++){
+        //for(int i = 0; i < out.size(); i++){
             //cout << i << " " << out[i] << endl;
             //cout << out[i]<<" ";
-           cout<<i+1<<":"<<out[i]<<" ";
-        }
+           //cout<<i+1<<":"<<out[i]<<" ";
+        //}
        return 0;
     }
     catch(exception &ex){

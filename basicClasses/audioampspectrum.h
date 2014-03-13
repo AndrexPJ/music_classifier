@@ -17,4 +17,11 @@ public:
     AudioPitchChroma(const AudioPitchChroma &pitch_chroma);
 
 };
+
+
+class AudioBeatSpectrum : public AudioSpectrum<double>{
+public:
+    AudioBeatSpectrum();
+    AudioBeatSpectrum(const AudioBeatSpectrum &spectrum);
+};
 #endif // AUDIOAMPSPECTRUM_H

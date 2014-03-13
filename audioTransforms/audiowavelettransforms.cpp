@@ -17,11 +17,20 @@ bool AudioWaveletImageTransforms::performLowPassFiltering(AudioWaveletImage &ima
         for(int lvl = 0; lvl < image.getLevelsCount(); lvl++){
             image.set(ch,lvl,0,temp_i.get(ch,lvl,0));
             for(int i = 1; i < image.getLevelSize(lvl); i++){
-                temp = alpha * temp_i.get(ch,lvl,i) + (1 - alpha) * image.get(ch,lvl,i - 1);
+                temp = (1 - alpha) * image.get(ch,lvl,i) - alpha * temp_i.get(ch,lvl,i);
                 image.set(ch,lvl,i,temp);
             }
         }
     return true;
+}
+
+bool AudioWaveletImageTransforms::perfromDownsampling(AudioWaveletImage &image, int down_sampling_koeff){
+     if(down_sampling_koeff <= 0) down_sampling_koeff = 1;
+
+     int new_size = image.getChannelDataSize() / down_sampling_koeff;
+     image.setSampleRate(image.getSampleRate() / down_sampling_koeff);
+     image.setDataSize(image.getChannelsCount(), new_size);
+     return image.setLevelsCount(log2(new_size));
 }
 
 bool AudioWaveletImageTransforms::performNoiseRemoval(AudioWaveletImage &image){
@@ -39,11 +48,9 @@ bool AudioWaveletImageTransforms::performNoiseRemoval(AudioWaveletImage &image){
     return true;
 }
 
-AudioData<double> AudioWaveletImageTransforms::performSummation(AudioWaveletImage &image, int down_sampling_koeff){
-    if(down_sampling_koeff <= 0) down_sampling_koeff = 1;
-
+AudioData<double> AudioWaveletImageTransforms::performSummation(AudioWaveletImage &image){
     int channels_count = image.getChannelsCount();
-    int data_size = image.getChannelDataSize() / down_sampling_koeff;
+    int data_size = image.getChannelDataSize();
 
     AudioData<double> result;
 
@@ -52,7 +59,7 @@ AudioData<double> AudioWaveletImageTransforms::performSummation(AudioWaveletImag
         temp[ch].assign(data_size,0.0);
         for(int i = 0; i < data_size; i++)
             for(int lvl = 0; lvl < image.getLevelsCount(); lvl++)
-                temp[ch][i] += image.getGlobal(ch,lvl,down_sampling_koeff * i);
+                temp[ch][i] += image.getGlobal(ch,lvl,i);
     }
 
     double norm;
@@ -64,7 +71,7 @@ AudioData<double> AudioWaveletImageTransforms::performSummation(AudioWaveletImag
     }
 
     result.setData(temp);
-    result.setSampleRate(image.getSampleRate() /down_sampling_koeff);
+    result.setSampleRate(image.getSampleRate());
 
     return result;
 }

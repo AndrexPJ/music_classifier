@@ -11,11 +11,12 @@
 
 class BeatHistogramDescriptorExtractor : public AudioDescriptorExtractor{
 private:
+    int max_bmp, min_bmp;
     std::vector<double> histogram;
     int histogram_size;
     double koeff;
 public:
-    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, int sample_rate);
+    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff);
     std::vector<double> extract();
 
 };

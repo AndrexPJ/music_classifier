@@ -15,6 +15,7 @@ public:
     AudioWaveletImage(const std::vector< std::vector<double> > &wavelet_raw_data);
 
     int getLevelsCount() const ;
+    bool setLevelsCount(int count);
     int getLevelSize(int level) const ;
     int getChannelsCount() const ;
 

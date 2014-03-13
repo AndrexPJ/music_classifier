@@ -76,6 +76,9 @@ bool CorrelationFunction::normalize(){
     return true;
 }
 
+AutocorrelationFunction::AutocorrelationFunction() : CorrelationFunction(){
+}
+
 AutocorrelationFunction::AutocorrelationFunction(std::vector<double> in_values){
     std::vector<complex> temp;
     std::vector<complex> result;

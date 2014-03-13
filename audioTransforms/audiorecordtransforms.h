@@ -13,6 +13,7 @@ namespace AudioRecordTransforms {
     AudioRecord performHighPassFilter(const AudioRecord &record, double cut_off);
     AudioRecord performLowPassFilter(const AudioRecord &record, double cut_off);
     AudioRecord performDCRemoval(const AudioRecord &record);
+    AudioRecord performDownSampling(const AudioRecord &record, int down_sampling_koeff = 16);
 }
 
 #endif // AUDIORECORDTRANSFORMS_H

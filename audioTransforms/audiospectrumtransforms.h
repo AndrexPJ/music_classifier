@@ -3,12 +3,16 @@
 
 #include "basicClasses/audiospectrum.h"
 #include "basicClasses/audioampspectrum.h"
-
+#include "specialFunctions/correlationfunctions.h"
+#include "tools.h"
 #include <vector>
+
 
 namespace AudioSpectrumTransforms{
    AudioAmpSpectrum getAmpSpectrum(AudioSpectrum<complex> &spectrum);
    AudioPitchChroma getPitchChroma(AudioAmpSpectrum &spectrum);
+   AudioBeatSpectrum getBeatSpectrum(AudioAmpSpectrum &spectrum);
+
 }
 
 namespace AudioSpectrumTools {
