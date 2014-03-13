@@ -22,12 +22,11 @@ int main(int argc, char *argv[])
     try{
         string filename;
         if(argc < 2)
-            filename = "beat60.wav";
+            filename = "classical2.wav";
         else
             filename = argv[1];
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
-        ar = AudioRecordTransforms::performLowPassFilter(ar,50.0);
 
         //AudioRecord ar_lp_filtered = AudioRecordTransforms::performLowPassFilter(ar,50.0);
         //AudioRecord ar_hp_filtered = AudioRecordTransforms::performHighPassFilter(ar,10000.0);
@@ -166,6 +165,7 @@ int main(int argc, char *argv[])
         std::cerr << ex.what() << std::endl;
         return 1;
     }
+    // TODO : 2dmin autocorr (fft)
     // TODO : mfcc descriptor extractor
 }
 

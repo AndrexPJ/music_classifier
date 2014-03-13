@@ -87,7 +87,9 @@ AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioAmpSpectrum &spe
     {
         temp_vector[ch] = Tools::getSimilarityMatrix(spectrum[ch]);
 
-        for(int j = 0; j < N; j++){
+
+
+       /*for(int j = 0; j < N; j++){
             for(int i = 0; i < N; i++)
                 temp_ac_f[i] = temp_vector[ch][i][j];
 
@@ -97,10 +99,11 @@ AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioAmpSpectrum &spe
                 temp_vector[ch][i][j] = temp_ac_f[i];
         }
 
+
         for(int i = 0; i < N; i++){
             ac_f = AutocorrelationFunction(temp_vector[ch][i]);
             temp_vector[ch][i] = ac_f.getValues();
-        }
+        }*/
 
     }
 

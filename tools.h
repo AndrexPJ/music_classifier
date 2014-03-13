@@ -75,8 +75,8 @@ std::vector< std::vector<T> > Tools::getSimilarityMatrix(std::vector<std::vector
 
 
  for(int i = N - 1; i >= 0; i--){
-     result[i].assign(N,0.0);
-     for(int j = 0; j <= i; j++){
+     result[i].assign(N,1.0);
+     for(int j = 0; j <i; j++){
          v1_n = 0.0;
          v2_n = 0.0;
          scalar = 0.0;
