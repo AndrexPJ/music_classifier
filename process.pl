@@ -1,5 +1,5 @@
 
-$main_genre = 'metal';
+$main_genre = 'jazz';
 
 $exapmles_main_size = 70;
 $exapmles_sub_size = 70; 
@@ -13,8 +13,8 @@ $test_file_name = "test_".$main_genre;
 $examples_file_name = "examples_".$main_genre;
 
 #@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
-@genre_list = ("metal","rock");
-#@genre_list = ("jazz","blues");
+#@genre_list = ("metal","rock");
+@genre_list = ("jazz","blues");
 
 sub calculateAndWrite{
 	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size) = @_;
@@ -22,23 +22,50 @@ sub calculateAndWrite{
 	opendir (DIR,$dir_path);
 
 	my $i = 0;
+	my $test_i = 0;
+	my $exmp_i = 0;
+
 	foreach my $cur_file (readdir(DIR)){
 
 		if($cur_file =~/.wav/){
 			my $res = `./music_classifier-release-build/music_classifier $dir_path"/"$cur_file `;
 		    #my $res = `./music_classifier-release-build/music_classifier $dir_path"/"$cur_file $i`;
-			print $i," ",$cur_file,"\n";
-			
-			if($i < $exaples_size){
-				#print $file_examples $res
-				print $file_examples $target." ".$res."\n";
-			}
-			else{
-				if($i < $exaples_size + $test_size){
-				  print $file_test $target." ".$res."\n";
+			print $i," ",$cur_file," ",$target," ";
+			if(($i % 2) == 1){
+				if($exmp_i < $exaples_size){
+					print "examples\n";
+					print $file_examples $target." ".$res."\n";
+					$exmp_i++;
 				}
 				else{
-					last;
+					if($test_i < $test_size){
+						print "test\n";
+				  		print $file_test $target." ".$res."\n";
+				  		$test_i++;
+					}
+					else{
+						last;
+					}
+				}
+				
+			}
+			else{
+
+				if($test_i < $test_size){
+						print "test\n";
+				  		print $file_test $target." ".$res."\n";
+				  		$test_i++;
+					}
+				
+				else{
+					if($exmp_i < $exaples_size){
+						print "examples\n";
+						print $file_examples $target." ".$res."\n";
+						$exmp_i++;
+					}
+					else{
+						last;
+					}
 				}
 			}
 			

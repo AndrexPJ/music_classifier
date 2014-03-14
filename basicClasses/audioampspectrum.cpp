@@ -21,3 +21,11 @@ AudioBeatSpectrum::AudioBeatSpectrum(){
 AudioBeatSpectrum::AudioBeatSpectrum(const AudioBeatSpectrum &spectrum) : AudioSpectrum<double>(spectrum){
 
 }
+
+AudioPhaseSpectrum::AudioPhaseSpectrum(){
+
+}
+
+AudioPhaseSpectrum::AudioPhaseSpectrum(const AudioPhaseSpectrum &spectrum) : AudioSpectrum<double>(spectrum){
+
+}

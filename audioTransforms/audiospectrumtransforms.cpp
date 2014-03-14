@@ -27,6 +27,66 @@ AudioAmpSpectrum AudioSpectrumTransforms::getAmpSpectrum(AudioSpectrum<complex> 
 
 }
 
+AudioPhaseSpectrum AudioSpectrumTransforms::getPhaseSpectrum(AudioSpectrum<complex> &spectrum){
+    AudioPhaseSpectrum temp;
+
+
+    int half_window = spectrum.getFrequencyCount(); // frequency count is half window size
+    int channels_count = spectrum.getChannelsCount();
+    int data_size = spectrum.getChannelDataSize();
+
+    double epsilon = std::numeric_limits<double>::epsilon();
+
+    temp.setDataSize(channels_count,data_size, half_window);
+
+    for(int i = 0; i < channels_count; i++){
+        for(int j = 0; j < data_size; j++){
+            for(int k = 0; k < half_window; k++){
+                if(spectrum[i][j][k].re() <= epsilon)
+                    temp[i][j][k] = M_PI/2;
+                else
+                    temp[i][j][k] =  atan((-spectrum[i][j][k].im())/spectrum[i][j][k].re());
+            }
+        }
+    }
+
+    temp.setWindowSize(spectrum.getWindowSize());
+    temp.setFrequencyStep(spectrum.getFrequencyStep());
+    temp.setSampleRate(spectrum.getSampleRate());
+
+    return temp;
+
+}
+
+AudioAmpSpectrum AudioSpectrumTransforms::getLogAmpSpectrum(AudioAmpSpectrum &spectrum){
+     AudioAmpSpectrum temp;
+     int fq_count = spectrum.getFrequencyCount();
+     int channels_count = spectrum.getChannelsCount();
+     int data_size = spectrum.getChannelDataSize();
+
+     double epsilon = std::numeric_limits<double>::epsilon();
+
+     temp.setDataSize(channels_count,data_size, fq_count);
+
+     for(int i = 0; i < channels_count; i++){
+         for(int j = 0; j < data_size; j++){
+             for(int k = 0; k < fq_count; k++){
+                 if(spectrum[i][j][k] <= epsilon)
+                     temp[i][j][k] = 0;
+                 else
+                     temp[i][j][k] =  10 *log10(spectrum[i][j][k]);
+             }
+         }
+     }
+
+     temp.setWindowSize(spectrum.getWindowSize());
+     temp.setFrequencyStep(spectrum.getFrequencyStep());
+     temp.setSampleRate(spectrum.getSampleRate());
+
+     return temp;
+
+}
+
 AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spectrum){
     AudioPitchChroma temp;
 
@@ -71,45 +131,29 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
 
 AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioAmpSpectrum &spectrum){
     AudioBeatSpectrum temp;
-
     std::vector< std::vector<std::vector<double> > > temp_vector;
-    std::vector< double > temp_ac_f;
+    std::vector<double> temp_ac_vector;
 
     int channels_count = spectrum.getChannelsCount();
     int N = spectrum.getChannelDataSize();
-
-    temp_ac_f.resize(N);
     temp_vector.resize(channels_count);
+    temp_ac_vector.resize(N);
 
     AutocorrelationFunction ac_f;
 
     for(int ch = 0; ch < channels_count; ch++)
     {
         temp_vector[ch] = Tools::getSimilarityMatrix(spectrum[ch]);
-
-
-
-       /*for(int j = 0; j < N; j++){
-            for(int i = 0; i < N; i++)
-                temp_ac_f[i] = temp_vector[ch][i][j];
-
-            ac_f = AutocorrelationFunction(temp_ac_f);
-            temp_ac_f = ac_f.getValues();
-            for(int i = 0; i < N; i++)
-                temp_vector[ch][i][j] = temp_ac_f[i];
-        }
-
-
-        for(int i = 0; i < N; i++){
+        /*for(int i = 0; i < N; i++){
             ac_f = AutocorrelationFunction(temp_vector[ch][i]);
             temp_vector[ch][i] = ac_f.getValues();
         }*/
-
     }
 
     temp.setData(temp_vector);
-    temp.setSampleRate(spectrum.getSampleRate());
-    temp.setWindowSize(spectrum.getWindowSize());
+    temp.setWindowSize(2 * N);
+    temp.setSampleRate(2 * N);
+
 
     return temp;
 }
@@ -172,7 +216,6 @@ std::vector< std::vector<double> > AudioSpectrumTools::getMelFilterbank(int freq
 std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int frequency_count, double max_frequency , double mid_frequency, int octaves_count){
     int filters_count = 12;
 
-    //int sample_rate = frequency_count * 2;
 
     double first_bound_base = pow(2,-1.0/24) * frequency_count / max_frequency ; //0.971532;
     double second_bound_base = pow(2,1.0/24) * frequency_count / max_frequency ; //1.0293;
@@ -188,12 +231,9 @@ std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int
     while(mid_frequency * (2 << (octaves_count - 1)) > frequency_count)
         octaves_count--;
 
-
     std::vector< std::vector<double> > result_filters(filters_count);
-    //result_filters.resize(filters_count);
 
     for(int filt_i = 0; filt_i < filters_count; filt_i++){
-        //result_filters[filt_i].resize(frequency_count);
         result_filters[filt_i].assign(frequency_count,0.0);
 
         first_bound = first_bound_base * mid_frequency;
@@ -212,13 +252,6 @@ std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int
 
             for(int i = first_bound_i; i <= second_bound_i; i++)
                 result_filters[filt_i][i] = peak;
-
-            /*for(int i = first_bound_i; i <= center; i++){
-                result_filters[filt_i][i] = ((i - first_bound_i) * peak) / (center - first_bound_i);
-            }
-            for(int i = center + 1; i <= second_bound_i; i++){
-                result_filters[filt_i][i] = ((second_bound_i - i) * peak) / (second_bound_i - center);
-            }*/
 
         }
 

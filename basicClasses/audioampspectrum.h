@@ -24,4 +24,10 @@ public:
     AudioBeatSpectrum();
     AudioBeatSpectrum(const AudioBeatSpectrum &spectrum);
 };
+
+class AudioPhaseSpectrum : public AudioSpectrum<double>{
+public:
+    AudioPhaseSpectrum();
+    AudioPhaseSpectrum(const AudioPhaseSpectrum &spectrum);
+};
 #endif // AUDIOAMPSPECTRUM_H

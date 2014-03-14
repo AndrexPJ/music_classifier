@@ -24,16 +24,16 @@ std::vector<double> AudioDescriptorCollector::extract(){
  }
 
 
- /* double norm = 0.0;
+  double norm = 0.0;
   for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
-     norm += (*it) * (*it);
+     norm += (*it) * (*it) ;
  }
  norm = sqrt(norm);
 
  for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
      (*it) /= norm;
      //(*it) = (*it) * 2 - 1;
- }*/
+ }
 
  return result;
 }

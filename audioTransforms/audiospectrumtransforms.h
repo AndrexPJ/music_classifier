@@ -10,8 +10,11 @@
 
 namespace AudioSpectrumTransforms{
    AudioAmpSpectrum getAmpSpectrum(AudioSpectrum<complex> &spectrum);
+   AudioPhaseSpectrum getPhaseSpectrum(AudioSpectrum<complex> &spectrum);
+   AudioAmpSpectrum getLogAmpSpectrum(AudioAmpSpectrum &spectrum);
    AudioPitchChroma getPitchChroma(AudioAmpSpectrum &spectrum);
    AudioBeatSpectrum getBeatSpectrum(AudioAmpSpectrum &spectrum);
+
 
 }
 

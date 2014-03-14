@@ -1,6 +1,7 @@
 #ifndef AUDIORHYTHMDESCRIPTORS_H
 #define AUDIORHYTHMDESCRIPTORS_H
 #include "audioDescriptors/audiodescriptorextractor.h"
+#include "audioDescriptors/audiospectrumdescriptors.h"
 #include "specialFunctions/noveltyfunctions.h"
 #include "specialFunctions/correlationfunctions.h"
 #include "fastFourierTransform/fft.h"
@@ -9,14 +10,12 @@
 
 
 
-class BeatHistogramDescriptorExtractor : public AudioDescriptorExtractor{
+class BeatHistogramDescriptorExtractor : public MainTicksDescriptorExtractor{
 private:
     int max_bmp, min_bmp;
-    std::vector<double> histogram;
-    int histogram_size;
     double koeff;
 public:
-    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff);
+    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff, int ticks_count = 5);
     std::vector<double> extract();
 
 };

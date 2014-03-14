@@ -235,8 +235,10 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
     std::vector<double> temp_in;
     std::vector<double> result;
     std::vector<complex> temp_out;
+
+    int new_size;
+
     temp_in.resize(this->mfcc_count);
-    temp_out.resize(this->mfcc_count);
     result.resize(this->mfcc_count/2);
 
     int fq_count = this->spectrum.getFrequencyCount();
@@ -250,6 +252,15 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
             temp_in[i] = 0.0;
         else
             temp_in[i] = log10(temp * temp);
+    }
+
+    if(this->mfcc_count & (this->mfcc_count - 1)){
+        new_size = Tools::nearestPowerOfTwoAbove(this->mfcc_count);
+
+        for(int i = 0; i < (new_size - this->mfcc_count); i++)
+            temp_in.push_back(0.0);
+
+        temp_out.resize(new_size);
     }
 
     FFT::Inverse(temp_in,temp_out);
@@ -279,6 +290,10 @@ std::vector<double> MFCCDescriptorExtractor::extract(){
 }
 
 // --- ---- ---
+
+HistogramDescriptorExtractor::HistogramDescriptorExtractor(){
+
+}
 
 HistogramDescriptorExtractor::HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum){
     this->spectrum = spectrum;
@@ -310,5 +325,55 @@ std::vector<double> HistogramDescriptorExtractor::extract(){
     return result;
 
 }
+
+
+MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(AudioSpectrum<double> &spectrum, int ticks_count, bool mode) : HistogramDescriptorExtractor(spectrum){
+    this->ticks_count = ticks_count;
+    this->histogram = this->HistogramDescriptorExtractor::extract();
+    this->mode = mode;
+}
+
+MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(std::vector<double> &histogram, int ticks_count, bool mode) {
+    this->ticks_count = ticks_count;
+    this->histogram = histogram;
+    this->mode = mode;
+}
+
+MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(int ticks_count, bool mode){
+    this->ticks_count = ticks_count;
+    this->mode = mode;
+}
+
+bool MainTicksDescriptorExtractor::setHistogram(std::vector<double> &histogram){
+    this->histogram = histogram;
+    return true;
+}
+
+std::vector<double> MainTicksDescriptorExtractor::extract(){
+    int result_size;
+    if(this->mode)
+        result_size = this->ticks_count * 2;
+    else
+        result_size = this->ticks_count;
+
+    std::vector<double> temp = this->histogram;
+
+    if(temp.size() == 0) return temp;
+
+    std::vector<double> result(result_size);
+
+    std::sort(temp.begin(),temp.end());
+    std::reverse(temp.begin(),temp.end());
+
+    for(int i = 0; i < this->ticks_count; i++){
+        result[i] = double(std::find(this->histogram.begin(),this->histogram.end(),temp[i]) - this->histogram.begin()) / (this->histogram.size() - 1);
+        if(this->mode)
+            result[i + this->ticks_count] = temp[i];
+    }
+
+    return result;
+
+}
+
 
 

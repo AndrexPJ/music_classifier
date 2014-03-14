@@ -64,7 +64,7 @@ private:
     std::vector<double> extractForOneFrame(int channel_number, int frame_number);
     std::vector<double> getAverageValues(std::vector<std::vector<std::vector<double> > > &channels_values);
 public:
-    MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count = 32);
+    MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count = 26);
     std::vector<double> extract();
 };
 
@@ -74,7 +74,22 @@ private:
 
 public:
     HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum);
+    HistogramDescriptorExtractor();
     std::vector<double> extract();
 };
+
+class MainTicksDescriptorExtractor : public HistogramDescriptorExtractor {
+protected:
+    int ticks_count;
+    bool mode; // result = [[amp],[n]] (true) or [n] (false)
+    std::vector<double> histogram;
+public:
+    MainTicksDescriptorExtractor(AudioSpectrum<double> &spectrum, int ticks_count = 1, bool mode = true);
+    MainTicksDescriptorExtractor(std::vector<double> &histogram, int ticks_count = 1, bool mode = true);
+    MainTicksDescriptorExtractor(int ticks_count, bool mode = true);
+    bool setHistogram(std::vector<double> &histogram);
+    std::vector<double> extract();
+};
+
 
 #endif // AUDIOSPECTRUMDESCRIPTORS_H

@@ -14,8 +14,9 @@ aux_source_directory(./specialFunctions SRC_LIST)
 aux_source_directory(./waveletTransform SRC_LIST)
 
 find_package(GSL REQUIRED)
-include_directories(${GSL_INCLUDE_DIRS} ${GSLCBLAS_INCLUDE_DIRS})
-set(LIBS ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES})
+find_package(FFTW REQUIRED)
+include_directories(${GSL_INCLUDE_DIRS} ${GSLCBLAS_INCLUDE_DIRS} ${FFTW_INCLUDE_DIR})
+set(LIBS ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES} ${FFTW_LIB})
 #target_link_libraries(${LIBS})
 link_libraries(${LIBS})
 

@@ -82,6 +82,77 @@ bool FFT::Inverse(std::vector<double> &Input, std::vector<complex> &Output){
 
 }
 
+bool FFT::Forward2D(std::vector<std::vector<double> > &Input, std::vector<std::vector<complex> > &Output){
+    return FFT::Perform2D(Input,Output,FFTW_FORWARD);
+}
+
+bool FFT::Inverse2D(std::vector<std::vector<double> > &Input, std::vector<std::vector<complex> > &Output){
+    return FFT::Perform2D(Input,Output,FFTW_BACKWARD);
+}
+
+bool FFT::Perform2D(std::vector<std::vector<double> > &Input, std::vector<std::vector<complex> > &Output,int sign){
+    int N = Input.size();
+    if(N <= 0) return false;
+    int M = Input[0].size();
+
+    std::vector< std::vector<complex> > Input_c;
+    Input_c.resize(N);
+
+    for(int i = 0; i < N; i++){
+        Input_c[i].resize(M);
+        for(int j = 0; j < M; j++)
+            Input_c[i][j] = Input[i][j];
+    }
+
+    return FFT::Perform2D(Input_c,Output,sign);
+}
+
+bool FFT::Forward2D(std::vector<std::vector<complex> > &Input, std::vector<std::vector<complex> > &Output){
+    return FFT::Perform2D(Input,Output,FFTW_FORWARD);
+}
+
+bool FFT::Inverse2D(std::vector<std::vector<complex> > &Input, std::vector<std::vector<complex> > &Output){
+    return FFT::Perform2D(Input,Output,FFTW_BACKWARD);
+}
+
+bool FFT::Perform2D(std::vector<std::vector<complex> > &Input, std::vector<std::vector<complex> > &Output, int sign){
+    int N = Input.size();
+    if(N <= 0) return false;
+    int M = Input[0].size();
+
+
+
+    fftw_complex *in = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*N*M);
+    fftw_complex *out = (fftw_complex*)fftw_malloc(sizeof(fftw_complex)*N*M);
+
+    fftw_plan plan;
+    plan = fftw_plan_dft_2d(N,M,in,out, sign,FFTW_MEASURE);
+
+    for(int i = 0; i < N; i++){
+        for(int j = 0; j < M; j++){
+            in[i * M + j][1] = Input[i][j].im();
+            in[i * M + j][0] = Input[i][j].re();
+        }
+    }
+
+
+    fftw_execute(plan);
+
+    Output.resize(N);
+    for(int i = 0; i < N; i++){
+        Output[i].resize(M);
+        for(int j = 0; j < M; j++){
+            Output[i][j] = complex(out[i * M + j][0],out[i * M + j][1]) / sqrt(N*M);
+        }
+    }
+
+
+    fftw_free(in);
+    fftw_free(out);
+    fftw_destroy_plan(plan);
+    return true;
+}
+
 //   FORWARD FOURIER TRANSFORM
 //     Input  - input data
 //     Output - transform result

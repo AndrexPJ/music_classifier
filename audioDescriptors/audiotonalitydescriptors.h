@@ -4,11 +4,11 @@
 #include "audioDescriptors/audiodescriptorextractor.h"
 #include "audioDescriptors/audiospectrumdescriptors.h"
 
-class MainPitchDescriptorExtractor : public HistogramDescriptorExtractor {
+class MainPitchesDescriptorExtractor : public MainTicksDescriptorExtractor {
 protected:
     int pitches_count;
 public:
-    MainPitchDescriptorExtractor(AudioPitchChroma &pitch_chroma, int pitches_count = 1);
+    MainPitchesDescriptorExtractor(AudioPitchChroma &pitch_chroma, int pitches_count = 1);
     std::vector<double> extract();
 };
 

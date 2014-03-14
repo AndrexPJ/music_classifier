@@ -1,16 +1,11 @@
-//   fft.h - declaration of class
-//   of fast Fourier transform - FFT
-//
-//   The code is property of LIBROW
-//   You can use it on your own
-//   When utilizing credit LIBROW site
-
 #ifndef _FFT_H_
 #define _FFT_H_
 
 //   Include complex numbers header
 #include "complex.h"
+#include "iostream"
 #include <vector>
+#include <fftw3.h>
 
 class FFT{
 public:
@@ -19,6 +14,12 @@ public:
     static bool Inverse(std::vector<complex> &Input, std::vector<complex> &Output, int N = -1);
     static bool Inverse(std::vector<double> &Input, std::vector<complex> &Output);
 
+    static bool Forward2D(std::vector<std::vector<double> > &Input, std::vector<std::vector<complex> > &Output);
+    static bool Forward2D(std::vector< std::vector<complex> > &Input,std::vector< std::vector<complex> > &Output);
+    static bool Inverse2D(std::vector< std::vector<complex> > &Input,std::vector< std::vector<complex> > &Output);
+    static bool Inverse2D(std::vector< std::vector<double> > &Input,std::vector< std::vector<complex> > &Output);
+    static bool Perform2D(std::vector< std::vector<complex> > &Input,std::vector< std::vector<complex> > &Output, int sign);
+    static bool Perform2D(std::vector< std::vector<double> > &Input,std::vector< std::vector<complex> > &Output, int sign);
 };
 
 class CFFT
