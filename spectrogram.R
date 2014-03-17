@@ -6,4 +6,4 @@ m <- max(z)
 z <- z/m
 z <- sqrt(z)
 
-plot(x,y,'p',cex=0.2, col=rgb(z,z,z))
+plot(x,y,'p',cex=0.2, col=rgb(1-z,1-z,1-z))

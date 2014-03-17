@@ -111,7 +111,7 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
             for(int filt_i = 0; filt_i < filters_count; filt_i++){
                 for(int fq_i = 0; fq_i < frequency_count; fq_i++)
                     result[ch][i][filt_i] += spectrum[ch][i][fq_i] * spectrum[ch][i][fq_i] * filters[filt_i][fq_i];
-            norm += result[ch][i][filt_i];
+                norm += result[ch][i][filt_i];
             }
 
 

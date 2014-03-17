@@ -120,14 +120,9 @@ AudioRecord AudioRecordTransforms::performDCRemoval(const AudioRecord &record){
     int data_size = temp_record.getChannelDataSize();
 
     for(int ch = 0; ch < channels_count; ch++){
-        a_mean = 0.0;
-
-        for(int i = 0; i < data_size; i++)
-            a_mean += temp_record[ch][i];
+        a_mean = std::accumulate(temp_record[ch].begin(), temp_record[ch].end(),0.0);
         a_mean /= data_size;
-
-        for(int i = 0; i < data_size; i++)
-            temp_record[ch][i] -= a_mean;
+        std::transform(temp_record[ch].begin(),temp_record[ch].end(),temp_record[ch].begin(),std::bind1st(std::minus<double>(),a_mean));
     }
 
     return temp_record;
@@ -158,3 +153,19 @@ AudioRecord AudioRecordTransforms::performDownSampling(const AudioRecord &record
     return temp_record;
 
 }
+
+
+AudioRecord AudioRecordTransforms::performNormalization(const AudioRecord &record){
+     AudioRecord temp_record(record);
+
+     int channels_count = temp_record.getChannelsCount();
+     int data_size = temp_record.getChannelDataSize();
+     double norm;
+     for(int ch = 0; ch < channels_count; ch++){
+        norm = std::inner_product(temp_record[ch].begin(),temp_record[ch].end(),temp_record[ch].begin(),0.0);
+        norm = 1 / sqrt(norm);
+        std::transform(temp_record[ch].begin(),temp_record[ch].end(),temp_record[ch].begin(),std::bind1st(std::multiplies<double>(),norm));
+     }
+     return temp_record;
+}
+

@@ -5,6 +5,9 @@
 #include "tools.h"
 #include <vector>
 #include <math.h>
+#include <algorithm>
+#include <functional>
+#include <iostream>
 
 namespace AudioRecordTransforms {
 
@@ -14,6 +17,7 @@ namespace AudioRecordTransforms {
     AudioRecord performLowPassFilter(const AudioRecord &record, double cut_off);
     AudioRecord performDCRemoval(const AudioRecord &record);
     AudioRecord performDownSampling(const AudioRecord &record, int down_sampling_koeff = 16);
+    AudioRecord performNormalization(const AudioRecord &record);
 }
 
 #endif // AUDIORECORDTRANSFORMS_H

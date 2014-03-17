@@ -3,6 +3,10 @@
 #include <vector>
 #include <numeric>
 #include <math.h>
+#include <windowfunctions.h>
+#include <algorithm>
+#include <functional>
+
 namespace Tools {
 
 unsigned int nearestPowerOfTwoAbove(unsigned int number);
@@ -22,6 +26,23 @@ T signum(T t);
 template <class T>
 std::vector< std::vector<T> > getSimilarityMatrix(std::vector< std::vector<T> > &vectors);
 
+template <class T>
+T getGeneralizedMean(std::vector<T> &vector, double power);
+
+template <class T>
+T getCentroid(std::vector<T> &vector);
+
+template <class T>
+T getVariance(std::vector<T> &vector, T mean);
+
+/*
+std::vector<double> experiment(std::vector<double> &func, std::vector<std::vector<double> > &basis);
+std::vector< std::vector<double> > experiment_w(std::vector<double> &func,std::vector<std::vector<double> > &basis,WindowFunction &window);
+double getScalar(std::vector<double> &first, std::vector<double> &second);
+std::vector<double> mulVector(std::vector<double> &vector, double num);
+std::vector<double> sumVectors(std::vector<double> &first, std::vector<double> &second);
+std::vector< std::vector<double> > getBasis(std::vector< std::vector<double> > &vectors, int vector_size);
+*/
 }
 
 
@@ -106,6 +127,44 @@ std::vector< std::vector<T> > Tools::getSimilarityMatrix(std::vector<std::vector
  return result;
 }
 
+template <class T>
+T Tools::getGeneralizedMean(std::vector<T> &vector, double power){
+    T mean = T(0);
 
+    double norm = 1.0 / vector.size();
+
+    for(int i = 0; i < vector.size(); i++)
+        mean += pow(double(vector[i]), power);
+
+    return pow((double(mean) * norm), 1.0 / power);
+}
+
+
+template <class T>
+T Tools::getCentroid(std::vector<T> &vector){
+    int size = vector.size();
+    T weighted_sum = T(0);
+    T sum = T(0);
+
+    for(int i = 0; i < size; i++){
+        weighted_sum += i * vector[i];
+        sum += vector[i];
+    }
+
+    return (weighted_sum / (sum * size));
+}
+
+template <class T>
+T Tools::getVariance(std::vector<T> &vector, T mean){
+    T variance = T(0);
+    T temp;
+    int size = vector.size();
+
+    for(int i = 0; i < size; i++){
+        temp = vector[i] - mean;
+        variance += temp * temp;
+    }
+    return variance / size;
+}
 
 #endif // TOOLS_H
