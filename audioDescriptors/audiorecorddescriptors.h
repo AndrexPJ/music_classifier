@@ -6,18 +6,18 @@
 class EnergyDescriptorExtractor : public AudioDescriptorExtractor {
 private:
     AudioRecord record;
+    bool fillResult();
 public:
     EnergyDescriptorExtractor(AudioRecord &record);
-    std::vector<double> extract();
 };
 
 
 class ZCRDescriptorExtractor : public AudioDescriptorExtractor {
 private:
     AudioRecord record;
+    bool fillResult();
 public:
     ZCRDescriptorExtractor(AudioRecord &record);
-    std::vector<double> extract();
 };
 
 

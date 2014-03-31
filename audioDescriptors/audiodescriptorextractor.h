@@ -5,26 +5,31 @@
 #include "basicClasses/audiospectrum.h"
 #include "basicClasses/audioampspectrum.h"
 
-
 #include <vector>
 #include <math.h>
 #include "tools.h"
 
 class AudioDescriptorExtractor
 {
+protected:
+    std::vector<double> output_result;
+    virtual bool fillResult();
 public:
     AudioDescriptorExtractor();
-    virtual std::vector<double> extract() = 0;
+    AudioDescriptorExtractor(const AudioDescriptorExtractor &extractor);
+    std::vector<double> extract() const;
 };
 
 
 class AudioDescriptorCollector : AudioDescriptorExtractor{
 private:
-    std::vector<AudioDescriptorExtractor *> de_vector;
+    std::vector<AudioDescriptorExtractor> de_vector;
 public:
     AudioDescriptorCollector();
     bool addDescriptorExtractor(AudioDescriptorExtractor &de);
     virtual std::vector<double> extract();
 };
+
+
 
 #endif // AUDIODESCRIPTOREXTRACTOR_H

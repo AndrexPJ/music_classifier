@@ -1,20 +1,20 @@
 #include "audioampspectrum.h"
 
-AudioAmpSpectrum::AudioAmpSpectrum(){
+AudioAmpSpectrum::AudioAmpSpectrum() : AudioSpectrum<double>(){
 }
 
 AudioAmpSpectrum::AudioAmpSpectrum(const AudioAmpSpectrum &spectrum) : AudioSpectrum<double>(spectrum){
 }
 
 
-AudioPitchChroma::AudioPitchChroma(){
+AudioPitchChroma::AudioPitchChroma() : AudioSpectrum<double>(){
 }
 
 AudioPitchChroma::AudioPitchChroma(const AudioPitchChroma &pitch_chroma): AudioSpectrum<double>(pitch_chroma){
 }
 
 
-AudioBeatSpectrum::AudioBeatSpectrum(){
+AudioBeatSpectrum::AudioBeatSpectrum() : AudioSpectrum<double>(){
 
 }
 
@@ -22,7 +22,7 @@ AudioBeatSpectrum::AudioBeatSpectrum(const AudioBeatSpectrum &spectrum) : AudioS
 
 }
 
-AudioPhaseSpectrum::AudioPhaseSpectrum(){
+AudioPhaseSpectrum::AudioPhaseSpectrum() : AudioSpectrum<double>(){
 
 }
 

@@ -14,10 +14,10 @@ class BeatHistogramDescriptorExtractor : public MainTicksDescriptorExtractor{
 private:
     int max_bmp, min_bmp;
     double koeff;
+    bool fillResult();
+
 public:
     BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff, int ticks_count = 5);
-    std::vector<double> extract();
-
 };
 
 

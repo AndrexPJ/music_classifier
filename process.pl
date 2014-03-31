@@ -1,24 +1,24 @@
 
-$main_genre = 'jazz';
+$main_genre = 'classical';
 
 $exapmles_main_size = 70;
-$exapmles_sub_size = 70; 
+$exapmles_sub_size = 10; 
 
 $test_main_size = 30;
-$test_sub_size = 30;
+$test_sub_size = 5;
 
 
 
 $test_file_name = "test_".$main_genre;
 $examples_file_name = "examples_".$main_genre;
 
-#@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
+@genre_list = ("classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop");
 #@genre_list = ("metal","rock");
-@genre_list = ("jazz","blues");
+#@genre_list = ("jazz","blues");
 
 sub calculateAndWrite{
-	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size) = @_;
-
+	my ($file_examples, $file_test ,$dir_path, $target, $exaples_size, $test_size,$number) = @_;
+	#$target = $number;
 	opendir (DIR,$dir_path);
 
 	my $i = 0;
@@ -79,16 +79,17 @@ sub calculateAndWrite{
 open(Fexmp, ">", "./data/".$examples_file_name.".txt") or die "Ошибка открытия файла:  $!";
 open(Ftest, ">", "./data/".$test_file_name.".txt") or die "Ошибка открытия файла:  $!";
 
+my $number = 0;
 for my $genre (@genre_list){
 	
 	$dir_path = "./data/dataset/".$genre."_wav";
 
 	if($genre eq $main_genre){
-		calculateAndWrite(Fexmp,Ftest,$dir_path,1,$exapmles_main_size,$test_main_size);
+		calculateAndWrite(Fexmp,Ftest,$dir_path,1,$exapmles_main_size,$test_main_size,$number);
 	} else {
-		calculateAndWrite(Fexmp,Ftest,$dir_path,-1,$exapmles_sub_size,$test_sub_size);
+		calculateAndWrite(Fexmp,Ftest,$dir_path,-1,$exapmles_sub_size,$test_sub_size,$number);
 	}
-
+	$number++;
     
 	
 	

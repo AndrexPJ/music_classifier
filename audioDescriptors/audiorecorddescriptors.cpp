@@ -4,9 +4,10 @@
 // --- Record Energy ---
 EnergyDescriptorExtractor::EnergyDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
+    this->fillResult();
 }
 
-std::vector<double> EnergyDescriptorExtractor::extract(){
+bool EnergyDescriptorExtractor::fillResult(){
     std::vector<double> temp_vector;
     int channels_count = record.getChannelsCount();
     int data_size = record.getChannelDataSize();
@@ -23,20 +24,21 @@ std::vector<double> EnergyDescriptorExtractor::extract(){
     }
 
     temp = Tools::getAverage(temp_vector);
+    this->output_result.push_back(temp);
 
-    temp_vector.clear();
-    temp_vector.push_back(temp);
-    return temp_vector;
+    return true;
 }
+
 // --- ------------- ---
 
 
 // --- Record Zero Crossing Rate ---
 ZCRDescriptorExtractor::ZCRDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
+    this->fillResult();
 }
 
-std::vector<double> ZCRDescriptorExtractor::extract(){
+bool ZCRDescriptorExtractor::fillResult(){
     std::vector<double> temp_vector;
 
     int channels_count = record.getChannelsCount();
@@ -55,11 +57,11 @@ std::vector<double> ZCRDescriptorExtractor::extract(){
     }
 
     temp = Tools::getAverage(temp_vector);
-    temp_vector.clear();
-    temp_vector.push_back(temp);
-    return temp_vector;
+    this->output_result.push_back(temp);
 
+    return true;
 }
+
 // --- ------------------------- ---
 
 

@@ -28,6 +28,7 @@ protected:
     AudioSpectrum<double> spectrum;
 public:
     FluxNoveltyFunction(AudioSpectrum<double> &spectrum);
+    FluxNoveltyFunction();
 };
 
 class DuxburyNoveltyFunction : public NoveltyFunction{
@@ -35,6 +36,7 @@ protected:
     AudioSpectrum<complex> spectrum;
 public:
     DuxburyNoveltyFunction(AudioSpectrum<complex> &specrtum);
+    DuxburyNoveltyFunction();
 };
 
 class HainsworthNoveltyFunction : public NoveltyFunction{
@@ -42,6 +44,7 @@ protected:
     AudioSpectrum<double> spectrum;
 public:
     HainsworthNoveltyFunction(AudioSpectrum<double> &spectrum);
+    HainsworthNoveltyFunction();
 };
 
 #endif // NOVELTYFUNCTIONS_H

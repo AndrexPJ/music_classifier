@@ -2,13 +2,24 @@
 
 AudioDescriptorExtractor::AudioDescriptorExtractor(){}
 
+AudioDescriptorExtractor::AudioDescriptorExtractor(const AudioDescriptorExtractor &extractor){
+    this->output_result = extractor.extract();
+}
+
+std::vector<double> AudioDescriptorExtractor::extract() const{
+    return this->output_result;
+}
+
+bool AudioDescriptorExtractor::fillResult(){
+    return false;
+}
 
 AudioDescriptorCollector::AudioDescriptorCollector() : AudioDescriptorExtractor(){
     this->de_vector.resize(0);
 }
 
 bool AudioDescriptorCollector::addDescriptorExtractor(AudioDescriptorExtractor &de){
-    this->de_vector.push_back(&de);
+    this->de_vector.push_back(de);
     return true;
 }
 
@@ -18,13 +29,13 @@ std::vector<double> AudioDescriptorCollector::extract(){
 
 
 
- for(std::vector<AudioDescriptorExtractor*>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
-     temp = (*it)->extract();
+ for(std::vector<AudioDescriptorExtractor>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
+     temp = (*it).extract();
      result.insert(result.end(),temp.begin(),temp.end());
  }
 
 
-  double norm = 0.0;
+ /* double norm = 0.0;
   for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
      norm += (*it) * (*it) ;
  }
@@ -33,7 +44,7 @@ std::vector<double> AudioDescriptorCollector::extract(){
  for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
      (*it) /= norm;
      //(*it) = (*it) * 2 - 1;
- }
+ }*/
 
  return result;
 }

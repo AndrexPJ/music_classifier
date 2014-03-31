@@ -228,7 +228,7 @@ std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int
     int first_bound_i, second_bound_i;
     double first_bound, second_bound;
 
-    while(mid_frequency * (2 << (octaves_count - 1)) > frequency_count)
+    while(mid_frequency * (2 << (octaves_count - 1)) > frequency_count) // ???
         octaves_count--;
 
     std::vector< std::vector<double> > result_filters(filters_count);
@@ -242,8 +242,11 @@ std::vector< std::vector<double> > AudioSpectrumTools::getSemiToneFilterbank(int
         power_of_two = 1;
 
         for(int octv_i = 0; octv_i < octaves_count; octv_i++){
-            first_bound_i = ceil(power_of_two * first_bound );
-            second_bound_i = floor(power_of_two * second_bound );
+            //first_bound_i = ceil(power_of_two * first_bound );
+            //second_bound_i = floor(power_of_two * second_bound );
+
+            first_bound_i = floor(power_of_two * first_bound );
+            second_bound_i = ceil(power_of_two * second_bound );
 
             power_of_two <<= 1;
 

@@ -1,6 +1,6 @@
 #include "audiorecord.h"
 
-AudioRecord::AudioRecord() {
+AudioRecord::AudioRecord() : AudioData<double>(){
     this->bitsPerSample = 0;
     this->channelDataSize = 0;
     this->channelsCount = 0;

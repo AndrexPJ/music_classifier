@@ -33,7 +33,7 @@ public:
 
 
 template <class T>
-AudioSpectrum<T>::AudioSpectrum()
+AudioSpectrum<T>::AudioSpectrum() : AudioData< std::vector<T> >()
 {
     this->channelDataSize = 0;
     this->channelsCount = 0;
