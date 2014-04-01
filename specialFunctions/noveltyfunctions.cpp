@@ -33,7 +33,6 @@ std::vector < std::vector<double> > NoveltyFunction::getValues() const{
     return this->values;
 }
 
-FluxNoveltyFunction::FluxNoveltyFunction() : NoveltyFunction(){}
 FluxNoveltyFunction::FluxNoveltyFunction(AudioSpectrum<double> &spectrum) : NoveltyFunction(spectrum.getChannelDataSize(),spectrum.getChannelsCount()){
     this->spectrum = spectrum;
 
@@ -59,7 +58,6 @@ FluxNoveltyFunction::FluxNoveltyFunction(AudioSpectrum<double> &spectrum) : Nove
 
 }
 
-DuxburyNoveltyFunction::DuxburyNoveltyFunction() : NoveltyFunction(){}
 DuxburyNoveltyFunction::DuxburyNoveltyFunction(AudioSpectrum<complex> &specrtum) : NoveltyFunction(specrtum.getChannelDataSize(), specrtum.getChannelsCount()){
     this->spectrum = specrtum;
 
@@ -79,7 +77,6 @@ DuxburyNoveltyFunction::DuxburyNoveltyFunction(AudioSpectrum<complex> &specrtum)
     //this->normalize();
 }
 
-HainsworthNoveltyFunction::HainsworthNoveltyFunction() : NoveltyFunction(){}
 HainsworthNoveltyFunction::HainsworthNoveltyFunction(AudioSpectrum<double> &spectrum) : NoveltyFunction(spectrum.getChannelDataSize(),spectrum.getChannelsCount()){
     this->spectrum = spectrum;
     double epsilon = std::numeric_limits<double>::epsilon();

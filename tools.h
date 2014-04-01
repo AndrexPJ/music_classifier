@@ -147,11 +147,11 @@ T Tools::getCentroid(std::vector<T> &vector){
     T sum = T(0);
 
     for(int i = 0; i < size; i++){
-        weighted_sum += i * fabs(vector[i]);
-        sum += fabs(vector[i]);
+        weighted_sum += i * vector[i];
+        sum += vector[i];
     }
 
-    return (weighted_sum / (sum * T(size)));
+    return (weighted_sum / (sum * size));
 }
 
 template <class T>

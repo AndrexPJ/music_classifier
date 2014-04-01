@@ -19,20 +19,9 @@ BeatHistogramDescriptorExtractor::BeatHistogramDescriptorExtractor(CorrelationFu
         temp_histo[i] = temp[i];
     }
     this->setHistogram(temp_histo);
-    this->fillResult();
+
 }
 
-<<<<<<< HEAD
-bool BeatHistogramDescriptorExtractor::fillResult(){
-    if(!this->MainTicksDescriptorExtractor::fillResult()) return false;
-
-    int result_size = this->output_result.size();
-    for(int i = 0; i < this->ticks_count; i++)
-        this->output_result[i] = (koeff / (this->output_result[i] * this->histogram.size())) / this->max_bmp;
-
-    //std::sort(result.begin(),result.end());
-    return true;
-=======
 std::vector<double> BeatHistogramDescriptorExtractor::extract(){
    std::vector<double> result =  this->MainTicksDescriptorExtractor::extract();
 
@@ -40,6 +29,4 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
        result[i] = (koeff / (result[i] * this->histogram.size())) / this->max_bmp;
 
    return result;
->>>>>>> not-tested
 }
-

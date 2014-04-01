@@ -14,10 +14,10 @@ protected:
 
     virtual double extractForOneFrame(int channel_number ,int frame_number) = 0;
     virtual std::vector<double> getAverageValues(std::vector< std::vector<double> > &channels_values, int result_frames_count);
-    virtual bool fillResult();
 
 public:
     AudioSpectrumDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_count = 1);
+    std::vector<double> extract();
 
 };
 // --- ---------- ---
@@ -63,18 +63,19 @@ private:
     std::vector< std::vector<double> > filters;
     std::vector<double> extractForOneFrame(int channel_number, int frame_number);
     std::vector<double> getAverageValues(std::vector<std::vector<std::vector<double> > > &channels_values);
-    bool fillResult();
 public:
     MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count = 26);
+    std::vector<double> extract();
 };
 
 class HistogramDescriptorExtractor : public AudioDescriptorExtractor{
 private:
     AudioSpectrum<double> spectrum;
-    bool fillResult();
+
 public:
     HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum);
     HistogramDescriptorExtractor();
+    std::vector<double> extract();
 };
 
 class MainTicksDescriptorExtractor : public HistogramDescriptorExtractor {
@@ -82,12 +83,12 @@ protected:
     int ticks_count;
     bool mode; // result = [[amp],[n]] (true) or [n] (false)
     std::vector<double> histogram;
-    bool fillResult();
 public:
     MainTicksDescriptorExtractor(AudioSpectrum<double> &spectrum, int ticks_count = 1, bool mode = true);
     MainTicksDescriptorExtractor(std::vector<double> &histogram, int ticks_count = 1, bool mode = true);
     MainTicksDescriptorExtractor(int ticks_count, bool mode = true);
     bool setHistogram(std::vector<double> &histogram);
+    std::vector<double> extract();
 };
 
 

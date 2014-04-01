@@ -8,6 +8,7 @@ AudioSpectrumDescriptorExtractor::AudioSpectrumDescriptorExtractor(AudioSpectrum
         this->result_count = spectrum.getChannelDataSize();
     else
         this->result_count = result_count;
+
 }
 
 
@@ -47,7 +48,8 @@ std::vector<double> AudioSpectrumDescriptorExtractor::getAverageValues(std::vect
 }
 
 
-bool AudioSpectrumDescriptorExtractor::fillResult(){
+
+std::vector<double> AudioSpectrumDescriptorExtractor::extract(){
     std::vector < std::vector<double> > channels_values;
 
     int channels_count = this->spectrum.getChannelsCount();
@@ -60,15 +62,13 @@ bool AudioSpectrumDescriptorExtractor::fillResult(){
         for(int j = 0; j < frames_count; j++)
             channels_values[i][j] = this->extractForOneFrame(i,j);
     }
-    this->output_result = this->getAverageValues(channels_values,this->result_count);
 
-    return true;
+    return this->getAverageValues(channels_values,this->result_count);
 }
 // --- ---------- ---
 
 // --- Spectral Centroid ---
 SpCentroidDescriptorExtractor::SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
-    this->fillResult();
 }
 
 
@@ -91,7 +91,6 @@ double SpCentroidDescriptorExtractor::extractForOneFrame(int channel_number, int
 
 // --- Spectral Flatness ---
 SpFlatnessDescriptorExtractor::SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
-    this->fillResult();
 }
 
 double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
@@ -151,7 +150,6 @@ double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int
 
 // --- Spectral Flux ---
 SpFluxDescriptorExtractor::SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count) : AudioSpectrumDescriptorExtractor(spectrum,result_frames_count){
-    this->fillResult();
 }
 
 double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
@@ -179,7 +177,6 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
 // --- Spectral Roll-off ---
 SpRollOffDescriptorExtractor::SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count, double threshold) : AudioSpectrumDescriptorExtractor(spectrum, result_frames_count){
     this->threshold = threshold;
-    this->fillResult();
 }
 
 double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int frame_number){
@@ -213,7 +210,6 @@ MFCCDescriptorExtractor::MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum
     this->mfcc_count = mfcc_count;
     int fq_count = this->spectrum.getFrequencyCount();
     this->filters = AudioSpectrumTools::getMelFilterbank(fq_count, this->spectrum.getFrequency(fq_count - 1),300,this->mfcc_count);
-    this->fillResult();
 }
 
 
@@ -270,12 +266,13 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
     FFT::Inverse(temp_in,temp_out);
 
     for(int i = 0; i < this->mfcc_count/2; i++)
-        result[i] = temp_out[i].re();
+        result[i] = temp_out[i].norm();
 
     return result;
 }
 
-bool MFCCDescriptorExtractor::fillResult(){
+std::vector<double> MFCCDescriptorExtractor::extract(){
+
     std::vector < std::vector< std::vector<double> > > channels_values;
 
     int channels_count = this->spectrum.getChannelsCount();
@@ -289,9 +286,7 @@ bool MFCCDescriptorExtractor::fillResult(){
             channels_values[i][j] = this->extractForOneFrame(i,j);
     }
 
-    this->output_result = this->getAverageValues(channels_values);
-
-    return true;
+    return this->getAverageValues(channels_values);
 }
 
 // --- ---- ---
@@ -302,10 +297,9 @@ HistogramDescriptorExtractor::HistogramDescriptorExtractor(){
 
 HistogramDescriptorExtractor::HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum){
     this->spectrum = spectrum;
-    this->fillResult();
 }
 
-bool HistogramDescriptorExtractor::fillResult(){
+std::vector<double> HistogramDescriptorExtractor::extract(){
     int frequency_count = this->spectrum.getFrequencyCount();
     int data_size = this->spectrum.getChannelDataSize();
     int channels_count = this->spectrum.getChannelsCount();
@@ -328,8 +322,8 @@ bool HistogramDescriptorExtractor::fillResult(){
         result[fq_i] /= norm;
     }
 
-    this->output_result = result;
-    return true;
+    return result;
+
 }
 
 
@@ -337,14 +331,12 @@ MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(AudioSpectrum<double>
     this->ticks_count = ticks_count;
     this->histogram = this->HistogramDescriptorExtractor::extract();
     this->mode = mode;
-    this->fillResult();
 }
 
 MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(std::vector<double> &histogram, int ticks_count, bool mode) {
     this->ticks_count = ticks_count;
     this->histogram = histogram;
     this->mode = mode;
-    this->fillResult();
 }
 
 MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(int ticks_count, bool mode){
@@ -354,10 +346,10 @@ MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(int ticks_count, bool
 
 bool MainTicksDescriptorExtractor::setHistogram(std::vector<double> &histogram){
     this->histogram = histogram;
-    return this->fillResult();
+    return true;
 }
 
-bool MainTicksDescriptorExtractor::fillResult(){
+std::vector<double> MainTicksDescriptorExtractor::extract(){
     int result_size;
     if(this->mode)
         result_size = this->ticks_count * 2;
@@ -366,7 +358,7 @@ bool MainTicksDescriptorExtractor::fillResult(){
 
     std::vector<double> temp = this->histogram;
 
-    if(temp.size() == 0) return false;
+    if(temp.size() == 0) return temp;
 
     std::vector<double> result(result_size);
 
@@ -378,8 +370,10 @@ bool MainTicksDescriptorExtractor::fillResult(){
         if(this->mode)
             result[i + this->ticks_count] = temp[i];
     }
-    this->output_result = result;
-    return true;
+
+    return result;
+
 }
+
 
 

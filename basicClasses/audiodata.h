@@ -8,7 +8,6 @@ template < class T >
 class AudioData
 {
 protected:
-      bool is_empty;
       std::vector< std::vector<T> > channelsData;
       int channelsCount, channelDataSize,sampleRate;
 public:
@@ -34,8 +33,6 @@ public:
       int getSampleRate() const;
       bool setSampleRate(int sample_rate);
 
-      bool empty();
-
       //virtual T get(int channel, int number) const;
       //virtual bool set(int channel, int number, T value);
 
@@ -58,14 +55,13 @@ AudioData<T>::AudioData(){
     this->channelsData.resize(0);
     this->channelsCount = 0;
     this->setSampleRate(0);
-    this->is_empty = true;
 }
+
 
 template <class T>
 AudioData<T>::AudioData(const std::vector<std::vector<T> > &data){
     this->setData(data);
     this->setSampleRate(0);
-    this->is_empty = false;
 }
 
 /*template <class T>
@@ -78,7 +74,6 @@ bool AudioData<T>::setData(std::vector<std::vector<T> > const &data){
     this->channelsData = data;
     this->channelsCount = this->channelsData.size();
     this->channelDataSize = this->channelsData[this->channelsCount-1].size();
-    this->is_empty = false;
     return true;
 }
 
@@ -90,11 +85,13 @@ std::vector<std::vector<T> > AudioData<T>::getData() const{
 template <class T>
 bool AudioData<T>::setSpecificData(T data,int channel, int n){
 
-    if(!checkDataAvailability(channel,n)) return false;
-
-    this->channelsData[channel][n] = data;
-    this->is_empty = false;
-    return true;
+    if(checkDataAvailability(channel,n)){
+        this->channelsData[channel][n] = data;
+        return true;
+    }
+    else{
+        return false;
+    }
 
 }
 
@@ -104,7 +101,6 @@ bool AudioData<T>::setSpecificData(const std::vector<T> &data, int channel){
     if(this->channelsData[this->channelsData.size()-1].size() != data.size()) return false;
 
     this->channelsData[channel] = std::vector<T>(data);
-    this->is_empty = false;
     return true;
 }
 
@@ -141,7 +137,6 @@ bool AudioData<T>::setDataSize(int channels_count){
     if(channels_count < 0) return false;
     this->channelsData.resize(channels_count);
     this->channelsCount = channels_count;
-    this->is_empty = false;
 
     return true;
 }
@@ -155,7 +150,6 @@ bool AudioData<T>::setDataSize(int channels_count, int data_size){
             this->channelsData[i].resize(data_size);
 
         this->channelDataSize = data_size;
-        this->is_empty = false;
         return true;
     }
     else return false;
@@ -188,10 +182,6 @@ std::vector<T>& AudioData<T>::operator [](int i){
     return this->channelsData[i];
 }
 
-template <class T>
-bool AudioData<T>::empty(){
-    return this->is_empty;
-}
 
 /*template <class T>
 T AudioData<T>::get(int channel, int number) const{

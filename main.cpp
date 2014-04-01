@@ -1,8 +1,5 @@
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
-<<<<<<< HEAD
-#include "audioDescriptors/audiodescriptorcollectorfactory.h"
-=======
 #include "audioTransforms/audiowfft.h"
 #include "audioTransforms/audiodwt.h"
 #include "audioTransforms/audiorecordtransforms.h"
@@ -14,11 +11,11 @@
 #include "audioDescriptors/audiotonalitydescriptors.h"
 #include "audioTransforms/audiowavelettransforms.h"
 #include "audioDescriptors/audiodescriptorfactory.h"
->>>>>>> not-tested
 
 #include <iostream>
 #include <fstream>
-#include <boost/shared_ptr.hpp>
+
+
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -36,6 +33,8 @@ int main(int argc, char *argv[])
         }
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
+        ar = AudioRecordTransforms::performNormalization(ar);
+
         /*
         AudioRecord blues_b =  WaveAudioLoader::loadAudioRecord(path + "blues_b.wav");
         AudioRecord classical_b =  WaveAudioLoader::loadAudioRecord(path + "classical_b.wav");
@@ -66,25 +65,10 @@ int main(int argc, char *argv[])
         string types[] = {"ZCR","ENERGY","MFCC"};
         AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(types,3);
 
-<<<<<<< HEAD
-       string extractors_name[] = {ZCR_NAME};
-
-
-       AudioDescriptorCollector dc = AudioDescriptorCollectorFactory::getDescriptorCollector(ar,extractors_name,1);
-
-
-       std::vector<double> out = dc.extract();
-
-       for(int i = 0; i < out.size(); i++){
-          cout<<i+1<<":"<<out[i]<<" ";
-        }
-
-=======
         std::vector<double> out = dc->extract();
 
         for(int i = 0; i < out.size(); i++)
             cout << i+1 <<":"<< out[i] << " ";
->>>>>>> not-tested
 
        return 0;
     }
@@ -92,6 +76,6 @@ int main(int argc, char *argv[])
         std::cerr << ex.what() << std::endl;
         return 1;
     }
-    // TODO : mfcc descriptor extractor check norm() or re()
+    // TODO : mfcc descriptor extractor
 }
 

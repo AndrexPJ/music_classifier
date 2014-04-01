@@ -12,28 +12,16 @@
 
 class AudioDescriptorExtractor
 {
-protected:
-    std::vector<double> output_result;
-    virtual bool fillResult();
 public:
     AudioDescriptorExtractor();
-<<<<<<< HEAD
-    AudioDescriptorExtractor(const AudioDescriptorExtractor &extractor);
-    virtual std::vector<double> extract() const;
-=======
     virtual ~AudioDescriptorExtractor();
     virtual std::vector<double> extract() = 0;
->>>>>>> not-tested
 };
 
 
 class AudioDescriptorCollector : AudioDescriptorExtractor{
 private:
-<<<<<<< HEAD
-    std::vector<AudioDescriptorExtractor> de_vector;
-=======
     std::vector<AudioDescriptorExtractor*> de_vector;
->>>>>>> not-tested
 public:
     AudioDescriptorCollector();
     ~AudioDescriptorCollector();
@@ -42,8 +30,6 @@ public:
 };
 
 
-<<<<<<< HEAD
-=======
 class BaseDescriptorFactory{
 protected:
     std::map< std::string,BaseDescriptorFactory*> type_map;
@@ -54,6 +40,5 @@ public:
     virtual AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
->>>>>>> not-tested
 
 #endif // AUDIODESCRIPTOREXTRACTOR_H

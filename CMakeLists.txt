@@ -21,12 +21,8 @@ set(LIBS ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES} ${FFTW_LIB})
 link_libraries(${LIBS})
 
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-<<<<<<< HEAD
-include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses ./audioExceptions ./specialFunctions ./waveletTransform /opt/local/include/)
-=======
 include_directories(. ./audioLoaders ./audioSavers ./fastFourierTransform ./audioDescriptors ./audioTransforms ./basicClasses ./audioExceptions ./specialFunctions ./waveletTransform)
 #include_directories(/opt/local/include/)
->>>>>>> not-tested
 
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
 set( CMAKE_CXX_FLAGS "-O3")
