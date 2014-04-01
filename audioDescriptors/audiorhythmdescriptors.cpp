@@ -30,3 +30,7 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
 
    return result;
 }
+
+AudioDescriptorExtractor* BeatHistogramDescriptorExtractor::clone() const{
+    return new BeatHistogramDescriptorExtractor(*this);
+}

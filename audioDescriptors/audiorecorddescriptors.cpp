@@ -28,6 +28,11 @@ std::vector<double> EnergyDescriptorExtractor::extract(){
     temp_vector.push_back(temp);
     return temp_vector;
 }
+
+AudioDescriptorExtractor* EnergyDescriptorExtractor::clone() const{
+    return new EnergyDescriptorExtractor(*this);
+}
+
 // --- ------------- ---
 
 
@@ -59,4 +64,8 @@ std::vector<double> ZCRDescriptorExtractor::extract(){
     temp_vector.push_back(temp);
     return temp_vector;
 
+}
+
+AudioDescriptorExtractor* ZCRDescriptorExtractor::clone() const{
+    return new ZCRDescriptorExtractor(*this);
 }

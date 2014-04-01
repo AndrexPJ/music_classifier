@@ -86,6 +86,10 @@ double SpCentroidDescriptorExtractor::extractForOneFrame(int channel_number, int
      if(amp_sum == 0.0) return 0.0;
      return (fq_amp_sum / (amp_sum * fq_count));
 }
+
+AudioDescriptorExtractor* SpCentroidDescriptorExtractor::clone() const{
+    return new SpCentroidDescriptorExtractor(*this);
+}
 // --- ----------------- ---
 
 
@@ -144,6 +148,10 @@ double SpFlatnessDescriptorExtractor::extractForOneFrame(int channel_number, int
     return (gmean / amean);
 
 }
+
+AudioDescriptorExtractor* SpFlatnessDescriptorExtractor::clone() const{
+    return new SpFlatnessDescriptorExtractor(*this);
+}
 // --- ----------------- ---
 
 
@@ -170,6 +178,10 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
     }
 
     return sqrt(temp) / fq_count;
+}
+
+AudioDescriptorExtractor* SpFluxDescriptorExtractor::clone() const{
+    return new SpFluxDescriptorExtractor(*this);
 }
 // --- ------------- ---
 
@@ -199,6 +211,10 @@ double SpRollOffDescriptorExtractor::extractForOneFrame(int channel_number, int 
 
     return (double(result_fq_i) / fq_count) ;
     //return this->spectrum.getFrequency(result_fq_i);
+}
+
+AudioDescriptorExtractor* SpRollOffDescriptorExtractor::clone() const{
+    return new SpRollOffDescriptorExtractor(*this);
 }
 
 // --- ----------------- ---
@@ -289,6 +305,9 @@ std::vector<double> MFCCDescriptorExtractor::extract(){
     return this->getAverageValues(channels_values);
 }
 
+AudioDescriptorExtractor* MFCCDescriptorExtractor::clone() const{
+    return new MFCCDescriptorExtractor(*this);
+}
 // --- ---- ---
 
 HistogramDescriptorExtractor::HistogramDescriptorExtractor(){
@@ -326,6 +345,9 @@ std::vector<double> HistogramDescriptorExtractor::extract(){
 
 }
 
+AudioDescriptorExtractor* HistogramDescriptorExtractor::clone() const{
+    return new HistogramDescriptorExtractor(*this);
+}
 
 MainTicksDescriptorExtractor::MainTicksDescriptorExtractor(AudioSpectrum<double> &spectrum, int ticks_count, bool mode) : HistogramDescriptorExtractor(spectrum){
     this->ticks_count = ticks_count;
@@ -375,5 +397,8 @@ std::vector<double> MainTicksDescriptorExtractor::extract(){
 
 }
 
+AudioDescriptorExtractor* MainTicksDescriptorExtractor::clone() const{
+    return new MainTicksDescriptorExtractor(*this);
+}
 
 

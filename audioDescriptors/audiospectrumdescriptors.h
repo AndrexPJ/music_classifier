@@ -28,7 +28,8 @@ class SpCentroidDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);
+    SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);    
+    AudioDescriptorExtractor* clone() const;
 };
 
 
@@ -36,7 +37,8 @@ class SpFlatnessDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);
+    SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);    
+    AudioDescriptorExtractor* clone() const;
 };
 
 
@@ -45,6 +47,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);
+    AudioDescriptorExtractor* clone() const;
 };
 
 class SpRollOffDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
@@ -54,6 +57,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8, double threshold = 0.85);
+    AudioDescriptorExtractor* clone() const;
 };
 
 class MFCCDescriptorExtractor : public AudioDescriptorExtractor{
@@ -66,6 +70,7 @@ private:
 public:
     MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count = 26);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 class HistogramDescriptorExtractor : public AudioDescriptorExtractor{
@@ -76,6 +81,7 @@ public:
     HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum);
     HistogramDescriptorExtractor();
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 class MainTicksDescriptorExtractor : public HistogramDescriptorExtractor {
@@ -89,6 +95,7 @@ public:
     MainTicksDescriptorExtractor(int ticks_count, bool mode = true);
     bool setHistogram(std::vector<double> &histogram);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 

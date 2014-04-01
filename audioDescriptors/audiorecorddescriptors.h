@@ -10,6 +10,7 @@ private:
 public:
     EnergyDescriptorExtractor(AudioRecord &record);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 
@@ -19,6 +20,7 @@ private:
 public:
     ZCRDescriptorExtractor(AudioRecord &record);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 

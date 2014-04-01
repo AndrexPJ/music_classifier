@@ -17,6 +17,7 @@ private:
 public:
     BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff, int ticks_count = 5);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 
 };
 

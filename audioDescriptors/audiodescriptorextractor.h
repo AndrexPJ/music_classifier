@@ -15,7 +15,8 @@ class AudioDescriptorExtractor
 public:
     AudioDescriptorExtractor();
     virtual ~AudioDescriptorExtractor();
-    virtual std::vector<double> extract() = 0;
+    virtual std::vector<double> extract();
+    virtual AudioDescriptorExtractor* clone() const = 0;
 };
 
 
@@ -27,6 +28,7 @@ public:
     ~AudioDescriptorCollector();
     bool addDescriptorExtractor(AudioDescriptorExtractor &de);
     virtual std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 

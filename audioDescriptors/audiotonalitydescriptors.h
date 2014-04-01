@@ -10,6 +10,7 @@ protected:
 public:
     MainPitchesDescriptorExtractor(AudioPitchChroma &pitch_chroma, int pitches_count = 1);
     std::vector<double> extract();
+    AudioDescriptorExtractor* clone() const;
 };
 
 

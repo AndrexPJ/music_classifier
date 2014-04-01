@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         string path;
         if(argc < 2){
             path = "./basis/";
-            filename = "metal.wav";
+            filename = "A.wav";
         }
         else{
             path = "./music_classifier-release-build/basis/";
@@ -60,10 +60,11 @@ int main(int argc, char *argv[])
         basis = Tools::getBasis(basis,8192);
         std::vector<double> out = Tools::experiment(ar.getData()[0],basis);
         */
-
+        ZCRDescriptorExtractor zcr_de = ZCRDescriptorExtractor(ar);
         AudioDecriptorCollectorFactory dc_factory(ar);
-        string types[] = {"ZCR","ENERGY","MFCC"};
-        AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(types,3);
+        string types[] = {"PITCHHISTO"};
+        AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(types,1);
+        dc->addDescriptorExtractor(zcr_de);
 
         std::vector<double> out = dc->extract();
 

@@ -6,3 +6,7 @@ MainPitchesDescriptorExtractor::MainPitchesDescriptorExtractor(AudioPitchChroma 
 std::vector<double> MainPitchesDescriptorExtractor::extract(){
     return this->MainTicksDescriptorExtractor::extract();
 }
+
+AudioDescriptorExtractor* MainPitchesDescriptorExtractor::clone() const{
+    return new MainPitchesDescriptorExtractor(*this);
+}
