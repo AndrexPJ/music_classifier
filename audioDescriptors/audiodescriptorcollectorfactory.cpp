@@ -8,8 +8,8 @@ AudioDescriptorCollector AudioDescriptorCollectorFactory::getDescriptorCollector
 AudioDescriptorCollector AudioDescriptorCollectorFactory::getDescriptorCollector(AudioRecord &ar, std::vector<std::string> &extractors_names, int de_result_size){
     AudioDescriptorCollector dc;
     AudioDescriptorExtractor de;
-
-
+    
+    
     int window_size = 2048;
     int hop_size = window_size * 0.5;
     HanningWindowFunction wf(window_size);

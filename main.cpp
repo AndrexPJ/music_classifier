@@ -4,8 +4,7 @@
 
 #include <iostream>
 #include <fstream>
-
-
+#include <boost/shared_ptr.hpp>
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -23,9 +22,6 @@ int main(int argc, char *argv[])
         }
 
         AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
-
-
-
         /*
         AudioRecord blues_b =  WaveAudioLoader::loadAudioRecord(path + "blues_b.wav");
         AudioRecord classical_b =  WaveAudioLoader::loadAudioRecord(path + "classical_b.wav");
@@ -53,10 +49,10 @@ int main(int argc, char *argv[])
         */
 
 
-       string extractors_name[] = {PITCHHISTO_NAME,MFCC_NAME};
+       string extractors_name[] = {ZCR_NAME};
 
 
-       AudioDescriptorCollector dc = AudioDescriptorCollectorFactory::getDescriptorCollector(ar,extractors_name,2);
+       AudioDescriptorCollector dc = AudioDescriptorCollectorFactory::getDescriptorCollector(ar,extractors_name,1);
 
 
        std::vector<double> out = dc.extract();

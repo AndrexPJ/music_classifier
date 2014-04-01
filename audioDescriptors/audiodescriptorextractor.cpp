@@ -2,16 +2,17 @@
 
 AudioDescriptorExtractor::AudioDescriptorExtractor(){}
 
+bool AudioDescriptorExtractor::fillResult(){
+return false;
+}
+
+
 AudioDescriptorExtractor::AudioDescriptorExtractor(const AudioDescriptorExtractor &extractor){
     this->output_result = extractor.extract();
 }
 
 std::vector<double> AudioDescriptorExtractor::extract() const{
     return this->output_result;
-}
-
-bool AudioDescriptorExtractor::fillResult(){
-    return false;
 }
 
 AudioDescriptorCollector::AudioDescriptorCollector() : AudioDescriptorExtractor(){

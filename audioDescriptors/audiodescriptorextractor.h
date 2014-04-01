@@ -17,7 +17,7 @@ protected:
 public:
     AudioDescriptorExtractor();
     AudioDescriptorExtractor(const AudioDescriptorExtractor &extractor);
-    std::vector<double> extract() const;
+    virtual std::vector<double> extract() const;
 };
 
 
