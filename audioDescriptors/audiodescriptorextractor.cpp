@@ -2,9 +2,18 @@
 
 AudioDescriptorExtractor::AudioDescriptorExtractor(){}
 
+AudioDescriptorExtractor::~AudioDescriptorExtractor(){}
 
-AudioDescriptorCollector::AudioDescriptorCollector() : AudioDescriptorExtractor(){
-    this->de_vector.resize(0);
+std::vector<double> AudioDescriptorExtractor::extract(){
+    return std::vector<double>();
+}
+
+AudioDescriptorCollector::AudioDescriptorCollector() : AudioDescriptorExtractor(){}
+
+AudioDescriptorCollector::~AudioDescriptorCollector(){
+    for(std::vector<AudioDescriptorExtractor*>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
+        delete (*it);
+    }
 }
 
 bool AudioDescriptorCollector::addDescriptorExtractor(AudioDescriptorExtractor &de){
@@ -15,25 +24,23 @@ bool AudioDescriptorCollector::addDescriptorExtractor(AudioDescriptorExtractor &
 std::vector<double> AudioDescriptorCollector::extract(){
  std::vector<double> result;
  std::vector<double> temp;
-
-
-
  for(std::vector<AudioDescriptorExtractor*>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
-     temp = (*it)->extract();
-     result.insert(result.end(),temp.begin(),temp.end());
+     if(*it){
+        temp = (*it)->extract();
+        result.insert(result.end(),temp.begin(),temp.end());
+     }
  }
-
-
-  double norm = 0.0;
-  for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
-     norm += (*it) * (*it) ;
- }
- norm = sqrt(norm);
-
- for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++){
-     (*it) /= norm;
-     //(*it) = (*it) * 2 - 1;
- }
-
  return result;
+}
+
+
+BaseDescriptorFactory::BaseDescriptorFactory(AudioRecord &ar){}
+BaseDescriptorFactory::BaseDescriptorFactory(){}
+BaseDescriptorFactory::~BaseDescriptorFactory(){
+    for(std::map< std::string, BaseDescriptorFactory*>::iterator it = this->type_map.begin(); it!= this->type_map.end(); it++)
+        delete (*it).second;
+}
+
+AudioDescriptorExtractor* BaseDescriptorFactory::getAudioDescriptor(std::string type){
+        return this->type_map[type]->getAudioDescriptor(type);
 }

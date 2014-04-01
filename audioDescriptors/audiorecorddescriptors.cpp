@@ -1,10 +1,10 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 
-
 // --- Record Energy ---
 EnergyDescriptorExtractor::EnergyDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
 }
+
 
 std::vector<double> EnergyDescriptorExtractor::extract(){
     std::vector<double> temp_vector;
@@ -60,6 +60,3 @@ std::vector<double> ZCRDescriptorExtractor::extract(){
     return temp_vector;
 
 }
-// --- ------------------------- ---
-
-

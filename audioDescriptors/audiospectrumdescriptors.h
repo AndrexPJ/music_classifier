@@ -92,4 +92,5 @@ public:
 };
 
 
+
 #endif // AUDIOSPECTRUMDESCRIPTORS_H
