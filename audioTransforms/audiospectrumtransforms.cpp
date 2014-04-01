@@ -58,7 +58,7 @@ AudioPhaseSpectrum AudioSpectrumTransforms::getPhaseSpectrum(AudioSpectrum<compl
 
 }
 
-AudioAmpSpectrum AudioSpectrumTransforms::getLogAmpSpectrum(AudioAmpSpectrum &spectrum){
+AudioAmpSpectrum AudioSpectrumTransforms::getLogAmpSpectrum(AudioSpectrum<double> &spectrum){
      AudioAmpSpectrum temp;
      int fq_count = spectrum.getFrequencyCount();
      int channels_count = spectrum.getChannelsCount();
@@ -87,7 +87,7 @@ AudioAmpSpectrum AudioSpectrumTransforms::getLogAmpSpectrum(AudioAmpSpectrum &sp
 
 }
 
-AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spectrum){
+AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioSpectrum<double> &spectrum){
     AudioPitchChroma temp;
 
     int filters_count = 12;
@@ -129,7 +129,7 @@ AudioPitchChroma AudioSpectrumTransforms::getPitchChroma(AudioAmpSpectrum &spect
 
 }
 
-AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioAmpSpectrum &spectrum){
+AudioBeatSpectrum AudioSpectrumTransforms::getBeatSpectrum(AudioSpectrum<double> &spectrum){
     AudioBeatSpectrum temp;
     std::vector< std::vector<std::vector<double> > > temp_vector;
     std::vector<double> temp_ac_vector;

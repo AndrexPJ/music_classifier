@@ -1,13 +1,17 @@
 #include "audioDescriptors/audiorecorddescriptors.h"
 
-
 // --- Record Energy ---
 EnergyDescriptorExtractor::EnergyDescriptorExtractor(AudioRecord &record) : AudioDescriptorExtractor(){
     this->record = record;
     this->fillResult();
 }
 
+<<<<<<< HEAD
 bool EnergyDescriptorExtractor::fillResult(){
+=======
+
+std::vector<double> EnergyDescriptorExtractor::extract(){
+>>>>>>> not-tested
     std::vector<double> temp_vector;
     int channels_count = record.getChannelsCount();
     int data_size = record.getChannelDataSize();
@@ -61,7 +65,10 @@ bool ZCRDescriptorExtractor::fillResult(){
 
     return true;
 }
+<<<<<<< HEAD
 
 // --- ------------------------- ---
 
 
+=======
+>>>>>>> not-tested

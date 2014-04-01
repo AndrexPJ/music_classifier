@@ -22,6 +22,7 @@ BeatHistogramDescriptorExtractor::BeatHistogramDescriptorExtractor(CorrelationFu
     this->fillResult();
 }
 
+<<<<<<< HEAD
 bool BeatHistogramDescriptorExtractor::fillResult(){
     if(!this->MainTicksDescriptorExtractor::fillResult()) return false;
 
@@ -31,5 +32,14 @@ bool BeatHistogramDescriptorExtractor::fillResult(){
 
     //std::sort(result.begin(),result.end());
     return true;
+=======
+std::vector<double> BeatHistogramDescriptorExtractor::extract(){
+   std::vector<double> result =  this->MainTicksDescriptorExtractor::extract();
+
+   for(int i = 0; i < this->ticks_count; i++)
+       result[i] = (koeff / (result[i] * this->histogram.size())) / this->max_bmp;
+
+   return result;
+>>>>>>> not-tested
 }
 

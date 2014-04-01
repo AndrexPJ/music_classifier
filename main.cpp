@@ -1,6 +1,20 @@
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
+<<<<<<< HEAD
 #include "audioDescriptors/audiodescriptorcollectorfactory.h"
+=======
+#include "audioTransforms/audiowfft.h"
+#include "audioTransforms/audiodwt.h"
+#include "audioTransforms/audiorecordtransforms.h"
+#include "audioTransforms/audiospectrumtransforms.h"
+#include "audioDescriptors/audiodescriptorextractor.h"
+#include "audioDescriptors/audiospectrumdescriptors.h"
+#include "audioDescriptors/audiorecorddescriptors.h"
+#include "audioDescriptors/audiorhythmdescriptors.h"
+#include "audioDescriptors/audiotonalitydescriptors.h"
+#include "audioTransforms/audiowavelettransforms.h"
+#include "audioDescriptors/audiodescriptorfactory.h"
+>>>>>>> not-tested
 
 #include <iostream>
 #include <fstream>
@@ -48,7 +62,11 @@ int main(int argc, char *argv[])
         std::vector<double> out = Tools::experiment(ar.getData()[0],basis);
         */
 
+        AudioDecriptorCollectorFactory dc_factory(ar);
+        string types[] = {"ZCR","ENERGY","MFCC"};
+        AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(types,3);
 
+<<<<<<< HEAD
        string extractors_name[] = {ZCR_NAME};
 
 
@@ -61,6 +79,12 @@ int main(int argc, char *argv[])
           cout<<i+1<<":"<<out[i]<<" ";
         }
 
+=======
+        std::vector<double> out = dc->extract();
+
+        for(int i = 0; i < out.size(); i++)
+            cout << i+1 <<":"<< out[i] << " ";
+>>>>>>> not-tested
 
        return 0;
     }

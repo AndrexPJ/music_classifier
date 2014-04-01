@@ -3,6 +3,7 @@
 
 #include "audioDescriptors/audiodescriptorextractor.h"
 
+
 class EnergyDescriptorExtractor : public AudioDescriptorExtractor {
 private:
     AudioRecord record;
