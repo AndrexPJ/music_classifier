@@ -177,7 +177,7 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
         temp += fq_temp * fq_temp;
     }
 
-    return sqrt(temp) / fq_count;
+    return (sqrt(temp) / fq_count);
 }
 
 AudioDescriptorExtractor* SpFluxDescriptorExtractor::clone() const{
@@ -233,6 +233,9 @@ std::vector<double> MFCCDescriptorExtractor::getAverageValues(std::vector<std::v
      std::vector<double> result;
      result.resize(this->mfcc_count/2);
 
+     std::pair<std::vector<double>::iterator,std::vector<double>::iterator> minmax;
+     double min,max;
+
      int channels_count = this->spectrum.getChannelsCount();
      int data_size = this->spectrum.getChannelDataSize();
 
@@ -244,6 +247,14 @@ std::vector<double> MFCCDescriptorExtractor::getAverageValues(std::vector<std::v
                 temp+=channels_values[ch][step][i];
          result[i] = temp / (data_size * channels_count);
      }
+
+     minmax = std::minmax_element(result.begin(),result.end());
+     min = *minmax.first;
+     max = *minmax.second;
+
+     for(int i = 0; i < this->mfcc_count/2; i++)
+         result[i] = (result[i] - min) / (max - min);
+
      return result;
 }
 
@@ -282,7 +293,7 @@ std::vector<double> MFCCDescriptorExtractor::extractForOneFrame(int channel_numb
     FFT::Inverse(temp_in,temp_out);
 
     for(int i = 0; i < this->mfcc_count/2; i++)
-        result[i] = temp_out[i].norm();
+        result[i] = temp_out[i].re();
 
     return result;
 }

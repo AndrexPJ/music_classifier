@@ -28,7 +28,7 @@ class SpCentroidDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);    
+    SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
     AudioDescriptorExtractor* clone() const;
 };
 
@@ -37,7 +37,7 @@ class SpFlatnessDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);    
+    SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
     AudioDescriptorExtractor* clone() const;
 };
 
@@ -46,7 +46,7 @@ class SpFluxDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8);
+    SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
     AudioDescriptorExtractor* clone() const;
 };
 
@@ -56,7 +56,7 @@ private:
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 8, double threshold = 0.85);
+    SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2, double threshold = 0.85);
     AudioDescriptorExtractor* clone() const;
 };
 

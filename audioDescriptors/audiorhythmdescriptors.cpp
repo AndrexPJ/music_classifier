@@ -26,9 +26,24 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
    std::vector<double> result =  this->MainTicksDescriptorExtractor::extract();
 
    for(int i = 0; i < this->ticks_count; i++)
-       result[i] = (koeff / (result[i] * this->histogram.size())) / this->max_bmp;
+       result[i] = getTempID((koeff / (result[i] * this->histogram.size())));
+
+   std::sort(result.begin(),result.end());
 
    return result;
+}
+
+double BeatHistogramDescriptorExtractor::getTempID(double bmp){
+    if(bmp < 52) return 0.1; // largo
+    if(bmp < 58) return 0.2; // lento
+    if(bmp < 72) return 0.3; // andante
+    if(bmp < 88) return 0.4; // andantino
+    if(bmp < 104) return 0.5; // allegretto
+    if(bmp < 120) return 0.6; // animato
+    if(bmp < 144) return 0.7; // allegro
+    if(bmp < 168) return 0.8; // allegro assai
+    if(bmp < 192) return 0.9; // vivo
+    return 1.0; // prestissimo
 }
 
 AudioDescriptorExtractor* BeatHistogramDescriptorExtractor::clone() const{

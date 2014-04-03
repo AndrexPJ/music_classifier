@@ -26,7 +26,7 @@ private:
 public:
     AudioDescriptorCollector();
     ~AudioDescriptorCollector();
-    bool addDescriptorExtractor(AudioDescriptorExtractor &de);
+    bool addDescriptorExtractor(AudioDescriptorExtractor *de);
     virtual std::vector<double> extract();
     AudioDescriptorExtractor* clone() const;
 };
@@ -36,7 +36,7 @@ class BaseDescriptorFactory{
 protected:
     std::map< std::string,BaseDescriptorFactory*> type_map;
 public:
-    BaseDescriptorFactory(AudioRecord &ar);
+    BaseDescriptorFactory(AudioRecord *ar);
     BaseDescriptorFactory();
     virtual ~BaseDescriptorFactory();
     virtual AudioDescriptorExtractor* getAudioDescriptor(std::string type);

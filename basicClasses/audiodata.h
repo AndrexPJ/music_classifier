@@ -73,7 +73,10 @@ template <class T>
 bool AudioData<T>::setData(std::vector<std::vector<T> > const &data){
     this->channelsData = data;
     this->channelsCount = this->channelsData.size();
-    this->channelDataSize = this->channelsData[this->channelsCount-1].size();
+    if(this->channelsCount == 0)
+        this->channelDataSize = 0;
+    else
+        this->channelDataSize = this->channelsData[this->channelsCount-1].size();
     return true;
 }
 

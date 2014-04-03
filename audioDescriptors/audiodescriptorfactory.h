@@ -16,8 +16,11 @@
 
 
 class AudioDescriptorExtractorFactory : public BaseDescriptorFactory{
+protected:
+    AudioRecord *ar;
 public:
     AudioDescriptorExtractorFactory(AudioRecord &ar);
+    ~AudioDescriptorExtractorFactory();
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
@@ -34,18 +37,18 @@ public:
 
 class EnergyDescriptorFactory : public BaseDescriptorFactory{
 protected:
-    AudioRecord ar;
+    AudioRecord *ar;
 public:
-    EnergyDescriptorFactory(AudioRecord &ar);
+    EnergyDescriptorFactory(AudioRecord *ar);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 
 class ZCRDescriptorFactory : public BaseDescriptorFactory{
 protected:
-    AudioRecord ar;
+    AudioRecord *ar;
 public:
-    ZCRDescriptorFactory(AudioRecord &ar);
+    ZCRDescriptorFactory(AudioRecord *ar);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
@@ -54,56 +57,57 @@ public:
 
 class SpectralDescriptorFactory : public BaseDescriptorFactory{
 protected:
-    AudioSpectrum<double> amp_spectrum;
+    AudioSpectrum<double> *amp_spectrum;
     void initTypeMap();
 public:
     SpectralDescriptorFactory();
-    SpectralDescriptorFactory(AudioRecord &ar);
-    SpectralDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    SpectralDescriptorFactory(AudioRecord *ar);
+    SpectralDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
+    virtual ~SpectralDescriptorFactory();
 };
 
 class SpFluxDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    SpFluxDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    SpFluxDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class SpFlatnessDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    SpFlatnessDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    SpFlatnessDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class SpCentroidDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    SpCentroidDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    SpCentroidDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class SpRollOffDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    SpRollOffDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    SpRollOffDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class PitchHistogramDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    PitchHistogramDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    PitchHistogramDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class MFCCDescriptorFactory : public SpectralDescriptorFactory{
 public:
-    MFCCDescriptorFactory(AudioSpectrum<double> &amp_spectrum);
+    MFCCDescriptorFactory(AudioSpectrum<double> *amp_spectrum);
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 
 class BeatHistogramDescriptorFactory : public BaseDescriptorFactory{
 protected:
-    CorrelationFunction correlation_f;
-    double koeff;
+    AudioRecord *ar;
 public:
-    BeatHistogramDescriptorFactory(AudioRecord &ar);
+    BeatHistogramDescriptorFactory(AudioRecord *ar);
+    ~BeatHistogramDescriptorFactory();
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 

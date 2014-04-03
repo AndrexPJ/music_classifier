@@ -159,7 +159,6 @@ AudioRecord AudioRecordTransforms::performNormalization(const AudioRecord &recor
      AudioRecord temp_record(record);
 
      int channels_count = temp_record.getChannelsCount();
-     int data_size = temp_record.getChannelDataSize();
      double norm;
      for(int ch = 0; ch < channels_count; ch++){
         norm = std::inner_product(temp_record[ch].begin(),temp_record[ch].end(),temp_record[ch].begin(),0.0);

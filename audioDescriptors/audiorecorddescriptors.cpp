@@ -21,7 +21,6 @@ std::vector<double> EnergyDescriptorExtractor::extract(){
         }
         temp_vector[i] = temp / data_size; // normalized
     }
-
     temp = Tools::getAverage(temp_vector);
 
     temp_vector.clear();
