@@ -2,7 +2,7 @@
 #define AUDIOSPECTRUM_H
 
 #include "basicClasses/audiodata.h"
-#include "fastFourierTransform/complex.h"
+#include "featureExtractionLibraries/fastFourierTransform/complex.h"
 #include <math.h>
 #include <iostream>
 

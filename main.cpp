@@ -1,17 +1,9 @@
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
-#include "audioTransforms/audiowfft.h"
-#include "audioTransforms/audiodwt.h"
-#include "audioTransforms/audiorecordtransforms.h"
-#include "audioTransforms/audiospectrumtransforms.h"
-#include "audioDescriptors/audiodescriptorextractor.h"
-#include "audioDescriptors/audiospectrumdescriptors.h"
-#include "audioDescriptors/audiorecorddescriptors.h"
-#include "audioDescriptors/audiorhythmdescriptors.h"
-#include "audioDescriptors/audiotonalitydescriptors.h"
-#include "audioTransforms/audiowavelettransforms.h"
-#include "audioDescriptors/audiodescriptorfactory.h"
 
+#include "featureExtractionLibraries/audioDescriptors/audiodescriptorfactory.h"
+
+#include "classificationLibraries/svmclassifier.h"
 #include <iostream>
 #include <fstream>
 
@@ -33,7 +25,8 @@ int main(int argc, char *argv[])
                 features.push_back(string(argv[i]));
         }
 
-        AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
+
+        /*AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
         //ar = AudioRecordTransforms::performNormalization(ar);
 
         AudioDecriptorCollectorFactory dc_factory(ar);
@@ -44,7 +37,35 @@ int main(int argc, char *argv[])
         for(int i = 0; i < out.size(); i++)
             cout << i+1 <<":"<< out[i] << " ";
 
-        delete dc;
+        delete dc;*/
+
+        /*double _v1[] = {0.0,0.0};
+        double _v2[] = {0.0,1.0};
+        double _v3[] = {1.0,1.0};
+        double _v4[] = {1.0,0.0};
+        double _labels[] = {0.0,1.0,0.0,1.0};
+
+        std::vector<double> v1(_v1,_v1+2);
+        std::vector<double> v2(_v2,_v2+2);
+        std::vector<double> v3(_v3,_v3+2);
+        std::vector<double> v4(_v4,_v4+2);
+        std::vector<double> labels(_labels,_labels+4);
+
+        std::vector<std::vector<double> > samples;
+        samples.push_back(v1);
+        samples.push_back(v2);
+        samples.push_back(v3);
+        samples.push_back(v4);
+
+
+        SVMClassifier svm;
+        svm.train(samples,labels);
+
+        cout << svm.classify(v1) << endl;
+        cout << svm.classify(v2) << endl;
+        cout << svm.classify(v3) << endl;
+        cout << svm.classify(v4) << endl;*/
+
         return 0;
     }
     catch(exception &ex){
