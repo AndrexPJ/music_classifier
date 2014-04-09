@@ -1,16 +1,20 @@
 #ifndef TOOLS_H
 #define TOOLS_H
+
 #include <vector>
 #include <numeric>
 #include <math.h>
 #include <algorithm>
 #include <functional>
-
-#include "featureExtractionLibraries/specialFunctions/windowfunctions.h"
+#include <string>
+#include <boost/filesystem.hpp>
 
 namespace Tools {
 
 unsigned int nearestPowerOfTwoAbove(unsigned int number);
+std::vector<std::string> getAllFileNamesInDirectory(std::string dir_path, std::string extension);
+std::vector<std::string> getRandomFileNames(std::string dir_path, int count, std::string extension);
+std::pair<std::vector<std::string>, std::vector<std::string> > getTwoFileNamesHeaps(std::string dir_path, int first_count, int second_count,  std::string extension);
 
 template <class T>
 T getAverage(std::vector<T> &in_vector);
@@ -36,14 +40,6 @@ T getCentroid(std::vector<T> &vector);
 template <class T>
 T getVariance(std::vector<T> &vector, T mean);
 
-
-
-/*std::vector<double> experiment(std::vector<double> &func, std::vector<std::vector<double> > &basis);
-std::vector< std::vector<double> > experiment_w(std::vector<double> &func,std::vector<std::vector<double> > &basis,WindowFunction &window);
-double getScalar(std::vector<double> &first, std::vector<double> &second);
-std::vector<double> mulVector(std::vector<double> &vector, double num);
-std::vector<double> sumVectors(std::vector<double> &first, std::vector<double> &second);
-std::vector< std::vector<double> > getBasis(std::vector< std::vector<double> > &vectors, int vector_size);*/
 
 }
 

@@ -25,19 +25,21 @@ aux_source_directory(${CLASSIFICATION_LIB_DIR} SRC_LIST)
 find_package(OpenCV REQUIRED)
 find_package(GSL REQUIRED)
 find_package(FFTW REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system filesystem)
 
 include_directories(
     ${GSL_INCLUDE_DIRS}
     ${GSLCBLAS_INCLUDE_DIRS}
     ${FFTW_INCLUDE_DIR}
     ${OpenCV_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
 )
 
-set(LIBS ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES} ${FFTW_LIB} ${OpenCV_LIBS})
+set(LIBS ${LIBS} ${GSL_LIBRARIES} ${GSLCBLAS_LIBRARIES} ${FFTW_LIB} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 link_libraries(${LIBS})
 add_executable(${PROJECT_NAME} ${SRC_LIST})
-
+#target_link_libraries(${PROJECT_NAME} ${LIBS})
 
 include_directories(
     .

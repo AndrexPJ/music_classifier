@@ -4,67 +4,51 @@
 #include "featureExtractionLibraries/audioDescriptors/audiodescriptorfactory.h"
 
 #include "classificationLibraries/svmclassifier.h"
+#include "classificationLibraries/boostclassifier.h"
+#include "featureExtractionLibraries/audioDescriptors/audiofeaturesamplesextractor.h"
 #include <iostream>
 #include <fstream>
-
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
     try{
-        string filename;
+        /*string filename;
         vector<string> features;
         if(argc < 3){
             filename = "country.wav";
-            features.push_back("BEATHISTO");
+            features.push_back("SPFLUX");
         }
         else{
             filename = argv[1];
             for(int i = 2; i < argc; i++)
                 features.push_back(string(argv[i]));
-        }
+        }*/
 
+        int size = 10;
+        int feature_size = 9;
+        string genres[] = {"classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop"};
+        string features[] = {"PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX"};
+        double labels[] = {-1.0,-1.0,-1.0,1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0};
+        int training_sizes[] = {6,6,6,60,6,6,6,6,6,6};
+        int test_sizes[] = {10,10,10,30,10,10,10,10,10,10};
 
-        /*AudioRecord ar =  WaveAudioLoader::loadAudioRecord(filename);
-        //ar = AudioRecordTransforms::performNormalization(ar);
+        vector<string> v_genres(genres,genres+size);
+        vector<double> v_labels(labels,labels+size);
+        vector<int> v_training_sizes(training_sizes,training_sizes+size);
+        vector<int> v_test_sizes(test_sizes,test_sizes+size);
+        vector<string> v_features(features,features + feature_size);
 
-        AudioDecriptorCollectorFactory dc_factory(ar);
-        AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(features);
+        AudioSamplesCreator samples_creator(v_genres,v_labels,v_training_sizes,v_test_sizes,v_features);
 
-        std::vector<double> out = dc->extract();
+        AudioFeatureExcerpt training_excerpt = samples_creator.getTrainingExcerpt();
+        AudioFeatureExcerpt test_excerpt = samples_creator.getTestExcerpt();
 
-        for(int i = 0; i < out.size(); i++)
-            cout << i+1 <<":"<< out[i] << " ";
+        BoostClassifier classifier;
 
-        delete dc;*/
-
-        /*double _v1[] = {0.0,0.0};
-        double _v2[] = {0.0,1.0};
-        double _v3[] = {1.0,1.0};
-        double _v4[] = {1.0,0.0};
-        double _labels[] = {0.0,1.0,0.0,1.0};
-
-        std::vector<double> v1(_v1,_v1+2);
-        std::vector<double> v2(_v2,_v2+2);
-        std::vector<double> v3(_v3,_v3+2);
-        std::vector<double> v4(_v4,_v4+2);
-        std::vector<double> labels(_labels,_labels+4);
-
-        std::vector<std::vector<double> > samples;
-        samples.push_back(v1);
-        samples.push_back(v2);
-        samples.push_back(v3);
-        samples.push_back(v4);
-
-
-        SVMClassifier svm;
-        svm.train(samples,labels);
-
-        cout << svm.classify(v1) << endl;
-        cout << svm.classify(v2) << endl;
-        cout << svm.classify(v3) << endl;
-        cout << svm.classify(v4) << endl;*/
+        classifier.train(training_excerpt);
+        cout << classifier.test(test_excerpt) << endl;
 
         return 0;
     }
@@ -73,6 +57,6 @@ int main(int argc, char *argv[])
         return 1;
     }
     // TODO: lazy spectrum computation in fabric
-    // WARNING: check mfcc
+    // TODO: SVM classify multiple data
 }
 

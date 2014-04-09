@@ -1,5 +1,12 @@
 #include "audiodescriptorextractor.h"
 
+/*Sample::Sample(){}
+Sample::Sample(std::vector<double> &features, double label){
+    this->features = features;
+    this->label = label;
+}*/
+
+
 AudioDescriptorExtractor::AudioDescriptorExtractor(){}
 
 AudioDescriptorExtractor::~AudioDescriptorExtractor(){}
@@ -51,3 +58,5 @@ AudioDescriptorExtractor* BaseDescriptorFactory::getAudioDescriptor(std::string 
         return this->type_map[type]->getAudioDescriptor(type);
     else return NULL;
 }
+
+

@@ -21,16 +21,17 @@ AudioDescriptorExtractor* AudioDescriptorExtractorFactory::getAudioDescriptor(st
         return this->type_map["OTHER"]->getAudioDescriptor(type);
 }
 
+AudioDescriptorCollectorFactory::AudioDescriptorCollectorFactory(){}
 
-AudioDecriptorCollectorFactory::AudioDecriptorCollectorFactory(AudioRecord &ar){
+AudioDescriptorCollectorFactory::AudioDescriptorCollectorFactory(AudioRecord &ar){
     this->de_factory = new AudioDescriptorExtractorFactory(ar);
 }
 
-AudioDecriptorCollectorFactory::~AudioDecriptorCollectorFactory(){
+AudioDescriptorCollectorFactory::~AudioDescriptorCollectorFactory(){
     delete this->de_factory;
 }
 
-AudioDescriptorCollector* AudioDecriptorCollectorFactory::getAudioDescriptorCollector(std::vector<std::string> &types){
+AudioDescriptorCollector* AudioDescriptorCollectorFactory::getAudioDescriptorCollector(std::vector<std::string> &types){
     AudioDescriptorCollector *ad_collector = new AudioDescriptorCollector();
     AudioDescriptorExtractor *temp_extractor;
     for(std::vector<std::string>::iterator it = types.begin(); it != types.end();it++){
@@ -43,7 +44,7 @@ AudioDescriptorCollector* AudioDecriptorCollectorFactory::getAudioDescriptorColl
     return ad_collector;
 }
 
-AudioDescriptorCollector* AudioDecriptorCollectorFactory::getAudioDescriptorCollector(std::string types[], int count){
+AudioDescriptorCollector* AudioDescriptorCollectorFactory::getAudioDescriptorCollector(std::string types[], int count){
     std::vector<std::string> v_types(types,types+count);
     return this->getAudioDescriptorCollector(v_types);
 }

@@ -79,10 +79,10 @@ my ($main_genre,@features) = @_;
 	$path_feature = join("_",@features);
 
 
-	$exapmles_main_size = 72;
-	$exapmles_sub_size = 8; 
+	$exapmles_main_size = 50;
+	$exapmles_sub_size = 6; 
 
-	$test_main_size = 27;
+	$test_main_size = 20;
 	$test_sub_size = 3;
 
 
@@ -143,7 +143,7 @@ my ($main_genre,@features) = @_;
 	}
 
 	for (my $i = 0; $i < 3; $i++){
-		`./data/svm_learn -t $i $examples_path $model_name`;
+		`./data/svm_learn -t $i -# 1000 $examples_path $model_name`;
 		my @examples_classify = reverse(split('\n',`./data/svm_classify $examples_path $model_name`));
 		my @test_classify =  reverse(split('\n',`./data/svm_classify $test_path $model_name`));
 		print Fresult $feature." kernel ".$i.":\n";
@@ -154,7 +154,27 @@ my ($main_genre,@features) = @_;
 
 }
 
-my ($genre,$feature)  = @ARGV ;
+#my ($genre,$feature)  = @ARGV ;
 #perform("jazz",("SPFLUX","ENERGY",));
-perform($genre,($feature));
+
+@genre_list = ("reggae","blues","rock","jazz","country","disco","hiphop","metal","pop"); 
+@feature_list = ("PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX");
+@feature_list_2 = ("PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX");
+#@feature_list = ("ZCR");
+foreach my $genre (@genre_list){
+	foreach my $feature_1 (@feature_list){
+		foreach my $feature_2 (@feature_list_2){
+			if($feature_1 eq $feature_2){
+				next;
+			}
+			print $genre." ".$feature_1." ".$feature_2." begin...\n";
+			perform($genre,($feature_1,$feature_2));
+			print $genre." ".$feature_1." ".$feature_2." end!\n";
+		}
+		splice(@feature_list_2,0,1);
+	}
+	@feature_list_2 = ("PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX");
+}
+
+
 

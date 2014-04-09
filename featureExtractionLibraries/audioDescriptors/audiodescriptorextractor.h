@@ -10,6 +10,15 @@
 #include <map>
 #include "tools/tools.h"
 
+/*class Sample{
+public:
+    double label;
+    std::vector<double> features;
+
+    Sample();
+    Sample(std::vector<double> &features, double label);
+};*/
+
 class AudioDescriptorExtractor
 {
 public:
@@ -41,6 +50,7 @@ public:
     virtual ~BaseDescriptorFactory();
     virtual AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
+
 
 
 #endif // AUDIODESCRIPTOREXTRACTOR_H

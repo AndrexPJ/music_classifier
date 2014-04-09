@@ -17,30 +17,14 @@ SVMClassifier::~SVMClassifier(){
     this->trained = false;
 }
 
+bool SVMClassifier::train(AudioFeatureExcerpt &excerpt){
+    return this->BasicClassifier::train(excerpt);
+}
 
 bool SVMClassifier::train(std::vector<std::vector<double> > &train_samples, std::vector<double> &samples_labels){
-    int train_size = train_samples.size();
-    int labels_size = samples_labels.size();
 
-    if(train_size == 0) return false;
-    if(train_size != labels_size) return false;
-
-    int features_size = train_samples[0].size();
-
-    for(std::vector<std::vector<double> >::iterator it = train_samples.begin(); it != train_samples.end(); it++)
-        if((*it).size() != features_size) return false;
-
-
-
-    cv::Mat labelsMat(labels_size, 1, CV_32FC1);
-    cv::Mat trainingDataMat(train_size, features_size , CV_32FC1);
-
-    for(int i = 0; i < train_size; i++){
-        labelsMat.at<float>(i) = samples_labels[i];
-        for(int j = 0; j < features_size; j++)
-            trainingDataMat.at<float>(i,j) = train_samples[i][j];
-    }
-
+    cv::Mat labelsMat = this->vectorToMat(samples_labels);
+    cv::Mat trainingDataMat = this->vectorToMat(train_samples);
 
     this->svm->train(trainingDataMat, labelsMat, cv::Mat(), cv::Mat(),*this->params);
     this->trained = true;
@@ -59,12 +43,7 @@ std::vector<double> SVMClassifier::classify(std::vector<std::vector<double> > &c
 }
 
 double SVMClassifier::classify(std::vector<double> &classify_sample){
-    int size = classify_sample.size();
-    cv::Mat data(size,1,CV_32FC1);
-
-    for(int i = 0; i < size; i++)
-        data.at<float>(i) = classify_sample[i];
-
+    cv::Mat data = this->vectorToMat(classify_sample);
     return this->svm->predict(data);
 }
 

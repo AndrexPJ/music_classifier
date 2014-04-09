@@ -25,12 +25,13 @@ public:
 };
 
 
-class AudioDecriptorCollectorFactory{
+class AudioDescriptorCollectorFactory{
 protected:
     AudioDescriptorExtractorFactory *de_factory;
 public:
-    AudioDecriptorCollectorFactory(AudioRecord &ar);
-    ~AudioDecriptorCollectorFactory();
+    AudioDescriptorCollectorFactory(AudioRecord &ar);
+    AudioDescriptorCollectorFactory();
+    ~AudioDescriptorCollectorFactory();
     AudioDescriptorCollector* getAudioDescriptorCollector(std::vector<std::string> &types);
     AudioDescriptorCollector* getAudioDescriptorCollector(std::string types[], int count);
 };

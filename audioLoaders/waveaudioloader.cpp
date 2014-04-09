@@ -3,17 +3,25 @@
 
 AudioRecord WaveAudioLoader::loadAudioRecord(string fileName){
     ifstream inFileStream;
+
+
     inFileStream.open(fileName,ios::binary);
 
-    if(!inFileStream)
+
+    if(!inFileStream){
+        std::cerr << fileName << std::endl;
         throw(AudioFilePathException());
+    }
+
 
     WavHeader header;
     inFileStream.read((char*)&header,sizeof(WavHeader));
 
 
-    if(header.audioFormat != 1)
+    if(header.audioFormat != 1){
         throw(AudioFormatException());
+    }
+
 
 
     if((header.bitsPerSample !=8) && (header.bitsPerSample != 16))
