@@ -11,16 +11,14 @@ public:
     BoostClassifier();
     ~BoostClassifier();
 
-    bool train(AudioFeatureExcerpt &excerpt);
-    bool train(std::vector< std::vector<double> > &train_samples, std::vector<double> &samples_labels);
+    virtual bool train(AudioFeatureExcerpt &excerpt);
+    virtual bool train(std::vector< std::vector<double> > &train_samples, std::vector<double> &samples_labels);
 
-    std::vector<double> classify(std::vector< std::vector<double> > &classify_samples);
-    double classify(std::vector<double> &classify_sample);
+    virtual std::vector<double> classify(std::vector< std::vector<double> > &classify_samples);
+    virtual double classify(std::vector<double> &classify_sample);
 
-    bool load(std::string filename);
-    bool save(std::string filename);
-
-    BasicClassifier* clone();
+    virtual bool load(std::string filename);
+    virtual bool save(std::string filename);
 };
 
 #endif // BOOSTCLASSIFIER_H

@@ -19,11 +19,9 @@ double BasicClassifier::test(AudioFeatureExcerpt &test_excerpt){
     std::vector<double> labels = test_excerpt.getLabels();
 
     double bad_answers = 0.0;
-    double temp_result;
+
     for(int i = 0; i < features.size(); i++){
-        temp_result = this->classify(features[i]);
-        //std::cout << i << " " << temp_result << " " << labels[i] << std::endl;
-        if(temp_result != labels[i])
+        if(this->classify(features[i]) != labels[i])
             bad_answers += 1.0;
     }
 

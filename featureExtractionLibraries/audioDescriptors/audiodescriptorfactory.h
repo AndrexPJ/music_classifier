@@ -12,7 +12,8 @@
 #include "featureExtractionLibraries/audioTransforms/audiorecordtransforms.h"
 #include "featureExtractionLibraries/specialFunctions/noveltyfunctions.h"
 
-#include "featureExtractionLibraries/audioDescriptors/audioextradescriptors.h"
+
+
 
 class AudioDescriptorExtractorFactory : public BaseDescriptorFactory{
 protected:
@@ -108,16 +109,6 @@ protected:
 public:
     BeatHistogramDescriptorFactory(AudioRecord *ar);
     ~BeatHistogramDescriptorFactory();
-    AudioDescriptorExtractor* getAudioDescriptor(std::string type);
-};
-
-class ClassifierDescriptorFactory : public BaseDescriptorFactory{
-protected:
-    AudioRecord *ar;
-    std::vector<BasicClassifier*> classifiers;
-public:
-    ClassifierDescriptorFactory(AudioRecord *ar);
-    ~ClassifierDescriptorFactory();
     AudioDescriptorExtractor* getAudioDescriptor(std::string type);
 };
 

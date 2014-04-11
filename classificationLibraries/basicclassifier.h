@@ -29,8 +29,6 @@ public:
 
     virtual bool load(std::string filename) = 0;
     virtual bool save(std::string filename) = 0;
-
-    virtual BasicClassifier* clone() = 0;
 };
 
 #endif // BASICCLASSIFIER_H

@@ -1,4 +1,4 @@
- #include "audioLoaders/waveaudioloader.h"
+#include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
 
 #include "featureExtractionLibraries/audioDescriptors/audiodescriptorfactory.h"
@@ -6,7 +6,6 @@
 #include "classificationLibraries/svmclassifier.h"
 #include "classificationLibraries/boostclassifier.h"
 #include "featureExtractionLibraries/audioDescriptors/audiofeaturesamplesextractor.h"
-#include "featureExtractionLibraries/audioDescriptors/audioextradescriptors.h"
 #include <iostream>
 #include <fstream>
 
@@ -27,53 +26,30 @@ int main(int argc, char *argv[])
                 features.push_back(string(argv[i]));
         }*/
 
-        string path = "./../genre_classifiers/";
         int size = 10;
-        int feature_size = 1;
-        int test_size = 2;
-        int training_size = 40;
-        string genres[] = {"reggae","blues","rock","metal","jazz","hiphop","classical","disco","pop","country"};
+        int feature_size = 9;
+        string genres[] = {"classical","reggae","blues","rock","jazz","country","disco","hiphop","metal","pop"};
         string features[] = {"PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX"};
-        //string features[] = {"CLASSIFIER"}; // very very bad
+        double labels[] = {-1.0,-1.0,-1.0,1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0};
+        int training_sizes[] = {6,6,6,60,6,6,6,6,6,6};
+        int test_sizes[] = {10,10,10,30,10,10,10,10,10,10};
 
         vector<string> v_genres(genres,genres+size);
-        vector<double> v_labels;
-        v_labels.assign(size,-1.0);
-        vector<int> v_training_sizes;
-        v_training_sizes.assign(size,training_size);
-        vector<int> v_test_sizes;
-        v_test_sizes.assign(size,test_size);
+        vector<double> v_labels(labels,labels+size);
+        vector<int> v_training_sizes(training_sizes,training_sizes+size);
+        vector<int> v_test_sizes(test_sizes,test_sizes+size);
         vector<string> v_features(features,features + feature_size);
 
-        /*AudioRecord ar = WaveAudioLoader::loadAudioRecord("blues.wav");
-        ClassifierDescriptorExtractor cl_de(ar,v_genres,v_features);
+        AudioSamplesCreator samples_creator(v_genres,v_labels,v_training_sizes,v_test_sizes,v_features);
 
-        std::vector<double> out = cl_de.extract();
+        AudioFeatureExcerpt training_excerpt = samples_creator.getTrainingExcerpt();
+        AudioFeatureExcerpt test_excerpt = samples_creator.getTestExcerpt();
 
-        for(int i = 0; i < out.size(); i++)
-            cout << out[i] << " ";
-        cout << endl;*/
+        BoostClassifier classifier;
 
-        for(int i = 0; i < size; i++){
-            cout << v_genres[i] << ":"  << endl;
-            v_labels[i] = 1.0;
-            v_test_sizes[i] = 20;
-            v_training_sizes[i] = 50;
-            AudioSamplesCreator samples_creator(v_genres,v_labels,v_training_sizes,v_test_sizes,v_features);
+        classifier.train(training_excerpt);
+        cout << classifier.test(test_excerpt) << endl;
 
-            AudioFeatureExcerpt training_excerpt = samples_creator.getTrainingExcerpt();
-            AudioFeatureExcerpt test_excerpt = samples_creator.getTestExcerpt();
-
-            BoostClassifier classifier;
-
-            classifier.train(training_excerpt);
-            cout << "test: " << classifier.test(test_excerpt) << endl;
-            cout << "training: " << classifier.test(training_excerpt) << endl;
-            //classifier.save(path+v_genres[i]);
-            v_labels[i] = -1.0;
-            v_test_sizes[i] = test_size;
-            v_training_sizes[i] = training_size;
-        }
         return 0;
     }
     catch(exception &ex){

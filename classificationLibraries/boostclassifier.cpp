@@ -18,13 +18,7 @@ bool BoostClassifier::train(std::vector<std::vector<double> > &train_samples, st
     cv::Mat labelsMat = this->vectorToMat(samples_labels);
     cv::Mat trainingDataMat = this->vectorToMat(train_samples);
 
-    CvBoostParams params;
-    params.boost_type = CvBoost::DISCRETE;
-    params.weak_count = 100;
-    params.weight_trim_rate = 0.95;
-    params.cv_folds = 0;
-    params.max_depth = 1;
-    this->boost->train(trainingDataMat,CV_ROW_SAMPLE,labelsMat,cv::Mat(),cv::Mat(),cv::Mat(),cv::Mat(),params);
+    this->boost->train(trainingDataMat,CV_ROW_SAMPLE,labelsMat);
     return true;
 }
 
@@ -51,9 +45,4 @@ bool BoostClassifier::save(std::string filename){
 bool BoostClassifier::load(std::string filename){
     this->boost->load(filename.c_str());
     return true;
-}
-
-
-BasicClassifier* BoostClassifier::clone(){
-    return new BoostClassifier(*this);
 }

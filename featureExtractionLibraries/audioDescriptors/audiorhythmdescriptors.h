@@ -16,10 +16,10 @@ private:
     int max_bmp, min_bmp;
     double koeff;
 public:
-    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff, int ticks_count = 5);
+    BeatHistogramDescriptorExtractor(CorrelationFunction &c_func, double koeff, int ticks_count = 3);
     double getTempID(double bmp);
     std::vector<double> extract();
-    AudioDescriptorExtractor* clone();
+    AudioDescriptorExtractor* clone() const;
 
 };
 
