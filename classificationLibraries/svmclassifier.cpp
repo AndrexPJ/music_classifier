@@ -57,3 +57,7 @@ bool SVMClassifier::load(std::string filename){
     this->svm->load(filename.c_str());
     return true;
 }
+
+BasicClassifier* SVMClassifier::clone(){
+    return new SVMClassifier(*this);
+}

@@ -7,6 +7,6 @@ std::vector<double> MainPitchesDescriptorExtractor::extract(){
     return this->MainTicksDescriptorExtractor::extract();
 }
 
-AudioDescriptorExtractor* MainPitchesDescriptorExtractor::clone() const{
+AudioDescriptorExtractor* MainPitchesDescriptorExtractor::clone(){
     return new MainPitchesDescriptorExtractor(*this);
 }

@@ -24,8 +24,8 @@ AudioDescriptorCollector::~AudioDescriptorCollector(){
 }
 
 bool AudioDescriptorCollector::addDescriptorExtractor(AudioDescriptorExtractor *de){
-    AudioDescriptorExtractor *temp_de = de->clone();
-    this->de_vector.push_back(temp_de);
+    //AudioDescriptorExtractor *temp_de = de->clone();
+    this->de_vector.push_back(de);
     return true;
 }
 
@@ -41,7 +41,7 @@ std::vector<double> AudioDescriptorCollector::extract(){
  return result;
 }
 
-AudioDescriptorExtractor* AudioDescriptorCollector::clone() const{
+AudioDescriptorExtractor* AudioDescriptorCollector::clone(){
     return new AudioDescriptorCollector(*this);
 }
 

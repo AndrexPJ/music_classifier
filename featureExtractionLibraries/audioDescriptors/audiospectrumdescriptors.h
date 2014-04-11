@@ -29,7 +29,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpCentroidDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 
@@ -38,7 +38,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpFlatnessDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 
@@ -47,7 +47,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone() ;
 };
 
 class SpRollOffDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
@@ -57,7 +57,7 @@ protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
     SpRollOffDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2, double threshold = 0.85);
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 class MFCCDescriptorExtractor : public AudioDescriptorExtractor{
@@ -70,7 +70,7 @@ private:
 public:
     MFCCDescriptorExtractor(AudioSpectrum<double> &spectrum, int mfcc_count = 26);
     std::vector<double> extract();
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 class HistogramDescriptorExtractor : public AudioDescriptorExtractor{
@@ -81,7 +81,7 @@ public:
     HistogramDescriptorExtractor(AudioSpectrum<double> &spectrum);
     HistogramDescriptorExtractor();
     std::vector<double> extract();
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 class MainTicksDescriptorExtractor : public HistogramDescriptorExtractor {
@@ -95,7 +95,7 @@ public:
     MainTicksDescriptorExtractor(int ticks_count, bool mode = true);
     bool setHistogram(std::vector<double> &histogram);
     std::vector<double> extract();
-    AudioDescriptorExtractor* clone() const;
+    AudioDescriptorExtractor* clone();
 };
 
 

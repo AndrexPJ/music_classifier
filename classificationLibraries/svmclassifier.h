@@ -21,6 +21,7 @@ public:
     bool save(std::string filename);
     bool load(std::string filename);
 
+    BasicClassifier* clone();
 };
 
 #endif // SVMCLASSIFIER_H

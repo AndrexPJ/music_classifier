@@ -29,7 +29,7 @@ AudioSamplesCreator::AudioSamplesCreator(std::vector<std::string> &genres, std::
     std::vector<double> temp_labels;
 
     for(int i = 0; i < genres_size; i++){
-        std::cout << genres[i] << " started..." << std::endl;
+        //std::cout << genres[i] << " started..." << std::endl;
 
         temp_pair = Tools::getTwoFileNamesHeaps(path + genres[i],training_sizes[i],test_sizes[i],".wav");
 
@@ -49,7 +49,7 @@ AudioSamplesCreator::AudioSamplesCreator(std::vector<std::string> &genres, std::
         this->test_labels.insert(this->test_labels.begin(),temp_labels.begin(),temp_labels.end());
         // ------------
 
-        std::cout << genres[i] << " completed!" << std::endl;
+        //std::cout << genres[i] << " completed!" << std::endl;
     }
 
 }

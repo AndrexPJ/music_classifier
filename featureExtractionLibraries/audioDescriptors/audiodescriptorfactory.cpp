@@ -5,6 +5,7 @@ AudioDescriptorExtractorFactory::AudioDescriptorExtractorFactory(AudioRecord &ar
     this->type_map["ZCR"] = new ZCRDescriptorFactory(this->ar);
     this->type_map["ENERGY"] = new EnergyDescriptorFactory(this->ar);
     this->type_map["BEATHISTO"] = new BeatHistogramDescriptorFactory(this->ar);
+    //this->type_map["CLASSIFIER"] = new ClassifierDescriptorFactory(this->ar);
     this->type_map["OTHER"] =  new SpectralDescriptorFactory(this->ar);
 }
 
@@ -38,7 +39,7 @@ AudioDescriptorCollector* AudioDescriptorCollectorFactory::getAudioDescriptorCol
         temp_extractor = this->de_factory->getAudioDescriptor(*it);
         if(temp_extractor){
             ad_collector->addDescriptorExtractor(temp_extractor);
-            delete temp_extractor;
+            //delete temp_extractor;
         }
     }
     return ad_collector;
@@ -164,8 +165,34 @@ AudioDescriptorExtractor* BeatHistogramDescriptorFactory::getAudioDescriptor(std
     return new BeatHistogramDescriptorExtractor(correlation_f,koeff);
 }
 
-BeatHistogramDescriptorFactory::~BeatHistogramDescriptorFactory(){
+BeatHistogramDescriptorFactory::~BeatHistogramDescriptorFactory(){}
+
+// --- ------------------------------ ---
+
+
+ClassifierDescriptorFactory::ClassifierDescriptorFactory(AudioRecord *ar){
+    this->ar = ar;
+
+    int size = 10;
+    classifiers.resize(size);
+    std::string classes[] = {"reggae","blues","rock","metal","jazz","hiphop","classical","disco","pop","country"};
+    for(int i = 0; i < size; i++){
+        classifiers[i] = new BoostClassifier();
+        classifiers[i]->load("./../genre_classifiers/"+classes[i]);
+    }
 
 }
 
-// --- ------------------------------ ---
+ClassifierDescriptorFactory::~ClassifierDescriptorFactory(){
+    for(int i = 0; i < classifiers.size(); i++)
+        delete this->classifiers[i];
+}
+
+
+AudioDescriptorExtractor* ClassifierDescriptorFactory::getAudioDescriptor(std::string type){
+
+    int feature_size = 9;
+    std::string features[] = {"PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX"};
+    std::vector<std::string> v_features(features,features + feature_size);
+    return new ClassifierDescriptorExtractor(*ar,classifiers,v_features);
+}

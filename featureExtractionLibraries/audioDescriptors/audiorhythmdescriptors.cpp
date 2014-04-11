@@ -28,7 +28,7 @@ std::vector<double> BeatHistogramDescriptorExtractor::extract(){
    for(int i = 0; i < this->ticks_count; i++)
        result[i] = getTempID((koeff / (result[i] * this->histogram.size())));
 
-   std::sort(result.begin(),result.end());
+   //std::sort(result.begin(),result.end());
 
    return result;
 }
@@ -46,6 +46,6 @@ double BeatHistogramDescriptorExtractor::getTempID(double bmp){
     return 1.0; // prestissimo
 }
 
-AudioDescriptorExtractor* BeatHistogramDescriptorExtractor::clone() const{
+AudioDescriptorExtractor* BeatHistogramDescriptorExtractor::clone(){
     return new BeatHistogramDescriptorExtractor(*this);
 }
