@@ -14,18 +14,34 @@ bool BasicClassifier::train(AudioFeatureExcerpt &excerpt){
     return false;
 }*/
 
-double BasicClassifier::test(AudioFeatureExcerpt &test_excerpt){
+std::pair<double,double> BasicClassifier::test(AudioFeatureExcerpt &test_excerpt){
     std::vector<std::vector<double> > features = test_excerpt.getFeatureSamples();
     std::vector<double> labels = test_excerpt.getLabels();
 
-    double bad_answers = 0.0;
+    std::pair<double,double> result;
+
+    double bad_answers_pos_class = 0.0;
+    int pos_class_size = 0;
+    double bad_answers_neg_class = 0.0;
+    int neg_class_size = 0;
 
     for(int i = 0; i < features.size(); i++){
-        if(this->classify(features[i]) != labels[i])
-            bad_answers += 1.0;
+        if(labels[i] == 1.0){
+            if(this->classify(features[i]) != labels[i])
+                bad_answers_pos_class += 1.0;
+            pos_class_size++;
+        }
+        if(labels[i] == -1.0){
+            if(this->classify(features[i]) != labels[i])
+                bad_answers_neg_class += 1.0;
+            neg_class_size++;
+        }
     }
 
-    return (1.0 - (bad_answers / features.size()));
+    result.first = 1.0 - bad_answers_pos_class/pos_class_size;
+    result.second = 1.0 - bad_answers_neg_class/neg_class_size;
+
+    return result;
 }
 
 cv::Mat BasicClassifier::vectorToMat(std::vector<double> &vector){

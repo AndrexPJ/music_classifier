@@ -5,7 +5,8 @@ SVMClassifier::SVMClassifier(int kernel_type,int svm_type){
     this->params = new CvSVMParams();
     this->params->svm_type    = svm_type;
     this->params->kernel_type = kernel_type;
-    this->params->degree = 2.0;
+    this->params->nu = 0.5;
+    this->params->degree = 3.0;
    // this->params->term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 1000, 1e-6);
     this->svm = new CvSVM();
     this->trained = false;
@@ -26,7 +27,7 @@ bool SVMClassifier::train(std::vector<std::vector<double> > &train_samples, std:
     cv::Mat labelsMat = this->vectorToMat(samples_labels);
     cv::Mat trainingDataMat = this->vectorToMat(train_samples);
 
-    this->svm->train(trainingDataMat, labelsMat, cv::Mat(), cv::Mat(),*this->params);
+    this->svm->train_auto(trainingDataMat, labelsMat, cv::Mat(), cv::Mat(),*this->params);
     this->trained = true;
     return true;
 }

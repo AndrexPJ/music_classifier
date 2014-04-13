@@ -22,7 +22,7 @@ public:
     virtual bool train(AudioFeatureExcerpt &excerpt);
     virtual bool train(std::vector< std::vector<double> > &train_samples, std::vector<double> &samples_labels) = 0;
 
-    virtual double test(AudioFeatureExcerpt &test_excerpt);
+    virtual std::pair<double,double> test(AudioFeatureExcerpt &test_excerpt);
 
     virtual std::vector<double> classify(std::vector< std::vector<double> > &classify_samples) = 0;
     virtual double classify(std::vector<double> &classify_sample) = 0;

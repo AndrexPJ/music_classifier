@@ -29,15 +29,32 @@ bool AudioDescriptorCollector::addDescriptorExtractor(AudioDescriptorExtractor *
     return true;
 }
 
+void AudioDescriptorCollector::normalize(std::vector<double> &vector){
+    std::pair<std::vector<double>::iterator,std::vector<double>::iterator> minmax = std::minmax_element(vector.begin(),vector.end());
+
+    for(std::vector<double>::iterator it = vector.begin(); it != vector.end(); it++)
+        (*it)  = ((*it) - (*minmax.first)) / (*minmax.second) - 1.0;
+}
+
 std::vector<double> AudioDescriptorCollector::extract(){
  std::vector<double> result;
  std::vector<double> temp;
  for(std::vector<AudioDescriptorExtractor*>::iterator it = this->de_vector.begin(); it != this->de_vector.end(); it++){
      if(*it){
         temp = (*it)->extract();
+        //this->normalize(temp);
         result.insert(result.end(),temp.begin(),temp.end());
      }
  }
+ /*double mean = Tools::getGeneralizedMean(result,1);
+ double variance = Tools::getVariance(result,mean);
+ double standart_dv = sqrt(variance);
+
+ for(std::vector<double>::iterator it = result.begin(); it != result.end(); it++)
+     (*it) = ((*it) - mean) / standart_dv;
+
+ //std::sort(result.begin(),result.end());*/
+
  return result;
 }
 

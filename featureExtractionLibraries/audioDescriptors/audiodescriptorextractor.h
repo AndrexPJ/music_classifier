@@ -32,6 +32,7 @@ public:
 class AudioDescriptorCollector : AudioDescriptorExtractor{
 private:
     std::vector<AudioDescriptorExtractor*> de_vector;
+    void normalize(std::vector<double> &vector);
 public:
     AudioDescriptorCollector();
     ~AudioDescriptorCollector();

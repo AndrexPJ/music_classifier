@@ -23,6 +23,8 @@ aux_source_directory(${FEATURE_LIB_DIR}/waveletTransform SRC_LIST)
 aux_source_directory(${CLASSIFICATION_LIB_DIR} SRC_LIST)
 
 find_package(OpenCV REQUIRED)
+set(BUILD_SHARED_LIBS  OFF)
+
 find_package(GSL REQUIRED)
 find_package(FFTW REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system filesystem)

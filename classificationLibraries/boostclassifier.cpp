@@ -17,8 +17,14 @@ bool BoostClassifier::train(std::vector<std::vector<double> > &train_samples, st
 
     cv::Mat labelsMat = this->vectorToMat(samples_labels);
     cv::Mat trainingDataMat = this->vectorToMat(train_samples);
-
-    this->boost->train(trainingDataMat,CV_ROW_SAMPLE,labelsMat);
+    CvBoostParams params;
+    params.boost_type = CvBoost::REAL;
+    params.weak_count = 100;
+    params.weight_trim_rate = 0.95;
+    params.cv_folds = 0;
+    params.max_depth = 1;
+    cv::Mat mat;
+    this->boost->train(trainingDataMat,CV_ROW_SAMPLE,labelsMat,mat,mat,mat,mat,params);
     return true;
 }
 
