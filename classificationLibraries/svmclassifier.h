@@ -15,7 +15,7 @@ public:
 
     bool train(AudioFeatureExcerpt &excerpt);
     bool train(std::vector<std::vector<double> > &train_samples, std::vector<double> &samples_labels);
-    std::vector<double> classify(std::vector<std::vector<double> > &classify_samples);
+    //std::vector<double> classify(std::vector<std::vector<double> > &classify_samples);
     double classify(std::vector<double> &classify_sample);
 
     bool save(std::string filename);

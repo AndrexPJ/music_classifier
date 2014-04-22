@@ -11,6 +11,7 @@ std::vector< std::vector<double> > AudioFeatureSamplesExtractor::extract(std::ve
 
     for(int i  = 0; i < file_names.size(); i++){
         ar = WaveAudioLoader::loadAudioRecord(file_names[i]);
+        ar = AudioRecordTransforms::performDCRemoval(ar);
         AudioDescriptorCollectorFactory dc_factory(ar);
         dc = dc_factory.getAudioDescriptorCollector(feature_names);
         out[i] = dc->extract();
@@ -28,37 +29,49 @@ AudioSamplesCreator::AudioSamplesCreator(std::vector<std::string> &genres, std::
     std::vector<std::vector<double> > temp_samples;
     std::vector<double> temp_labels;
 
+    std::vector<std::vector<double> > training_samples;
+    std::vector<std::vector<double> > test_samples;
+    std::vector<double> training_labels;
+    std::vector<double> test_labels;
+    std::vector<std::string> training_class_names;
+    std::vector<std::string> test_class_names;
+
     for(int i = 0; i < genres_size; i++){
         std::cout << genres[i] << " started..." << std::endl;
 
         temp_pair = Tools::getTwoFileNamesHeaps(path + genres[i],training_sizes[i],test_sizes[i],".wav");
 
         // training samples
+        training_class_names.insert(training_class_names.begin(),temp_pair.first.begin(),temp_pair.first.end());
         temp_samples = samples_extractor.extract(temp_pair.first,feature_names);
-        this->training_samples.insert(this->training_samples.begin(),temp_samples.begin(),temp_samples.end());
+        training_samples.insert(training_samples.begin(),temp_samples.begin(),temp_samples.end());
 
         temp_labels.assign(temp_samples.size(),labels[i]);
-        this->training_labels.insert(this->training_labels.begin(),temp_labels.begin(),temp_labels.end());
+        training_labels.insert(training_labels.begin(),temp_labels.begin(),temp_labels.end());
         // ----------------
 
         // test samples
+        test_class_names.insert(test_class_names.begin(),temp_pair.second.begin(),temp_pair.second.end());
         temp_samples = samples_extractor.extract(temp_pair.second,feature_names);
-        this->test_samples.insert(this->test_samples.begin(),temp_samples.begin(),temp_samples.end());
+        test_samples.insert(test_samples.begin(),temp_samples.begin(),temp_samples.end());
 
         temp_labels.assign(temp_samples.size(),labels[i]);
-        this->test_labels.insert(this->test_labels.begin(),temp_labels.begin(),temp_labels.end());
+        test_labels.insert(test_labels.begin(),temp_labels.begin(),temp_labels.end());
         // ------------
 
         std::cout << genres[i] << " completed!" << std::endl;
     }
 
+    this->test_excerpt = AudioFeatureExcerpt(test_samples,test_labels,test_class_names);
+    this->training_excerpt = AudioFeatureExcerpt(training_samples,training_labels,training_class_names);
+
 }
 
 
 AudioFeatureExcerpt AudioSamplesCreator::getTrainingExcerpt(){
-    return AudioFeatureExcerpt(this->training_samples,this->training_labels);
+    return this->training_excerpt;
 }
 
 AudioFeatureExcerpt AudioSamplesCreator::getTestExcerpt(){
-    return AudioFeatureExcerpt(this->test_samples,this->test_labels);
+    return this->test_excerpt;
 }

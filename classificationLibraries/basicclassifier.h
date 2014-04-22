@@ -14,6 +14,7 @@ class BasicClassifier
 {
 protected:
     virtual cv::Mat vectorToMat(std::vector<double> &vector);
+    virtual cv::Mat vectorToMat(std::vector<int> &vector);
     virtual cv::Mat vectorToMat(std::vector< std::vector<double> > &vector);
 public:
     BasicClassifier();
@@ -23,12 +24,13 @@ public:
     virtual bool train(std::vector< std::vector<double> > &train_samples, std::vector<double> &samples_labels) = 0;
 
     virtual std::pair<double,double> test(AudioFeatureExcerpt &test_excerpt);
+    virtual double testTotal(AudioFeatureExcerpt &test_excerpt);
 
-    virtual std::vector<double> classify(std::vector< std::vector<double> > &classify_samples) = 0;
+    virtual std::vector<double> classify(std::vector< std::vector<double> > &classify_samples);
     virtual double classify(std::vector<double> &classify_sample) = 0;
 
-    virtual bool load(std::string filename) = 0;
-    virtual bool save(std::string filename) = 0;
+    virtual bool load(std::string filename);
+    virtual bool save(std::string filename);
 };
 
 #endif // BASICCLASSIFIER_H

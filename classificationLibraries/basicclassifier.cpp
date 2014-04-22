@@ -44,11 +44,46 @@ std::pair<double,double> BasicClassifier::test(AudioFeatureExcerpt &test_excerpt
     return result;
 }
 
+double BasicClassifier::testTotal(AudioFeatureExcerpt &test_excerpt){
+    std::vector<std::vector<double> > features = test_excerpt.getFeatureSamples();
+    std::vector<double> labels = test_excerpt.getLabels();
+    std::vector<std::string> class_names = test_excerpt.getClassNames();
+    std::cout << class_names.size() << std::endl;
+
+    double bad_answers = 0.0;
+
+    for(int i = 0; i < features.size(); i++){
+        if(this->classify(features[i]) != labels[i]){
+           std::cout << class_names[i] << std::endl;
+           bad_answers += 1.0;
+        }
+    }
+
+    return 1.0 - (bad_answers / features.size());
+}
+
+std::vector<double> BasicClassifier::classify(std::vector<std::vector<double> > &classify_samples){
+    std::vector<double> out(classify_samples.size());
+
+    for(int i = 0; i < classify_samples.size(); i++)
+        out[i] = this->classify(classify_samples[i]);
+
+    return out;
+}
+
 cv::Mat BasicClassifier::vectorToMat(std::vector<double> &vector){
     int size = vector.size();
     cv::Mat data(size,1,CV_32FC1);
     for(int i = 0; i < size; i++)
         data.at<float>(i) = (float)vector[i];
+    return data;
+}
+
+cv::Mat BasicClassifier::vectorToMat(std::vector<int> &vector){
+    int size = vector.size();
+    cv::Mat data(size,1,CV_32S);
+    for(int i = 0; i < size; i++)
+        data.at<int>(i) = vector[i];
     return data;
 }
 
@@ -65,4 +100,13 @@ cv::Mat BasicClassifier::vectorToMat(std::vector<std::vector<double> > &vector){
     }
 
     return data;
+}
+
+
+bool BasicClassifier::load(std::string filename){
+    return false;
+}
+
+bool BasicClassifier::save(std::string filename){
+    return false;
 }

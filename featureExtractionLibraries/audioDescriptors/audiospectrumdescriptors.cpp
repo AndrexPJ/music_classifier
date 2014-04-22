@@ -180,6 +180,22 @@ double SpFluxDescriptorExtractor::extractForOneFrame(int channel_number, int fra
     return (sqrt(temp) / fq_count);
 }
 
+std::vector<double> SpFluxDescriptorExtractor::getAverageValues(std::vector<std::vector<double> > &channels_values, int result_frames_count){
+    std::vector<double> result_values = this->AudioSpectrumDescriptorExtractor::getAverageValues(channels_values,result_frames_count);
+
+    std::vector<double>::iterator temp_it;
+    double max;
+
+
+    temp_it = std::max_element(result_values.begin(), result_values.end());
+    max = *temp_it;
+
+    for(temp_it = result_values.begin(); temp_it != result_values.end(); temp_it++)
+        *temp_it /= max;
+
+    return result_values;
+}
+
 AudioDescriptorExtractor* SpFluxDescriptorExtractor::clone() const{
     return new SpFluxDescriptorExtractor(*this);
 }

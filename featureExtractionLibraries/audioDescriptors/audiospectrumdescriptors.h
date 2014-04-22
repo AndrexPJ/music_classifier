@@ -46,7 +46,8 @@ class SpFluxDescriptorExtractor : public AudioSpectrumDescriptorExtractor{
 protected:
     virtual double extractForOneFrame(int channel_number, int frame_number);
 public:
-    SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 2);
+    SpFluxDescriptorExtractor(AudioSpectrum<double> &spectrum, int result_frames_count = 5);
+    std::vector<double> getAverageValues(std::vector<std::vector<double> > &channels_values, int result_frames_count);
     AudioDescriptorExtractor* clone() const;
 };
 
