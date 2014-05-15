@@ -4,6 +4,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 
 set(FEATURE_LIB_DIR ./featureExtractionLibraries)
 set(CLASSIFICATION_LIB_DIR ./classificationLibraries)
+set(GENRECLASSIFICATIONSYSTEM_DIR ./genreClassificationSystem)
 
 aux_source_directory(. SRC_LIST)
 aux_source_directory(./audioLoaders SRC_LIST)
@@ -21,6 +22,8 @@ aux_source_directory(${FEATURE_LIB_DIR}/specialFunctions SRC_LIST)
 aux_source_directory(${FEATURE_LIB_DIR}/waveletTransform SRC_LIST)
 
 aux_source_directory(${CLASSIFICATION_LIB_DIR} SRC_LIST)
+
+aux_source_directory(${GENRECLASSIFICATIONSYSTEM_DIR} SRC_LIST)
 
 find_package(OpenCV REQUIRED)
 set(BUILD_SHARED_LIBS  OFF)

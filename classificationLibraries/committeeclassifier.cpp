@@ -78,17 +78,29 @@ CommitteeClassifier* CommitteeClassiferFactory::getCommitteeClassifier(std::stri
     std::string genres[] = {"classical","metal","jazz","blues","reggae","hiphop","pop","rock","country","disco"};
     int genres_count = 10;
 
+    std::vector<std::string> v_genres(genres, genres + genres_count);
+
+    int genre_index = std::find(v_genres.begin(),v_genres.end(),genre) - v_genres.begin();
+
     std::vector<BasicClassifier*> classifiers;
     BoostClassifier *temp_classifier;
-    SVMClassifier *master_classifier = new SVMClassifier();
+    //SVMClassifier *master_classifier = new SVMClassifier();
     //master_classifier->load(master_classifiers_path+genre);
 
-    for(int i = 0; i < genres_count; i++){
-      if(genre == genres[i]) continue;
+    for(int i = 0; i < genre_index; i++){
+        // reverse classifiers loading
+        temp_classifier = new BoostClassifier(true);
+        temp_classifier->load(expert_classifiers_path+genres[i]+"_"+genre);
+        //temp_classifier->load(expert_classifiers_path+genre+"_"+genres[i]);
+        classifiers.push_back(temp_classifier);
+    }
+
+    for(int i = genre_index + 1; i < genres_count; i++){
       temp_classifier = new BoostClassifier();
       temp_classifier->load(expert_classifiers_path+genre+"_"+genres[i]);
+      //temp_classifier->load(expert_classifiers_path+genres[i]+"_"+genre);
       classifiers.push_back(temp_classifier);
     }
 
-    return new CommitteeClassifier(master_classifier,classifiers);
+    return new CommitteeClassifier(classifiers);
 }

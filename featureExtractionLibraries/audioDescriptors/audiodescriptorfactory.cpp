@@ -17,8 +17,12 @@ AudioDescriptorExtractor* AudioDescriptorExtractorFactory::getAudioDescriptor(st
 
     if(this->type_map[type])
         return this->type_map[type]->getAudioDescriptor(type);
-    else
-        return this->type_map["OTHER"]->getAudioDescriptor(type);
+    else{
+        AudioDescriptorExtractor *temp = this->type_map["OTHER"]->getAudioDescriptor(type);
+        if(!temp)
+            throw std::invalid_argument("Bad feature name!");
+        else return temp;
+    }
 }
 
 AudioDescriptorCollectorFactory::AudioDescriptorCollectorFactory(){}

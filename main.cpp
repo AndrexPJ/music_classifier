@@ -1,12 +1,8 @@
 #include "audioLoaders/waveaudioloader.h"
 #include "audioSavers/audiosavers.h"
 
-#include "featureExtractionLibraries/audioDescriptors/audiodescriptorfactory.h"
-
-#include "classificationLibraries/svmclassifier.h"
-#include "classificationLibraries/boostclassifier.h"
-#include "featureExtractionLibraries/audioDescriptors/audiofeaturesamplesextractor.h"
-#include "classificationLibraries/committeeclassifier.h"
+#include "genreClassificationSystem/genreclassificationsystem.h"
+#include "genreClassificationSystem/genreclassificator.h"
 #include <iostream>
 #include <fstream>
 
@@ -27,8 +23,89 @@ int main(int argc, char *argv[])
                 features.push_back(string(argv[i]));
         }*/
 
+        /*int size = 10;
+        string genres[] = {"classical","metal","jazz","blues","reggae","hiphop","pop","rock","country","disco"};
+        std::pair<std::vector<std::string>,std::vector<std::string> > temp_pair;
 
+        MultipleGenresClassificator* mgc = MultipleGenresClassificatorFactory::getMultipleGenreClassificator();
+
+        int answers_count = 0;
+        int bad_answers = 0;
+
+        for(int i = 0; i < size; i++){
+            temp_pair = Tools::getTwoFileNamesHeaps("./test/"+genres[i],20,0,".wav");
+            for(std::vector<string>::iterator it = temp_pair.first.begin(); it != temp_pair.first.end(); it++){
+                std::vector<double> result = mgc->getGenreHistogram(*it);
+                if(result[i] != 1.0)
+                    bad_answers++;
+                answers_count++;
+                for(int j = 0; j < result.size(); j++)
+                    cout << genres[j] << ":" << result[j] << " ";
+                cout << endl;
+                cout << genres[i] << " " << answers_count << " " << bad_answers << " " << 1.0 - double(bad_answers) /answers_count << endl;
+            }
+        }
+
+        delete mgc;
+
+        cout << double(bad_answers) / answers_count << endl; */
+
+        /*int n_genre = 9;
         int size = 10;
+        int feature_size = 6;
+        string genres[] = {"classical","metal","jazz","blues","reggae","hiphop","pop","rock","country","disco"};
+        //string features[] = {"PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX"};
+        string features[] = {"MFCC","PITCHHISTO","ZCR","BEATHISTO","SPROLLOFF","ENERGY"};
+
+        vector<string> v_features(features,features + feature_size);
+        vector<string> v_genres(genres,genres+size);
+
+        double labels[] = {-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0};
+        vector<double> v_labels(labels,labels+size);
+        v_labels[n_genre] = 1.0;
+
+        int training_sizes[] = {5,5,5,5,5,5,5,5,5,5};
+        int test_sizes[] = {0,0,0,0,0,0,0,0,0,0};
+        vector<int> v_training_sizes(training_sizes,training_sizes+size);
+        v_training_sizes[n_genre] = 45;
+        vector<int> v_test_sizes(test_sizes,test_sizes+size);
+        AudioSamplesCreator training_samples_creator(v_genres,v_labels,v_training_sizes,v_test_sizes,v_features);
+
+
+        int training_sizes_2[] = {0,0,0,0,0,0,0,0,0,0};
+        int test_sizes_2[] = {2,2,2,2,2,2,2,2,2,2};
+        vector<int> v_training_sizes_2(training_sizes_2,training_sizes_2+size);
+        vector<int> v_test_sizes_2(test_sizes_2,test_sizes_2+size);
+        v_test_sizes_2[n_genre] = 18;
+        AudioSamplesCreator test_samples_creator(v_genres,v_labels,v_training_sizes_2,v_test_sizes_2,v_features,"./test/");
+
+        AudioFeatureExcerpt training_excerpt = training_samples_creator.getTrainingExcerpt();
+        AudioFeatureExcerpt test_excerpt = test_samples_creator.getTestExcerpt();
+
+        SVMClassifier classifier;
+
+        classifier.train(training_excerpt);
+        double test_result = classifier.testTotal(test_excerpt);
+        double training_result = classifier.testTotal(training_excerpt);
+
+        cout << training_result << endl;
+        cout << test_result << endl;
+
+        classifier.save("./svm_classifiers/"+genres[n_genre]);*/
+
+
+
+        GenreClassificationSystem classification_system;
+
+        std::vector<double> result = classification_system.getGenreHistogram("jazz_rock.wav");
+        string genres[] = {"классика","метал","джаз","блюз","регги","хип-хоп","поп","рок","кантри","диско"};
+
+        for(int i = 0; i < result.size() - 1; i++)
+            cout << genres[i] << ": " << result[i] << ", ";
+        cout << genres[result.size() - 1] << ": " << result[result.size() - 1] << " ";
+        cout << endl;
+
+        /*int size = 10;
         int feature_size = 9;
         string genres[] = {"classical","metal","jazz","blues","reggae","hiphop","pop","rock","country","disco"};
         string features[] = {"PITCHHISTO","MFCC","BEATHISTO","ENERGY","ZCR","SPCENTROID","SPROLLOFF","SPFLATNESS","SPFLUX"};
@@ -40,8 +117,8 @@ int main(int argc, char *argv[])
         int training_sizes[] = {0,0,0,0,0,0,0,0,0,0};
         //int training_sizes[] = {8,8,8,8,8,8,8,8,8,8};
         //int training_sizes[] = {50,50,50,50,50,50,50,50,50,50};
-        //int test_sizes[] = {20,20,20,20,20,20,20,20,20,20};
-        int test_sizes[] = {18,18,18,18,18,18,18,18,18,18};
+        int test_sizes[] = {20,20,20,20,20,20,20,20,20,20};
+        //int test_sizes[] = {18,18,18,18,18,18,18,18,18,18};
         //int test_sizes[] = {0,0,0,0,0,0,0,0,0,0};
 
 
@@ -69,6 +146,8 @@ int main(int argc, char *argv[])
         std::vector<CommitteeClassifier*> classifiers;
         classifiers.resize(size);
 
+        double temp_percent;
+
         for(int i = 0; i < size; i++){
            classifiers[i] = CommitteeClassiferFactory::getCommitteeClassifier(genres[i]);
         }
@@ -78,8 +157,10 @@ int main(int argc, char *argv[])
         for(int i = 0; i < samples.size();i++){
             cout << classes[i] << endl;
             for(int k = 0; k < size; k++){
-                cout << classifiers[k]->classifyPercent(samples[i]) << " ";
+                cout << genres[k] << ":" << classifiers[k]->classifyPercent(samples[i]) << " ";
             }
+
+            cout << endl;
             cout << endl;
         }
 
@@ -87,6 +168,7 @@ int main(int argc, char *argv[])
            delete classifiers[i];
         }
 
+        cout << endl;*/
         //classifier.train(training_excerpt);
         //test_result = classifier.test(test_excerpt);
         //total_result = classifier.testTotal(test_excerpt);

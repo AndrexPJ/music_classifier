@@ -7,7 +7,7 @@ SVMClassifier::SVMClassifier(int kernel_type,int svm_type){
     this->params->kernel_type = kernel_type;
     this->params->nu = 0.5;
     this->params->degree = 3.0;
-    this->params->term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 1000, 1e-6);
+    this->params->term_crit   = cvTermCriteria(CV_TERMCRIT_ITER, 100000, 1e-6);
     this->svm = new CvSVM();
     this->trained = false;
 }

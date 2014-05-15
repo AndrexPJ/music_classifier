@@ -4,19 +4,24 @@ AudioFeatureSamplesExtractor::AudioFeatureSamplesExtractor(){}
 
 std::vector< std::vector<double> > AudioFeatureSamplesExtractor::extract(std::vector<std::string> &file_names, std::vector<std::string> &feature_names){
 
-    AudioDescriptorCollector *dc;
-    AudioRecord ar;
-
     std::vector< std::vector<double> > out(file_names.size());
 
     for(int i  = 0; i < file_names.size(); i++){
-        ar = WaveAudioLoader::loadAudioRecord(file_names[i]);
-        ar = AudioRecordTransforms::performDCRemoval(ar);
-        AudioDescriptorCollectorFactory dc_factory(ar);
-        dc = dc_factory.getAudioDescriptorCollector(feature_names);
-        out[i] = dc->extract();
-        delete dc;
+        out[i] = this->extract(file_names[i],feature_names);
     }
+    return out;
+}
+
+std::vector<double> AudioFeatureSamplesExtractor::extract(string &file_name, std::vector<string> &feature_names){
+    AudioRecord ar = WaveAudioLoader::loadAudioRecord(file_name);
+    ar = AudioRecordTransforms::performDCRemoval(ar);
+
+    AudioDescriptorCollectorFactory dc_factory(ar);
+    AudioDescriptorCollector *dc = dc_factory.getAudioDescriptorCollector(feature_names);
+
+    std::vector<double> out = dc->extract();
+    delete dc;
+
     return out;
 }
 

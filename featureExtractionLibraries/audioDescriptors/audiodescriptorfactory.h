@@ -12,7 +12,7 @@
 #include "featureExtractionLibraries/audioTransforms/audiorecordtransforms.h"
 #include "featureExtractionLibraries/specialFunctions/noveltyfunctions.h"
 
-
+#include <stdexcept>
 
 
 class AudioDescriptorExtractorFactory : public BaseDescriptorFactory{

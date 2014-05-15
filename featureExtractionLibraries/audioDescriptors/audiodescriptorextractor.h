@@ -5,6 +5,7 @@
 #include "basicClasses/audiospectrum.h"
 #include "basicClasses/audioampspectrum.h"
 
+
 #include <vector>
 #include <math.h>
 #include <map>

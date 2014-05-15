@@ -9,6 +9,7 @@ class AudioFeatureSamplesExtractor{
 public:
     AudioFeatureSamplesExtractor();
     std::vector< std::vector<double> > extract(std::vector<std::string> &file_names, std::vector<std::string> &feature_names);
+    std::vector<double> extract(std::string &file_name, std::vector<std::string> &feature_names);
 };
 
 class AudioSamplesCreator{

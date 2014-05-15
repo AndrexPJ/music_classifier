@@ -6,9 +6,10 @@
 class BoostClassifier : public BasicClassifier
 {
 private:
+    bool reversed_mode;
     CvBoost *boost;
 public:
-    BoostClassifier();
+    BoostClassifier(bool reversed_mode = false);
     ~BoostClassifier();
 
     virtual bool train(AudioFeatureExcerpt &excerpt);

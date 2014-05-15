@@ -1,6 +1,7 @@
 #include "boostclassifier.h"
 
-BoostClassifier::BoostClassifier(){
+BoostClassifier::BoostClassifier(bool reversed_mode){
+    this->reversed_mode = reversed_mode;
     this->boost = new CvBoost();
 }
 
@@ -39,7 +40,16 @@ bool BoostClassifier::train(std::vector<std::vector<double> > &train_samples, st
 
 double BoostClassifier::classify(std::vector<double> &classify_sample){
     cv::Mat data = this->vectorToMat(classify_sample);
-    return this->boost->predict(data);
+    double answer = this->boost->predict(data);
+
+    if(reversed_mode){
+        if(answer == 1.0)
+            return -1.0;
+        else
+            return 1.0;
+    }
+
+    return answer;
 }
 
 
