@@ -1,29 +1,4 @@
-#include "audioLoaders/waveaudioloader.h"
-#include "audioSavers/audiosavers.h"
-
-#include "genreClassificationSystem/genreclassificationsystem.h"
-#include "genreClassificationSystem/genreclassificator.h"
-#include <iostream>
-#include <fstream>
-
-using namespace std;
-
-int main(int argc, char *argv[])
-{
-    try{
-        /*string filename;
-        vector<string> features;
-        if(argc < 3){
-            filename = "country.wav";
-            features.push_back("SPFLUX");
-        }
-        else{
-            filename = argv[1];
-            for(int i = 2; i < argc; i++)
-                features.push_back(string(argv[i]));
-        }*/
-
-        /*int size = 10;
+      /*int size = 10;
         string genres[] = {"classical","metal","jazz","blues","reggae","hiphop","pop","rock","country","disco"};
         std::pair<std::vector<std::string>,std::vector<std::string> > temp_pair;
 
@@ -94,7 +69,7 @@ int main(int argc, char *argv[])
         classifier.save("./svm_classifiers/"+genres[n_genre]);*/
 
 
-
+        /*
         GenreClassificationSystem classification_system;
 
         std::vector<double> result = classification_system.getGenreHistogram("jazz_rock.wav");
@@ -103,7 +78,7 @@ int main(int argc, char *argv[])
         for(int i = 0; i < result.size() - 1; i++)
             cout << genres[i] << ": " << result[i] << ", ";
         cout << genres[result.size() - 1] << ": " << result[result.size() - 1] << " ";
-        cout << endl;
+        cout << endl;*/
 
         /*int size = 10;
         int feature_size = 9;
@@ -340,13 +315,3 @@ int main(int argc, char *argv[])
             v_genres.pop_back();
             out_stream.close();
         }*/
-        return 0;
-    }
-    catch(exception &ex){
-        std::cerr << ex.what() << std::endl;
-        return 1;
-    }
-    // TODO: lazy spectrum computation in fabric
-    // TODO: SVM classify multiple data
-}
-
